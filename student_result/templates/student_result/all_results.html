@@ -1,0 +1,66 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Students Result
+{% endblock page_title %}
+
+
+{% block main_content %}
+
+
+{% load static %}
+
+<section class="content">
+
+  <div class="row">
+    <div class="col-md-12">
+  {% for key, result in results.items %}
+    <div class="card">
+      <div class="card-header">
+        {{result.student}}
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th></th>
+              <th>Subject</th>
+              <th>Test Score</th>
+              <th>Exam Score</th>
+              <th>Total Score</th>
+              <th>Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for subject in result.subjects %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ subject.subject }}</td>
+                <td>{{ subject.test_score }}</td>
+                <td>{{ subject.exam_score }}</td>
+                <td>{{ subject.total_score }}</td>
+                <td>{{ subject.grade }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2"><strong>Totals</strong></td>
+              <td>{{ result.test_total }}</td>
+              <td>{{ result.exam_total }}</td>
+              <td>{{ result.total_total }}</td>
+              <td>---</td>
+            </tr>
+          </tfoot>
+        </table>
+
+      </div>
+    </div>
+  {% endfor %}
+
+    </div>
+  </div>
+
+</section>
+
+{% endblock main_content %}

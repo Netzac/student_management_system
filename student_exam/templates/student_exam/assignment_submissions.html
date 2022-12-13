@@ -1,0 +1,136 @@
+{% extends 'hod_template/base_template.html' %}
+{% load static  %}
+{% load i18n %}
+
+{% block  page_title %}Assignment Submission{% endblock page_title %}
+
+{% block main_content%}
+
+<div>
+  {% if submissions %}
+    <div class="body">
+      <div class="sub-body">
+        <div class="row">
+          <form method="GET">
+            <div class="input-field col s8 offset-s2 input-search">
+              <i class="material-icons right">search</i>
+              {{ search_form }}
+            </div>
+          </form>
+      </div>
+        <div class="no-assignment">
+          <table class="striped responsive-table table">
+            <thead>
+              <tr>
+                  <th>#</th>
+                  <th>Matriculation number</th>
+                  <th>Upload</th>
+                  <th>Date submitted</th>
+                  <th>Grade</th>
+                  <th>Feedback</th>
+                  <th>Grade Assigment</th>
+              </tr>
+            </thead>
+
+            <tbody>
+                {% for submission in submissions %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ submission.matric_number }}</td>
+                  <td>{{ submission.upload }}</td>
+                  <td>{{ submission.submitted_at }}</td>
+                  <td>
+                    {% if submission.grade != 'No grade yet' or submission.grade != 'None' %}
+                      {{ submission.grade }}
+                    {% else %}
+                     ---
+                      <!-- {{ grade_form }} -->
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if submission.feedback != 'No feedback yet' %}
+                      {{ submission.feedback }}
+                    {% else %}
+                    <!-- <form method="POST" action={% url 'submissions' submission.id %} enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ feedback_form.feedback }}
+                        <button type="submit" name="submit-feedback" value="{{ submission.id }}">
+                          <i class="fas fa-comments-o aria-hidden=true">send</i>
+                        </button>
+                      </form> -->
+                      ---
+                      </td>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a id="addAss" data-target= "#genericModel" data-toggle="modal" href="{% url 'submissions' submission.id  %}" ><i class="fas fa-check">Grade Me</i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination-div">
+          <ul class="pagination">
+            {% if submissions.has_previous %}
+              <li class="fa-3x"><a href="?page={{ submissions.previous_page_number }}"><i class="fas fa-chevron-left"></i></a></li>
+            {% else %}
+              <li class="disabled"><span><i class="fas fa-chevron-left"></i></span></li>
+            {% endif %}
+            {% for i in submissions.paginator.page_range %}
+              {% if submissions.number == i %}
+                <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+              {% else %}
+                <li class=""><a href="?page={{ i }}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if submissions.has_next %}
+              <li class="fa-3x"><a href="?page={{ submissions.next_page_number }}"><i class="fas fa-chevron-right fa-flip"></i></a></li>
+            {% else %}
+              <li class="disabled"><span><i class="fas fa-chevron-right"></i></span></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Modal-->
+    <div class="modal" id="genericModel" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content animated bounceInRight">
+              <div class="modal-header">
+                  <h4 class="modal-title">Grade Submission</h4>
+                  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                    <span class="sr-only">&times;</span>
+                  </button>
+              </div>
+  
+              <div class="modal-body"></div>
+  
+              <div class="modal-footer">
+                  <!-- <button type="button" class="btn btn-white" data-dismiss="modal">{% trans 'Close' %}</button>
+                  <button id="btn-save" type="button" class="btn btn-primary">{% trans 'Save changes' %}</button> -->
+              </div>
+          </div>
+      </div>
+    </div>
+   
+  {% else %}
+    <div class="body">
+      <div class="sub-body">
+        <div class="no-assignment">
+          <p> No submissions yet </p>
+        </div>
+    </div>
+    </div>
+  {% endif %}
+           
+</div>
+
+{% endblock main_content%}
+
+{% block custom_js %}
+
+<script src="{% static 'students-exam/js/bootstrap-modalmanager.js' %}"></script>
+<script src="{% static 'students-exam/js/utils.js' %}"></script>
+
+{% endblock custom_js %}

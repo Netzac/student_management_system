@@ -1,0 +1,78 @@
+{% extends 'hod_template/base_template.html' %}
+{% load humanize %}
+
+{% block title %}{% endblock title %}
+{% block page_title %}
+  List of Student Bills
+{% endblock page_title %}
+
+
+{% block breadcrumb %}
+<a class="btn btn-primary" href="{% url 'invoice-create' %}"><i
+    class="fas fa-plus"></i> New Invoice</a>
+<!-- <a class="btn btn-primary" href="{% url 'bulk-invoice' %}"><i
+    class="fas fa-upload"></i> Bulk Invoice</a> -->
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+<section class="content">
+  <div class="container-fluid">
+  <div class="table-responsive">
+      <table id="invoicetable" class="table table-bordered table-hover">
+        <thead class="thead-light">
+          <tr>
+            <th>S/N</th>
+            <th>invoice</th>
+            <th>Session-term</th>
+            <th>Total Payable</th>
+            <th>Total Paid</th>
+            <th>Balance</th>
+            <th>Update</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {% for invoice in object_list %}
+            <tr class='clickable-row' data-href="{% url 'invoice-detail' invoice.id %}">
+              <td>{{ forloop.counter}}</td>
+              <td>{{ invoice}}</td>
+              <td>{{ invoice.session}}-{{ invoice.term}}</td>
+              <td>{{ invoice.total_amount_payable | intcomma }}</td>
+              <td>{{ invoice.total_amount_paid | intcomma }}</td>
+              <td>{{ invoice.balance | intcomma }}</td>
+              <td><a class="btn btn-success btn-sm"
+                  href="{% url 'receipt-create' %}?invoice={{ invoice.id }}">Add new
+                  receipt</a></td>
+            </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+<script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+
+<script>
+  (function ($) {
+    $('.clickable-row').css('cursor', 'pointer');
+    $(".clickable-row").click(function () {
+      window.location = $(this).data("href");
+    });
+  })(jQuery)
+
+   $('#invoicetable').DataTable({
+    select: false
+    });
+
+</script>
+
+
+{% endblock custom_js %}

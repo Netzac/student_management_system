@@ -1,0 +1,76 @@
+{% extends 'hod_template/base_template.html' %}
+{% load static  %}
+{% load i18n %}
+
+
+{% block main_content%}
+
+{% if messages %}
+{% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-2">Title:</div>
+    <div class="col-10"> {{ single_assignment.title }} </div>
+  </div>
+    <div class="row">
+        <div class="col-2"> Assignment Details:</div>
+       <div class="col-10>"> {{ single_assignment.content}} </div>
+    </div>
+    <div class="row">
+       <div class="col-2"> Attachment: </div>
+       <div class="col-10>">
+          <a href="{{ single_assignment.upload.url }}"> {{ single_assignment.upload }}  </a> 
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-2"> Due Date: </div>
+      <div class="col-10">{{single_assignment.due_date }}  </div>
+    </div>
+    <div class="row">
+      <div class="col-2"> Class: </div>
+      <div class="col-10">{{single_assignment.course }}</div>
+    </div>
+    <div class="row">
+      <div class="col-2"> Subject: </div>
+      <div class="col-10"> {{single_assignment.subject }} </div>
+    </div>
+    <div class="row">
+      <div class="col-2"> Assignment Code: </div>
+      <div class="col-10"> {{single_assignment.passcode }} </div> 
+    </div>
+  </div>
+  <div class="row">
+  <div class="col-sm-12">
+  <form method="POST" action={% url 'delete-assignment' assignment_id %}>
+    {% csrf_token %}
+     <div class="form-group row">
+      <div class="col-sm-2">
+      <a type="buttion" class="btn btn-primary" id="addAss" data-target="#edit_assignment" data-toggle="modal" href="{% url 'edit-assignment' assignment_id %}"><i class="fas fa-edit">Edit</i></a>
+      </div>
+      <div class="col-sm-2"><button class="btn btn-primary" type="submit" name="delete-assignment"><i class="fas fa-trash"></i> Delete
+      </button>
+      </div>
+    </div>
+    </div>
+  </form>
+  </div>
+  </div>
+   <div>
+   
+  </div>
+</div>
+<!-- Modal Structure -->
+{% include 'student_exam/modaldiv.html' with title='Edit Assigment' %}
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script src="{% static 'students-exam/js/bootstrap-modalmanager.js' %}"></script>
+<script src="{% static 'students-exam/js/utils.js' %}"></script>
+
+
+{% endblock custom_js %}

@@ -1,0 +1,71 @@
+
+{% extends 'base2.html' %}
+{% load static %}
+
+{% block page_title %}
+  <p>Result Entry </p>
+{% endblock page_title %}
+
+
+{% block breadcrumb %}
+  <form method="POST">
+    {% csrf_token %}
+  <div class="card-header">
+    <h3 class="card-title">
+      <input type="submit" class="btn btn-success" value="Proceed >">
+    </h3>
+
+    <div class="card-tools">
+      <p class="small btn btn-tool">You can also search by name/class by typing in the search box</p>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+  <table id="studenttable" class="table table-sm table-bordered" data-page-length='100'>
+    <thead class="thead-light">
+      <tr>
+        <th><input type="checkbox" id="selecter"></th>
+        <th>Name</th>
+        <th>Current Class</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+        <tr>
+          <td><input type="checkbox" id="{{ student.id }}" name="students" value="{{ student.id}}"></td>
+          <td>{{student}} </td>
+          <td>{{student.course_id}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <input type="submit" class="btn btn-success mt-2" value="Proceed >">
+
+</form>
+
+
+<!-- </div>
+</section> -->
+{% endblock main_content %}
+
+
+{% block custom_js %}
+<script>
+  $('#studenttable').DataTable({
+    "ordering": false
+  });
+
+  $("#selecter").change(function () {
+    if (this.checked) {
+      $('input[name="students"]').prop('checked', true);
+    }
+    else {
+      $('input[name="students"]').prop('checked', false);
+    }
+  });
+</script>
+
+{% endblock custom_js %}

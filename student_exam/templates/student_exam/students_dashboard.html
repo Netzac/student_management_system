@@ -1,0 +1,174 @@
+{% extends 'student_template/base_template.html' %}
+{% load static  %}
+
+{% block page_title %}Assignments Dashboard{% endblock %}
+{% block main_content%}
+
+{% if messages %}
+{% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
+{% if submissions %}
+<div class="container-fluid">
+  <div class="">
+    <p> <strong>Submissions:</strong></p>
+  </div>
+<div class="row">
+  <div class="col-sm-8"
+        <form method="GET">
+          <div class="input-field col-sm-8">
+            <i class="material-icons right">search</i>
+            {{ search_form }}
+          </div>
+        </form>
+  </div>
+<div class="row">
+      <div class="col">
+          <table class="table table-striped">
+          <thead>
+            <tr>
+                <th>#</th>
+                <th>Assignment</th>
+                <th>Subject</th>
+                <th>Attachment</th>
+                <th>Date submitted</th>
+                <th>Grade</th>
+                <th>Feedback</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for submission in submissions %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ submission.assignment.title }}</td>
+              <td>{{ submission.assignment.subject }}</td>
+              <td><a href="{% url 'submission-detail' id=submission.id %}">{{ submission.upload }}</a></td>
+              <td>{{ submission.submitted_at }}</td>
+              <td>{{ submission.grade}}</td>
+              <td>{{ submission.feedback}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+      <div class="pagination-div">
+        <ul class="pagination">
+          {% if submissions.has_previous %}
+            <li class="waves-effect"><a href="?page={{ assignments.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+          {% else %}
+            <li class="disabled"><span><i class="fas fa-chevron-left"></i></span></li>
+          {% endif %}
+          {% for i in submissions.paginator.page_range %}
+            {% if submissions.number == i %}
+              <li class=" waves-effect active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+              <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if submissions.has_next %}
+            <li class="waves-effect"><a href="?page={{ assignments.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+          {% else %}
+            <li class="disabled"><span><i class="fas fa-chevron-right"></i></span></li>
+          {% endif %}
+        </ul>
+      
+    </div>
+  </div>
+  <div>
+
+{% else %}
+  <div class="">
+    <div class="">
+      <div class="">
+        <p> No submissions yet </p>
+        
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+
+{% if assignments %}
+  <div class="container-fluid">
+    <div class="">
+      <p><strong>Assignments Due:</strong></p>
+    </div>
+    <div class="row">
+      <!-- <div class="col-sm-6">
+        <form method="GET">
+          <div class="input-field col s8 input-search offset-s2">
+            <i class="material-icons right">search</i>
+            {{ search_form }}
+          </div>
+        </form>
+      </div> -->
+      <!-- <div class="col-sm-6">
+        <a id="addAss" type="button" class="btn btn-primary" data-target= "#create_assignment" data-toggle="modal" href="{% url 'create-assignment' %}" ><i class="fas fa-plus">Add</i></a>
+      </div> -->
+      <div class="no-assignment">
+          <table class="table table-striped">
+          <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Attachment</th>
+                <th>Date Created</th>
+                <th>Due date</th>
+                <!-- <th>Class</th> -->
+                <th>Subject</th>
+                <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for assignment in assignments %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><a href="{% url 'assignment-detail' assignment.id %}">{{ assignment.title }}</a></td>
+                <td>{{ assignment.upload }}</td>
+                <td>{{ assignment.created_at }}</td>
+                <td>{{ assignment.due_date }}</td>
+                <!-- <td>{{ assignment.course }}</td> -->
+                <td>{{ assignment.subject }}</td>
+                <td><a href="{% url 'assignment-submission' assignment.id %}">Respond</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-div">
+        {% if assignments.has_other_pages %}
+          <ul class="pagination">
+            {% if assignments.has_previous %}
+              <li class="waves-effect"><a href="?page={{ assignments.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+            {% else %}
+              <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
+            {% endif %}
+            {% for i in assignments.paginator.page_range %}
+              {% if assignments.number == i %}
+                <li class=" waves-effect active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+              {% else %}
+                <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if assignments.has_next %}
+              <li class="waves-effect"><a href="?page={{ assignments.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+            {% else %}
+              <li class="disabled"><span><i class="material-icons">chevron_right</i></span></li>
+            {% endif %}
+          </ul>
+        {% endif %}
+      </div>
+      <!-- <div class="col sm-6">
+        <a id="addAss" data-target= "#create_assignment" data-toggle="modal" href="{% url 'create-assignment' %}" ><i class="fas fa-plus">Add</i></a>
+      </div> -->
+    </div>
+  </div>
+  <div>
+{% endif %}
+
+{% endblock main_content %}

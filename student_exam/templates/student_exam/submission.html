@@ -1,0 +1,65 @@
+{% extends 'hod_template/base_template.html' %}
+{% load widget_tweaks %}
+{% block page_title %}Assignment Submission{% endblock %}
+
+{% block main_content%}
+
+{% if messages %}
+{% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-2"> Assignment Title:  </div>
+    <div class="col-10">{{ assignment.title }} </div> 
+  </div>
+  
+        <!-- <div class="col "> -->
+          <!-- <p> Course Code: {{ assignment.course_code }} </p> </div> -->
+    <div class="row">
+        <div class="col-2">Subject: </div>
+        <div class="col-10"> {{ assignment.subject}} </div> 
+    </div>
+    <div class="row">
+      <div class="col-2">Assignment Notes: </div>
+      <div class="col-10"> {{ assignment.content}} </div> 
+  </div>
+    <!-- <div class="row">
+        <div class="col-2"> Attachment:</div>
+        <div class="col-10"><a href="{{ assignment.upload.url }}"> {{ assignment.upload }}  </a> </div>
+    </div> -->
+    <div class="row">
+        <div class="col col-sm-2">Due Date;</div>
+        <div class="col col-sm-10">{{ assignment.due_date }} </p> 
+    </div>
+    <div class="row">
+        <form method="POST" enctype="multipart/form-data" action={% url 'assignment-submission' id=assignment_id %}>
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-sm-12">
+              {% for field in submission %}
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="{{ field.auto_id }}">
+                  {{ field.label }}
+                  {% for error in field.errors %}
+                  <small id="{{ field.auto_id }}" class="text-danger">{{ error }}</small>
+                  {% endfor %}
+                </label>
+                <div class="col-sm-10">
+                  {{ field | add_class:"form-control"}}
+                  {% if field.help_text %}
+                  <small>{{ field.help_text|safe }}</small>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+              <button class="btn btn-primary" type="submit" name="submit-assignment">submit
+                <i class="fas fa-chevron-right "></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

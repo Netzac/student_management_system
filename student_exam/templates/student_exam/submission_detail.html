@@ -1,0 +1,49 @@
+{% extends 'hod_template/base_template.html' %}
+{% load static  i18n %}
+
+
+{% block page_title %}Submission Details{% endblock %}
+
+{% block main_content%}
+
+{% if messages %}
+{% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
+<div class="container">
+  <div class="row">
+    <div class="col col-12">
+       <h4> Submission Details </h4>
+    </div>
+     <div class="col s12">
+       <p>UUID: {{ single_submission.matric_number | truncatechars:10 }} </p>
+    </div>
+    <div class="col s12">
+      <p> Upload: {{ single_submission.upload }} </p> </div>
+    <div class="col s12">
+      <p> Submission Date: {{ single_submission.submitted_at }} </p> 
+    </div>
+  </div>
+  <form method="POST" action={% url 'delete-submission' id=submission_id %}>
+    {% csrf_token %}
+    <div class="edit-delete">
+      <a class=" btn btn-primary" id="addAss" data-target= "#genericModel" data-toggle="modal" href="{% url 'edit-submission' single_submission.id  %}" ><i class="fas fa-edit">Edit</i></a>
+      <button class="btn btn-danger" type="submit" name="delete-submission">
+        <i class="fas fa-trash">Delete</i>
+      </button>
+    </div>
+  </form>
+  <!-- Modal Structure -->
+  {% include 'student_exam/modaldiv.html' with title='Edit Submission' %}
+  </div>
+</div>
+{% endblock %}
+
+{% block custom_js %}
+<script src="{% static 'students-exam/js/bootstrap-modalmanager.js' %}"></script>
+<script src="{% static 'students-exam/js/utils.js' %}"></script>
+
+
+{% endblock custom_js %}

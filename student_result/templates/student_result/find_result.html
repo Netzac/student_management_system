@@ -1,0 +1,107 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Find Result
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<!-- <section class="content"> -->
+        <div class="main-wrapper"> 
+
+            <div class="login-bg-color bg-black-300">
+                <div class="row">
+                    <div class="col-md-12 col-md-offset-0">
+                        <div class="panel login-box"  style="margin:auto">
+                            <div class="panel-heading">
+                                <div class="panel-title text-center">
+                                    <!-- <h4>Result Management Module</h4> -->
+                                </div>
+                                <div id="query_alert">
+                                    
+                                </div>
+                            </div>
+                            <div class="panel-body p-20">
+                                {% url 'load-students' as student_path %} 
+                                <form class="query-form" id="searchform" data-students-url= "{{student_path}}" method="post" novalidate > 
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="studentid" >Enter Student's ID or Select Class</label>
+                                        <input type="text" class="form-control" id="rollid" placeholder="Enter ID Number"
+                                            autocomplete="off" name="studentid">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="default" class="col-sm-2 control-label">Class</label>
+                                        <select name="classes" class="form-control" id="classes" required="required">
+                                            <option value="">Select Class</option>
+                                            
+                                            {% for cls in class %}
+                                                <option value="{{ cls.id }}">{{ cls }}</option>
+                                            {% endfor %}
+                                                
+                                        </select>
+                                    <div class="form-group" id="studentsDiv">
+                                        <label for="student" class="col-sm-3 control-label">Students</label>
+                                        <select name="student" class="form-control" id="student" required="required">
+                        
+                                        </select>
+                                    </div>
+            
+            
+                                    <div class="form-group mt-20">
+                                        <div class="">
+            
+                                            <button type="submit" class="btn btn-success btn-labeled pull-right">Search<span class="btn-label btn-label-right"><i
+                                                        class="fa fa-check"></i></span></button>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+            
+                                    <!-- <div class="col-sm-6">
+                                        <a href="{% url 'admin_home' %}">Back to Home</a>
+                                    </div> -->
+                                </form>
+            
+                                <hr>
+            
+                            </div>
+                        </div>
+         </div>
+    <!--  </section> -->
+
+  {% endblock main_content %}
+
+  {% block custom_js %}
+<script>
+  
+$(function(){
+    var studdiv =  $('#studentsDiv');
+    studdiv.hide();
+    $("#classes").change(function () {
+    var cls_id = $(this).val();
+    var url = $('#searchform').attr('data-students-url');
+    console.log(url);
+
+    $.ajax({
+
+        url:url,
+        data:{
+            'cls_id':cls_id,
+
+        },
+        success: function(data){
+            $('#student').html(data);
+            studdiv.show();
+        }
+
+
+    });
+    
+  });
+
+});
+</script>
+
+{% endblock custom_js %}
