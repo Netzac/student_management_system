@@ -208,7 +208,27 @@
                         </p>
                       </a>
                     </li>
-        
+                    <!-- Settings for Gender-->
+                    <li class="nav-item">
+                      {% url 'add_gender' as add_gender %}
+                        <a href="{{ add_gender }}" class="nav-link {% if request.path == add_gender %} active {% endif %}">
+                          <i class="nav-icon fas fa-th"></i>
+                          <p>
+                            Add Gender
+                          </p>
+                        </a>
+                      </li>
+                    <li class="nav-item">
+                      {% url 'manage_gender' as manage_gender %}
+                      {% url 'edit_gender' gender_id=id as edit_gender %}
+                      <a href="{{ manage_gender }}" class="nav-link {% if request.path == manage_gender %} active {% endif %} {% if request.path == edit_gender%} active {% endif %}">
+                        <i class="nav-icon fas fa-chalkboard"></i>
+                        <p>
+                          Manage Gender
+                        </p>
+                      </a>
+                    </li>
+                    <!-- Gender settings end here-->
                    
                     <li class="nav-item">
                       {% url 'add_subject' as add_subject %}

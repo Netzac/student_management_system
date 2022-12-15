@@ -61,6 +61,19 @@ class Staffs(models.Model):
     objects = models.Manager()
 
 
+class Gender(models.Model):
+    id = models.AutoField(primary_key=True)
+    gender_name = models.CharField(max_length=155)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+
+    class Meta:
+        verbose_name = "Gender"
+        verbose_name_plural = "Genders"
+        ordering = ["gender_name"]
+    def __str__(self):
+        return self.gender_name
 
 class Courses(models.Model):
     id = models.AutoField(primary_key=True)

@@ -16,7 +16,7 @@ from django.core import serializers
 import json
 from student_account.forms import FeeTypeForm
 
-from student_core.models import (CustomUser, Staffs, Courses, Subjects, 
+from student_core.models import (CustomUser, Staffs, Courses, Subjects, Gender,
 Students, SessionYearModel, FeedBackStudent, FeedBackStaffs, 
 LeaveReportStudent, LeaveReportStaff, Attendance,
  AttendanceReport, AcademicTerm,
@@ -263,6 +263,77 @@ def delete_course(request, course_id):
         messages.error(request, "Failed to Delete Course.")
         return redirect('manage_course')
 
+### Adding  Gender Setups for inclusivity suggested by Prudhvi ###
+
+def add_gender(request):
+    return render(request, "hod_template/add_gender_template.html")
+
+
+def add_gender_save(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method!")
+        return redirect('add_gender')
+    else:
+        gender = request.POST.get('gender')
+        try:
+            gender_model = Gender(gender_name=gender)
+            gender_model.save()
+            messages.success(request, "Gender Added Successfully!")
+            return redirect('add_gender')
+        except:
+            messages.error(request, "Failed to Add Gender!")
+            return redirect('add_gender')
+
+
+def manage_gender(request):
+    genders = Gender.objects.all()
+    context = {
+        "genders": genders
+    }
+    return render(request, 'hod_template/manage_gender_template.html', context)
+
+
+def edit_gender(request, gender_id):
+    gender = Gender.objects.get(id=gender_id)
+    context = {
+        "gender": gender,
+        "id": gender_id
+    }
+    return render(request, 'hod_template/edit_gender_template.html', context)
+
+
+def edit_gender_save(request):
+    if request.method != "POST":
+        HttpResponse("Invalid Method")
+    else:
+        gender_id = request.POST.get('gender_id')
+        gender_name = request.POST.get('gender')
+
+        try:
+            gender = Gender.objects.get(id=gender_id)
+            gender.gender_name = gender_name
+            gender.save()
+
+            messages.success(request, "Gender Updated Successfully.")
+            return redirect('/edit_gender/'+ gender_id)
+
+        except:
+            messages.error(request, "Failed to Update Gender.")
+            return redirect('/edit_gender/'+ gender_id)
+
+
+def delete_gender(request, gender_id):
+    gender = Gender.objects.get(id=gender_id)
+    try:
+        gender.delete()
+        messages.success(request, "Gender Deleted Successfully.")
+        return redirect('manage_gender')
+    except:
+        messages.error(request, "Failed to Delete Gender.")
+        return redirect('manage_gender')
+
+
+### End of Adding Gender ####
 
 def manage_session(request):
     session_years = SessionYearModel.objects.all()

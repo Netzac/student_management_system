@@ -105,6 +105,14 @@ urlpatterns = [
     path("term/<int:pk>/update/", HodViews.TermUpdateView.as_view(), name="term-update"),
     path("term/<int:pk>/delete/", HodViews.TermDeleteView.as_view(), name="term-delete"),
 
+    #URLS for Gender Setups
+    path('add_gender/', HodViews.add_gender, name="add_gender"),
+    path('add_gender_save/', HodViews.add_gender_save, name="add_gender_save"),
+    path('manage_gender/', HodViews.manage_gender, name="manage_gender"),
+    path('edit_gender/<gender_id>/', HodViews.edit_gender, name="edit_gender"),
+    path('edit_gender_save/', HodViews.edit_gender_save, name="edit_gender_save"),
+    path('delete_gender/<gender_id>/', HodViews.delete_gender, name="delete_gender"),
+
    
     
 ]
