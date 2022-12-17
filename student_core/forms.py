@@ -1,6 +1,6 @@
 from django import forms 
 from django.forms import Form,ModelForm, modelformset_factory
-from student_core.models import Courses, SessionYearModel, AcademicTerm
+from student_core.models import Courses, SessionYearModel, AcademicTerm,Gender
 
 
 class DateInput(forms.DateInput):
@@ -36,13 +36,24 @@ class AddStudentForm(forms.Form):
     except:
         session_year_list = []
     
-    gender_list = (
-        ('Male','Male'),
-        ('Female','Female')
-    )
+
+    #For Displaying Genders
+    try:
+        genders = Gender.objects.all()
+        gender_list = []
+        for gender in genders:
+            single_gender = (gender.id, gender.gender_name)
+            gender_list.append(single_gender)
+            print("gender_list :",gender_list)
+    except:
+        gender_list = []
+    # gender_list = (
+    #     ('Male','Male'),
+    #     ('Female','Female')
+    # )
     
     course_id = forms.ChoiceField(label="Class", choices=course_list, widget=forms.Select(attrs={"class":"form-control"}))
-    gender = forms.ChoiceField(label="Gender", choices=gender_list, widget=forms.Select(attrs={"class":"form-control"}))
+    gender_id = forms.ChoiceField(label="Gender", choices=gender_list, widget=forms.Select(attrs={"class":"form-control"}))
     session_year_id = forms.ChoiceField(label="Session Year", choices=session_year_list, widget=forms.Select(attrs={"class":"form-control"}))
     # session_start_year = forms.DateField(label="Session Start", widget=DateInput(attrs={"class":"form-control"}))
     # session_end_year = forms.DateField(label="Session End", widget=DateInput(attrs={"class":"form-control"}))

@@ -1,5 +1,6 @@
 import profile
-from django.shortcuts import render, redirect
+from urllib.request import Request
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage #To upload Profile Picture
@@ -7,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
 
 from django.views.generic import ListView, TemplateView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -61,8 +63,9 @@ def admin_home(request):
 
     staffs = Staffs.objects.all()
     for staff in staffs:
-        subject_ids = Subjects.objects.filter(staff_id=staff.admin.id)
-        attendance = Attendance.objects.filter(subject_id__in=subject_ids).count()
+        #subject_ids = Subjects.objects.filter(staff_id=staff.admin.id)
+        class_ids = Subjects.objects.filter(staff_id=staff.admin.id).values('course_id')
+        attendance = Attendance.objects.filter(course_id__in=class_ids).count()
         leaves = LeaveReportStaff.objects.filter(staff_id=staff.id, leave_status=1).count()
         staff_attendance_present_list.append(attendance)
         staff_attendance_leave_list.append(leaves)
@@ -568,7 +571,7 @@ def edit_student_save(request):
                 messages.success(request, "Student Updated Successfully!")
                 return redirect('/edit_student/'+student_id)
             except:
-                messages.success(request, "Failed to Uupdate Student.")
+                messages.success(request, "Failed to Update Student.")
                 return redirect('/edit_student/'+student_id)
         else:
             return redirect('/edit_student/'+student_id)
@@ -980,6 +983,37 @@ class CurrentSessionAndTermView(LoginRequiredMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
+# Attendance HOD Views
+
+@login_required
+def attendance(request):
+    classes = Courses.objects.all() #get_object_or_404(Courses)
+    return render(request, 'hod_template/attendance.html', {'classes': classes})
+
+@login_required()
+def attendance_class(request, cls_id):
+    cls = get_object_or_404(Courses, id=cls_id)
+    context = {
+        'cls': cls
+        
+    }
+    return render(request, 'hod_template/attendance_class.html', context)
 
 
+@login_required()
+def take_attendance(request, cls_id):
+    #print('Currrent Session:',request.POST)
+    session_year_id =  SessionYearModel.objects.get(current=True)
+    
+    cls = get_object_or_404(Courses, id=cls_id)
+    for i, s in enumerate(cls.students_set.all()):
+        status = request.POST.get('s.id')
+        if status == 'present':
+            status = 'True'
+        else:
+            status = 'False'
+        date = request.POST['date']
+        a = Attendance(course_id=cls, student_id=s, status=status, attendance_date=date, session_year_id=session_year_id)
+        a.save()
 
+    return HttpResponseRedirect(reverse('attendance'))

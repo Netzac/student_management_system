@@ -75,6 +75,7 @@ class Gender(models.Model):
     def __str__(self):
         return self.gender_name
 
+# Courses is a.k.a classes for lower levels
 class Courses(models.Model):
     id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=255)
@@ -113,7 +114,7 @@ class Subjects(models.Model):
 class Students(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
-    gender = models.CharField(max_length=50)
+    gender = models.ForeignKey(Gender, on_delete=models.DO_NOTHING)
     profile_pic = models.FileField()
     address = models.TextField()
     course_id = models.ForeignKey(Courses, on_delete=models.DO_NOTHING, default=1)
@@ -130,9 +131,11 @@ class Students(models.Model):
 class Attendance(models.Model):
     # Subject Attendance
     id = models.AutoField(primary_key=True)
-    subject_id = models.ForeignKey(Subjects, on_delete=models.DO_NOTHING)
+    student_id = models.ForeignKey(Students, on_delete=models.CASCADE)
+    course_id = models.ForeignKey(Courses, on_delete=models.DO_NOTHING)
     attendance_date = models.DateField()
     session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
+    status = models.BooleanField(default='True')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()

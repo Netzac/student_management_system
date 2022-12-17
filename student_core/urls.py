@@ -65,6 +65,10 @@ urlpatterns = [
     path('admin_get_attendance_student/', HodViews.admin_get_attendance_student, name="admin_get_attendance_student"),
     path('admin_profile/', HodViews.admin_profile, name="admin_profile"),
     path('admin_profile_update/', HodViews.admin_profile_update, name="admin_profile_update"),
+
+    path('attendance/Classes/',HodViews.attendance, name='attendance'),
+    path('attendance/<int:cls_id>/Class/',HodViews.attendance_class, name='attendance_class'),
+    path('attendance/<int:cls_id>/class/confirm/',HodViews.take_attendance, name='take_attendance'),
     
 
 
