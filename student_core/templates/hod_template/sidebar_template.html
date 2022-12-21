@@ -328,6 +328,27 @@
                 </li>
               </ul>
             </li>
+            <!-- Library section-->
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-copy"></i>
+                <p>
+                  Library
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                   {% url 'lib:dashboard' as dashboard %} 
+                  <a href="{{ dashboard }}" class="nav-link {% if request.path == dashboard %} active {% endif %}">
+                    <i class="nav-icon fas fa-bars"></i>
+                    <p>
+                      Libary dashboard
+                    </p>
+                  </a>
+                </li>
+              </ul>
+            </li>
 
           </ul>
         </nav>

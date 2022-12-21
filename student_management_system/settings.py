@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'student_account',
     'student_result',
     'student_exam',
+    'library'
 ]
 
 MIDDLEWARE = [
