@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% load static %} {% block pageContent %}
+{% extends 'hod_template/base_template.html' %} {% load static %} 
+{% block main_content %}
 <style>
     .al-logo {
         height: 3em;
@@ -54,13 +55,13 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="dropdown">
-                                        <button class="btn btn-light btn-sm rounded-0 border dropdown-toggle" type="button" id="abtn{{cat.pk}}" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button class="btn btn-light btn-sm rounded-0 border dropdown-toggle" type="button" id="abtn{{cat.pk}}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                           Action
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="abtn{{cat.pk}}">
-                                            <li><a class="dropdown-item view-data" href="javascript:void(0)" data-url="{% url 'view-category-pk' cat.pk %}"><i class="fa fa-eye text-dark"></i> View</a></li>
-                                            <li><a class="dropdown-item edit-data" href="javascript:void(0)" data-url="{% url 'manage-category-pk' cat.pk %}"><i class="fa fa-edit text-primary"></i> Edit</a></li>
-                                            <li><a class="dropdown-item delete-data" href="javascript:void(0)" data-url="{% url 'delete-category' cat.pk %}"><i class="fa fa-trash text-danger"></i> Delete</a></li>
+                                            <li><a class="dropdown-item view-data" href="javascript:void(0)" data-url="{% url 'lib:view-category-pk' cat.pk %}"><i class="fa fa-eye text-dark"></i> View</a></li>
+                                            <li><a class="dropdown-item edit-data" href="javascript:void(0)" data-url="{% url 'lib:manage-category-pk' cat.pk %}"><i class="fa fa-edit text-primary"></i> Edit</a></li>
+                                            <li><a class="dropdown-item delete-data" href="javascript:void(0)" data-url="{% url 'lib:delete-category' cat.pk %}"><i class="fa fa-trash text-danger"></i> Delete</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -73,11 +74,20 @@
         </div>
     </div>
 </section>
-{% endblock pageContent %} {% block ScriptBlock %}
+{% include 'library/modal_dialogs.html' %}
+{% endblock main_content %} 
+
+
+
+{% block custom_js %}
+<script src="{% static '/extra/extras.js' %}"></script>
+<script src="{% static '/extra/popper.min.js' %}"></script>
+<script src="{% static '/extra/bootstrap.min.js' %}"></script>
+
 <script>
     $(function() {
         $('#create_new').click(function() {
-            uni_modal("<i class='fa fa-plus'></i> Add New Category", "{% url 'manage-category' %}")
+            uni_modal("<i class='fa fa-plus'></i> Add New Category", "{% url 'lib:manage-category' %}")
         })
         $('.view-data').click(function() {
             uni_modal("<i class='fa fa-th-list'></i> Category Details", $(this).attr('data-url'))
@@ -143,4 +153,4 @@
         })
     }
 </script>
-{% endblock ScriptBlock %}
+{% endblock custom_js %}

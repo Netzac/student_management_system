@@ -48,7 +48,7 @@ def category(request):
     context['page'] = 'category'
     context['page_title'] = "Category List"
     context['category'] = models.Category.objects.filter(delete_flag = 0).all()
-    return render(request, 'category.html', context)
+    return render(request, 'library\category.html', context)
 
 @login_required
 def save_category(request):
@@ -89,7 +89,7 @@ def view_category(request, pk = None):
     else:
         context['category'] = models.Category.objects.get(id=pk)
     
-    return render(request, 'view_category.html', context)
+    return render(request, 'library/view_category.html', context)
 
 @login_required
 def manage_category(request, pk = None):
@@ -101,7 +101,7 @@ def manage_category(request, pk = None):
     else:
         context['category'] = models.Category.objects.get(id=pk)
     
-    return render(request, 'manage_category.html', context)
+    return render(request, 'library/manage_category.html', context)
 
 @login_required
 def delete_category(request, pk = None):

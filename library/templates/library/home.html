@@ -17,11 +17,13 @@
                             <div class="col-9">
                                 <h1 class="text-end">{{categories|intcomma}}</h2>
                             </div>
-                            <div class="col-12 text-end"><b>Active Categories</b></div>
+                           
+                            <div class="col-12 text-end"> <a href="{% url 'lib:category-page' %}" class="text-white"><b>Active Categories</b> <i class="fas fa-arrow-circle-right"></i></a></div>
                         </div>
                     </div>
                 </div>
             </div>
+           
         </div>
         <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 px-1 pb-2">
             <div class="card card-default rounded-0 shadow bg-gradient bg-dark bg-opacity-75 text-light">
