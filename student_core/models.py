@@ -117,6 +117,10 @@ class Students(models.Model):
     gender = models.ForeignKey(Gender, on_delete=models.DO_NOTHING)
     profile_pic = models.FileField()
     address = models.TextField()
+
+    delete_flag = models.IntegerField(default = 0)
+    status = models.CharField(max_length=2, choices=(('1','Active'), ('2','Inactive')), default = 1)
+    
     course_id = models.ForeignKey(Courses, on_delete=models.DO_NOTHING, default=1)
     session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE,default=1)
     created_at = models.DateTimeField(auto_now_add=True)

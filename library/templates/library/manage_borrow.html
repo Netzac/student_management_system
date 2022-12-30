@@ -114,7 +114,7 @@
                 headers: {
                     "X-CSRFToken": '{{csrf_token}}'
                 },
-                url: "{% url 'save-borrow' %}",
+                url: "{% url 'lib:save-borrow' %}",
                 data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,

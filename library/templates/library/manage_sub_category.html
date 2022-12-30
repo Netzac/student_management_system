@@ -70,7 +70,7 @@
                 headers: {
                     "X-CSRFToken": '{{csrf_token}}'
                 },
-                url: "{% url 'save-sub_category' %}",
+                url: "{% url 'lib:save-sub-category' %}",
                 data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,

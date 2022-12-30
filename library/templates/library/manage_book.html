@@ -94,7 +94,7 @@
                 headers: {
                     "X-CSRFToken": '{{csrf_token}}'
                 },
-                url: "{% url 'save-book' %}",
+                url: "{% url 'lib:save-book' %}",
                 data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,

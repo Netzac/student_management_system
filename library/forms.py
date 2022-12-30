@@ -65,7 +65,7 @@ class SaveSubCategory(forms.ModelForm):
         raise forms.ValidationError("Sub-Category Name already exists on the selected Category.")
      
 class SaveBook(forms.ModelForm):
-    sub_category = forms.CharField(max_length=250)
+    #sub_category = forms.CharField(max_length=250)
     isbn = forms.CharField(max_length=250)
     title = forms.CharField(max_length=250)
     description = forms.Textarea()
@@ -73,6 +73,20 @@ class SaveBook(forms.ModelForm):
     publisher = forms.Textarea()
     date_published = forms.DateField()
     status = forms.CharField(max_length=2)
+
+    #For Displaying Subcategory
+   
+    try:
+        categories =  models.SubCategory.objects.all()
+        cat_list =[]
+        for cat in categories:
+            single_cat = (cat.id, cat.name)
+            cat_list.append(single_cat) 
+    except:
+        cat_list = []
+
+
+    sub_category = forms.ChoiceField(label="Category", choices=cat_list, widget=forms.Select(attrs={"class":"form-control"}))
 
     class Meta:
         model = models.Books
@@ -100,12 +114,22 @@ class SaveBook(forms.ModelForm):
   
 
 class SaveBorrow(forms.ModelForm):
-    student = forms.CharField(max_length=250)
+    #student = forms.CharField(max_length=250)
     book = forms.CharField(max_length=250)
     borrowing_date = forms.DateField()
     return_date = forms.DateField()
     status = forms.CharField(max_length=2)
 
+    try:
+        students =  models.Students.objects.all()
+        stud_list =[]
+        for stud in students:
+            single_stud = (stud.id, stud)
+            stud_list.append(single_stud) 
+    except:
+        stud_list = []
+
+    student = forms.ChoiceField(label="Student", choices=stud_list, widget=forms.Select(attrs={"class":"form-control"}))
     class Meta:
         model = models.Borrow
         fields = ('student', 'book', 'borrowing_date', 'return_date', 'status', )

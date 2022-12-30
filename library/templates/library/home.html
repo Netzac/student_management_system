@@ -36,7 +36,7 @@
                             <div class="col-9">
                                 <h1 class="text-end">{{sub_categories|intcomma}}</h2>
                             </div>
-                            <div class="col-12 text-end"><b>Active Sub Categories</b></div>
+                           <div class="col-12 text-end"> <a href="{% url 'lib:sub-category-page' %}" class="text-white"><b>Active Sub Categories</b> <i class="fas fa-arrow-circle-right"></i></a></div>
                         </div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                             <div class="col-9">
                                 <h1 class="text-end">{{books|intcomma}}</h2>
                             </div>
-                            <div class="col-12 text-end"><b>Active Books</b></div>
+                            <div class="col-12 text-end"> <a href="{% url 'lib:book-page' %}" class="text-white"><b>Active Books</b> <i class="fas fa-arrow-circle-right"></i></a></div>
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                             <div class="col-9">
                                 <h1 class="text-end">{{pending|intcomma}}</h2>
                             </div>
-                            <div class="col-12 text-end"><b>Pending Transactions</b></div>
+                            <div class="col-12 text-end"> <a href="{% url 'lib:borrow-page' %}" class="text-white"><b>Borrows</b> <i class="fas fa-arrow-circle-right"></i></a></div>
                         </div>
                     </div>
                 </div>

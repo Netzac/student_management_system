@@ -124,7 +124,7 @@ def sub_category(request):
     context['page'] = 'sub_category'
     context['page_title'] = "Sub Category List"
     context['sub_category'] = models.SubCategory.objects.filter(delete_flag = 0).all()
-    return render(request, 'sub_category.html', context)
+    return render(request, 'library/sub_category.html', context)
 
 @login_required
 def save_sub_category(request):
@@ -165,7 +165,7 @@ def view_sub_category(request, pk = None):
     else:
         context['sub_category'] = models.SubCategory.objects.get(id=pk)
     
-    return render(request, 'view_sub_category.html', context)
+    return render(request, 'library/view_sub_category.html', context)
 
 @login_required
 def manage_sub_category(request, pk = None):
@@ -177,7 +177,7 @@ def manage_sub_category(request, pk = None):
     else:
         context['sub_category'] = models.SubCategory.objects.get(id=pk)
     context['categories'] = models.Category.objects.filter(delete_flag = 0, status = 1).all()
-    return render(request, 'manage_sub_category.html', context)
+    return render(request, 'library/manage_sub_category.html', context)
 
 @login_required
 def delete_sub_category(request, pk = None):
@@ -200,7 +200,7 @@ def books(request):
     context['page'] = 'book'
     context['page_title'] = "Book List"
     context['books'] = models.Books.objects.filter(delete_flag = 0).all()
-    return render(request, 'books.html', context)
+    return render(request, 'library/books.html', context)
 
 @login_required
 def save_book(request):
@@ -241,7 +241,7 @@ def view_book(request, pk = None):
     else:
         context['book'] = models.Books.objects.get(id=pk)
     
-    return render(request, 'view_book.html', context)
+    return render(request, 'library/view_book.html', context)
 
 @login_required
 def manage_book(request, pk = None):
@@ -253,7 +253,7 @@ def manage_book(request, pk = None):
     else:
         context['book'] = models.Books.objects.get(id=pk)
     context['sub_categories'] = models.SubCategory.objects.filter(delete_flag = 0, status = 1).all()
-    return render(request, 'manage_book.html', context)
+    return render(request, 'library/manage_book.html', context)
 
 @login_required
 def delete_book(request, pk = None):
@@ -276,7 +276,7 @@ def borrows(request):
     context['page'] = 'borrow'
     context['page_title'] = "Borrowing Transaction List"
     context['borrows'] = models.Borrow.objects.order_by('status').all()
-    return render(request, 'borrows.html', context)
+    return render(request, 'library/borrows.html', context)
 
 @login_required
 def save_borrow(request):
@@ -317,7 +317,7 @@ def view_borrow(request, pk = None):
     else:
         context['borrow'] = models.Borrow.objects.get(id=pk)
     
-    return render(request, 'view_borrow.html', context)
+    return render(request, 'lib/view_borrow.html', context)
 
 @login_required
 def manage_borrow(request, pk = None):
@@ -330,7 +330,7 @@ def manage_borrow(request, pk = None):
         context['borrow'] = models.Borrow.objects.get(id=pk)
     context['students'] = models.Students.objects.filter(delete_flag = 0, status = 1).all()
     context['books'] = models.Books.objects.filter(delete_flag = 0, status = 1).all()
-    return render(request, 'manage_borrow.html', context)
+    return render(request, 'library/manage_borrow.html', context)
 
 @login_required
 def delete_borrow(request, pk = None):
