@@ -1,0 +1,88 @@
+{% extends 'hod_template/base_template.html' %}
+{% load static %}
+{% load customfunction %}
+
+
+{% block breadcrumb %}
+
+
+
+{% endblock breadcrumb %}
+{% block main_content %}
+{% include 'bookstore/category_list.html' %}
+<section class="py-4">
+	<div class="container">
+		
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-12">
+					<div style="margin:0 auto;">
+						<ul id="demo3">
+							{% for sld in slide %}
+							<li><img height="100" src="{{ sld.slideimg.url }}"/></li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="titleheader">
+						<h3 class="h2header text-center">New Published Book</h3>
+						<a href="#">See All</a>
+					</div>
+					<div class="regulara sliderzx">
+						{% for item in newbooks %}
+						<div class="book-wrapper text-center">
+							<div class="coverpage">
+								{% if item.coverpage %}
+								<img src="{{ item.coverpage.url }}" class="img-fluid mt-5"/>
+								{% else %}
+								<div><h6> {{ item.title }} </h6></div>
+								{% endif %}
+							</div>
+							<a href="{% url 'store:book' id=item.id %}">{{ item.name|text_short }}</a>
+							<a href="{% url 'store:author' id=item.author.id %}">{{ item.author }}</a>
+							<div class="rating">
+								{{ item.totalrating|averagerating:item.totalreview }}
+								<span class="totalrating">{{ item.totalreview|add:-1 }}</span>
+							</div>
+							<p> ₱{{ item.price }}</p>
+							<button class="btn btn-danger" id="addTocart" data-book-id="{{ item.id }}">
+									<i class="fa fa-shopping-cart"></i>Add to cart
+								</button>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+
+				<div class="col-sm-12">
+					<div class="titleheader">
+						<h3 class="h2header text-center">Top Selling Book</h3>
+					</div>
+					<div class="regulara sliderzx">
+						{% for p in newbooks %}
+						<div class="book-wrapper text-center">
+							<div class="coverpage">
+								{% if p.coverpage %}
+								<img src="{{ p.coverpage.url }}" class="img-fluid mt-5"/>
+								{% endif %}
+							</div>
+							<a href="{% url 'store:book' id=p.id %}">{{ p.name|text_short }}</a>
+							<a href="{% url 'store:author' id=p.author.id %}">{{ p.author }}</a>
+							<div class="rating">
+								{{ p.totalrating|averagerating:p.totalreview }}
+								<span class="totalrating">{{ p.totalreview|add:-1 }}</span>
+							</div>
+							<p> ₱{{ p.price }}</p>
+							<button class="btn btn-danger" id="addTocart" data-book-id="{{ p.id }}">
+									<i class="fa fa-shopping-cart""></i>Add to cart
+								</button>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div> 
+			</div>
+			
+			</div>
+		</section>
+{% endblock main_content %}

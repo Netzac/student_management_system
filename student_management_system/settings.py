@@ -28,12 +28,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     "widget_tweaks",
+    'crispy_forms',
 
     'student_core',
     'student_account',
     'student_result',
     'student_exam',
-    'library'
+    'library',
+    'bookstore',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +65,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "student_core.context_processors.site_defaults",
+                'bookstore.context_processors.bookcategory',
             ],
         },
     },
@@ -142,7 +145,7 @@ STATICFILES_DIRS = [
 ]
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
 

@@ -9,6 +9,8 @@ from django.http import HttpResponse
 from . import models, forms
 from django.db.models import Q
 
+from bookstore.models import Category,SubCategory,Book
+
 # Create your views here.\
 
 def context_data(request):
@@ -30,10 +32,10 @@ def home(request):
     context = context_data(request)
     context['page'] = 'home'
     context['page_title'] = 'Home'
-    context['categories'] = models.Category.objects.filter(delete_flag = 0, status = 1).all().count()
-    context['sub_categories'] = models.SubCategory.objects.filter(delete_flag = 0, status = 1).all().count()
+    context['categories'] = Category.objects.filter(delete_flag = 0, status = 1).all().count()
+    context['sub_categories'] = SubCategory.objects.filter(delete_flag = 0, status = 1).all().count()
    # context['students'] = models.Students.objects.filter(delete_flag = 0, status = 1).all().count()
-    context['books'] = models.Books.objects.filter(delete_flag = 0, status = 1).all().count()
+    context['books'] = Book.objects.filter(delete_flag = 0, status = 1).all().count()
     context['pending'] = models.Borrow.objects.filter(status = 1).all().count()
     context['pending'] = models.Borrow.objects.filter(status = 1).all().count()
     context['transactions'] = models.Borrow.objects.all().count()
@@ -47,7 +49,7 @@ def category(request):
     context = context_data(request)
     context['page'] = 'category'
     context['page_title'] = "Category List"
-    context['category'] = models.Category.objects.filter(delete_flag = 0).all()
+    context['category'] = Category.objects.filter(delete_flag = 0).all()
     return render(request, 'library\category.html', context)
 
 @login_required
@@ -56,7 +58,7 @@ def save_category(request):
     if request.method == 'POST':
         post = request.POST
         if not post['id'] == '':
-            category = models.Category.objects.get(id = post['id'])
+            category = Category.objects.get(id = post['id'])
             form = forms.SaveCategory(request.POST, instance=category)
         else:
             form = forms.SaveCategory(request.POST) 
@@ -87,7 +89,7 @@ def view_category(request, pk = None):
     if pk is None:
         context['category'] = {}
     else:
-        context['category'] = models.Category.objects.get(id=pk)
+        context['category'] = Category.objects.get(id=pk)
     
     return render(request, 'library/view_category.html', context)
 
@@ -99,7 +101,7 @@ def manage_category(request, pk = None):
     if pk is None:
         context['category'] = {}
     else:
-        context['category'] = models.Category.objects.get(id=pk)
+        context['category'] = Category.objects.get(id=pk)
     
     return render(request, 'library/manage_category.html', context)
 
@@ -110,7 +112,7 @@ def delete_category(request, pk = None):
         resp['msg'] = 'Category ID is invalid'
     else:
         try:
-            models.Category.objects.filter(pk = pk).update(delete_flag = 1)
+            Category.objects.filter(pk = pk).update(delete_flag = 1)
             messages.success(request, "Category has been deleted successfully.")
             resp['status'] = 'success'
         except:
@@ -123,7 +125,7 @@ def sub_category(request):
     context = context_data(request)
     context['page'] = 'sub_category'
     context['page_title'] = "Sub Category List"
-    context['sub_category'] = models.SubCategory.objects.filter(delete_flag = 0).all()
+    context['sub_category'] = SubCategory.objects.filter(delete_flag = 0).all()
     return render(request, 'library/sub_category.html', context)
 
 @login_required
@@ -132,7 +134,7 @@ def save_sub_category(request):
     if request.method == 'POST':
         post = request.POST
         if not post['id'] == '':
-            sub_category = models.SubCategory.objects.get(id = post['id'])
+            sub_category = SubCategory.objects.get(id = post['id'])
             form = forms.SaveSubCategory(request.POST, instance=sub_category)
         else:
             form = forms.SaveSubCategory(request.POST) 
@@ -163,7 +165,7 @@ def view_sub_category(request, pk = None):
     if pk is None:
         context['sub_category'] = {}
     else:
-        context['sub_category'] = models.SubCategory.objects.get(id=pk)
+        context['sub_category'] = SubCategory.objects.get(id=pk)
     
     return render(request, 'library/view_sub_category.html', context)
 
@@ -175,8 +177,8 @@ def manage_sub_category(request, pk = None):
     if pk is None:
         context['sub_category'] = {}
     else:
-        context['sub_category'] = models.SubCategory.objects.get(id=pk)
-    context['categories'] = models.Category.objects.filter(delete_flag = 0, status = 1).all()
+        context['sub_category'] = SubCategory.objects.get(id=pk)
+    context['categories'] = Category.objects.filter(delete_flag = 0, status = 1).all()
     return render(request, 'library/manage_sub_category.html', context)
 
 @login_required
@@ -186,7 +188,7 @@ def delete_sub_category(request, pk = None):
         resp['msg'] = 'Sub Category ID is invalid'
     else:
         try:
-            models.SubCategory.objects.filter(pk = pk).update(delete_flag = 1)
+            SubCategory.objects.filter(pk = pk).update(delete_flag = 1)
             messages.success(request, "Sub Category has been deleted successfully.")
             resp['status'] = 'success'
         except:
@@ -252,7 +254,7 @@ def manage_book(request, pk = None):
         context['book'] = {}
     else:
         context['book'] = models.Books.objects.get(id=pk)
-    context['sub_categories'] = models.SubCategory.objects.filter(delete_flag = 0, status = 1).all()
+    context['sub_categories'] = SubCategory.objects.filter(delete_flag = 0, status = 1).all()
     return render(request, 'library/manage_book.html', context)
 
 @login_required

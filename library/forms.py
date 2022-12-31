@@ -6,6 +6,7 @@ from unicodedata import category
 from django import forms
 from numpy import require
 from . import models
+from bookstore.models import Category,SubCategory
 
 import datetime
 
@@ -16,7 +17,7 @@ class SaveCategory(forms.ModelForm):
     status = forms.CharField(max_length=2)
 
     class Meta:
-        model = models.Category
+        model = Category
         fields = ('name', 'description', 'status', )
 
     def clean_name(self):
@@ -24,9 +25,9 @@ class SaveCategory(forms.ModelForm):
         name = self.cleaned_data['name']
         try:
             if id > 0:
-                category = models.Category.objects.exclude(id = id).get(name = name, delete_flag = 0)
+                category = Category.objects.exclude(id = id).get(name = name, delete_flag = 0)
             else:
-                category = models.Category.objects.get(name = name, delete_flag = 0)
+                category = Category.objects.get(name = name, delete_flag = 0)
         except:
             return name
         raise forms.ValidationError("Category Name already exists.")
@@ -39,13 +40,13 @@ class SaveSubCategory(forms.ModelForm):
     status = forms.CharField(max_length=2)
 
     class Meta:
-        model = models.SubCategory
+        model = SubCategory
         fields = ('category', 'name', 'description', 'status', )
 
     def clean_category(self):
         cid = int(self.data['category']) if (self.data['category']).isnumeric() else 0
         try:
-            category = models.Category.objects.get(id = cid)
+            category =Category.objects.get(id = cid)
             return category
         except:
             raise forms.ValidationError("Invalid Category.")
@@ -55,11 +56,11 @@ class SaveSubCategory(forms.ModelForm):
         cid = int(self.data['category']) if (self.data['category']).isnumeric() else 0
         name = self.cleaned_data['name']
         try:
-            category = models.Category.objects.get(id = cid)
+            category = Category.objects.get(id = cid)
             if id > 0:
-                sub_category = models.SubCategory.objects.exclude(id = id).get(name = name, delete_flag = 0, category = category)
+                sub_category = SubCategory.objects.exclude(id = id).get(name = name, delete_flag = 0, category = category)
             else:
-                sub_category = models.SubCategory.objects.get(name = name, delete_flag = 0, category = category)
+                sub_category = SubCategory.objects.get(name = name, delete_flag = 0, category = category)
         except:
             return name
         raise forms.ValidationError("Sub-Category Name already exists on the selected Category.")
@@ -77,7 +78,7 @@ class SaveBook(forms.ModelForm):
     #For Displaying Subcategory
    
     try:
-        categories =  models.SubCategory.objects.all()
+        categories =  SubCategory.objects.all()
         cat_list =[]
         for cat in categories:
             single_cat = (cat.id, cat.name)
@@ -95,7 +96,7 @@ class SaveBook(forms.ModelForm):
     def clean_sub_category(self):
         scid = int(self.data['sub_category']) if (self.data['sub_category']).isnumeric() else 0
         try:
-            sub_category = models.SubCategory.objects.get(id = scid)
+            sub_category = SubCategory.objects.get(id = scid)
             return sub_category
         except:
             raise forms.ValidationError("Invalid Sub Category.")

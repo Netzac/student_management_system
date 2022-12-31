@@ -1,0 +1,7 @@
+			<ul style="float: right; clear: both;" >
+				<li class="" style="display:inline-block;"><h5>Category: |</h5></li>
+				{% for p in cat %}
+				<li class=""style="display:inline-block;"><h5><a href="{% url 'store:category' id=p.id %}">{{p.name}} |</a></h5></li>
+				{% endfor %}
+				
+			</ul>
