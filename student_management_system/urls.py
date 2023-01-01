@@ -13,6 +13,9 @@ urlpatterns = [
     path('exam/', include('student_exam.urls')),
     path('lib/', include('library.urls')),
     path('bookstore/', include('bookstore.urls')),
+    path('search/', include('search.urls')),
+    path('order/', include('order.urls')),
+    path('cart/', include('cart.urls')),
    
    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

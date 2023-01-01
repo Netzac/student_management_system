@@ -1,13 +1,18 @@
-$(document).on('ready', function() {
+'use strict'
+$(function() {
 	$("body").on("click", "#addTocart", function(event){
 		var id = $(this).attr("data-book-id");
 		event.preventDefault();
 		$.ajax({
 			url : "../cart/add/"+id,
 			data : {bookid:1},
+			error: err => {
+				console.log();
+				alert("An error occured");
+			},
 			success : function(data){
-
-				$("#snackbar").html("Add To Cart");
+				console.log('ajax called!');
+				$("#snackbar").html("Added To Cart!");
 				var x = document.getElementById("snackbar");
 				x.className = "show";
 				setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1000);
@@ -150,9 +155,13 @@ $(document).on('ready', function() {
 function totalCart(){
 	$.ajax({
 		url: "../cart/totalcart",
+		error: err => {
+			console.log();
+			alert("An error occured in Totaling Cart");
+		},
 		success: function(data){
 			$("#gettotalcart").html(data);
-			console.log(data)
+			console.log('Total cart: ',data)
 		}
 	})
 }
@@ -163,7 +172,7 @@ $("input[name='qty']").TouchSpin({
 	max: 10,
 	verticalbuttons: false
 });
-$('article').readmore({speed: 500});
+//$('article').readmore({speed: 500});
 
 
 

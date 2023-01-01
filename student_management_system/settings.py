@@ -36,6 +36,9 @@ INSTALLED_APPS = [
     'student_exam',
     'library',
     'bookstore',
+    'search.apps.SearchConfig',
+    'order.apps.OrderConfig',
+    'cart.apps.CartConfig',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +69,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 "student_core.context_processors.site_defaults",
                 'bookstore.context_processors.bookcategory',
+                'bookstore.context_processors.cart',
             ],
         },
     },
@@ -126,13 +130,9 @@ USE_L10N = True
 USE_TZ = False
 
 
-SESSION_COOKIE_SECURE = False
 
-SESSION_SAVE_EVERY_REQUEST = True
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
-SESSION_COOKIE_AGE = 10800
+CART_SESSION_ID = 'cart'
 
 
 # Static files (CSS, JavaScript, Images)

@@ -65,8 +65,8 @@ class Book(models.Model):
     date_added = models.DateTimeField(default = timezone.now)
     date_created = models.DateTimeField(auto_now = True)
 
-    price = models.IntegerField(default=10)
-    stock = models.IntegerField(default=1)
+    price = models.IntegerField()
+    stock = models.IntegerField()
     coverpage = models.FileField(upload_to = "Coverpage/" , null=True,blank=True)
     bookpage = models.FileField(upload_to = "Bookpage/", null=True,blank=True)
 
@@ -77,7 +77,7 @@ class Book(models.Model):
         verbose_name_plural = "List of Books"
 
     def __str__(self):
-        return str(f"{self.isbn} - {self.title}")
+        return self.title
 
 
 

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Category
-#from cart.cart import Cart
+from cart.cart import Cart
 
 def bookcategory(request):
 	categories = Category.objects.all()
@@ -10,12 +10,12 @@ def bookcategory(request):
 	return context
 
 
-# def cart(request):
-# 	cart = Cart(request)
-# 	context = {
-# 		"cart": cart
-# 	}
-# 	return context
+def cart(request):
+	cart = Cart(request)
+	context = {
+		"cart": cart
+	}
+	return context
 
 
 	

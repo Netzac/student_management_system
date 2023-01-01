@@ -79,7 +79,7 @@ def get_book_category(request, id):
 
 def get_author(request, id):
     wrt = get_object_or_404(Author, id=id)
-    book = Book.objects.filter(writer_id=wrt.id)
+    book = Book.objects.filter(author_id=wrt.id)
     context = {
         "wrt": wrt,
         "book": book

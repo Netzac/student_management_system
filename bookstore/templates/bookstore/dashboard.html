@@ -4,14 +4,20 @@
 
 
 {% block custom_css %}
- <link rel="stylesheet" href="{% static "extra/css/store.css" %}">
+ <link rel="stylesheet" href="{% static 'extra/css/store.css' %}">
+ <link rel="stylesheet" href="{% static 'jquery-touchspin/css/jquery.bootstrap-touchspin.min.css' %}>
+ <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'extra/css/slick.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'extra/css/slick-theme.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'extra/css/skdslider.css' %}"> 
 {% endblock custom_css %}
 
 {% block breadcrumb %}
 	
 {% endblock breadcrumb %}
 {% block main_content %}
-
+{% include 'bookstore/header.html' %}
 <section>{% include 'bookstore/category_list.html' %}</section>
 <section class="py-4">
 	<div class="container">
@@ -79,9 +85,14 @@
 			</div>
 			
 			</div>
+			<div id="snackbar"></div>
 		</section>
+
 {% endblock main_content %}
 
 {% block custom_js %}
+	<script src="{% static 'extra/skdslider.min.js' %}"></script>
+	<script src="{% static '/extra/bootstrap.min.js' %}"></script>
+	<script src="{% static '/jquery-touchspin/js/jquery.bootstrap-touchspin.min.js' %}"></script>
 	<script src="{% static '/extra/book-store.js' %}"></script>
 {% endblock custom_js %}
