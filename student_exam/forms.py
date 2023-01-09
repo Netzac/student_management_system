@@ -1,4 +1,6 @@
 from email.policy import default
+from pyexpat import model
+from typing_extensions import Required
 # from tkinter import Widget
 from django.forms.widgets import NumberInput  
 from unicodedata import name
@@ -80,3 +82,36 @@ class FeedbackForm(forms.Form):
     
     class Meta:
         fields = ['feedback']
+
+class GradeBookForm(forms.ModelForm):
+    lb = forms.IntegerField(required=True,help_text='For 70-100 enter 70 ')
+    grade = forms.CharField(required=True,help_text='1 or A ')
+    remark= forms.TextInput()
+
+    class Meta:
+        fields=['lb','grade','remark']
+        model = models.Gradebook
+
+class SaveGradebook(forms.ModelForm):
+   
+    lb = forms.IntegerField(required=True,help_text='For 70-100 enter 70 ')
+    grade = forms.CharField(required=True,help_text='1 or A ')
+    remark= forms.TextInput()
+
+
+    class Meta:
+        fields=['lb','grade','remark']
+        model = models.Gradebook
+
+    def clean_grade(self):
+        id = int(self.data['id']) if (self.data['id']).isnumeric() else 0
+        grade = self.cleaned_data['grade']
+        try:
+            if id > 0:
+                gradebook = models.Gradebook.objects.exclude(id = id).get(grade = grade)
+            else:
+                gradebook = models.Gradebook.objects.get(grade = grade)
+        except:
+            return grade
+        raise forms.ValidationError("ISBN already exists on the Database.")
+  

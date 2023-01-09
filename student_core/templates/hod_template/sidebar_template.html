@@ -246,6 +246,18 @@
                       </a>
                     </li>
                     <!-- Gender settings end here-->
+                      <!-- Settings for Gradebook-->
+                      <li class="nav-item">
+                        {% url 'gradebook' as add_gradebook %}
+                          <a href="{{ add_gradebook }}" class="nav-link {% if request.path == add_gradebook %} active {% endif %}">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                              Manage Gradebook
+                            </p>
+                          </a>
+                        </li>
+                      
+                      <!-- Gradebook settings end here-->
                    
                     <li class="nav-item">
                       {% url 'add_subject' as add_subject %}

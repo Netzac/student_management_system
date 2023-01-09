@@ -1,5 +1,6 @@
 
 
+from enum import auto
 from typing_extensions import Required
 import uuid
 from django.db import models
@@ -55,3 +56,15 @@ class Submission(models.Model):
     )
     grade = models.CharField(max_length=100, null=True, blank=True, default="No grade yet")
     feedback = models.CharField(max_length=255, null=True, blank=True, default="No feedback yet")
+
+
+class Gradebook(models.Model):
+    lb = models.IntegerField()
+    grade = models.CharField(max_length=15)
+    remark = models.CharField(max_length=50)
+    date_added=models.DateTimeField(auto_now=True)
+
+    class meta:
+        ordering=['lb']
+    def __str__(self):
+        return self.grade

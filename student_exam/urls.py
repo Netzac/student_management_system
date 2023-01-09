@@ -4,7 +4,8 @@ from django.urls import path
 from student_exam.views import (
     create_assignment, dashboard,assignment_submissions,
     assignment_detail,delete_assignment, edit_submission,
-     edit_assignment, delete_submission, edit_submission, submit_assignment
+     edit_assignment, delete_submission, edit_submission, submit_assignment,
+     gradebook,manage_gradebook,save_gradebook,delete_gradebook,view_gradebook,
 )
 
 urlpatterns = [
@@ -18,5 +19,13 @@ urlpatterns = [
     path('assignments/<id>/edit/', edit_assignment,name='edit-assignment'),
     path('submissions/<id>/delete',delete_submission,name='delete-submission'),
     path('submissions/<id>/detail',edit_submission,name='submission-detail'),
+
+
+    path('books',gradebook,name='gradebook'),
+    path('manage_book',manage_gradebook,name='manage-gradebook'),
+    path('manage_book/<int:pk>',manage_gradebook,name='manage-gradebook-pk'),
+    path('view_book/<int:pk>',view_gradebook,name='view-gradebook-pk'),
+    path('save_book',save_gradebook,name='save-gradebook'),
+    path('delete_book/<int:pk>',delete_gradebook,name='delete-gradebook'),
     
 ]

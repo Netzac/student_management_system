@@ -1,10 +1,11 @@
 import os
-
+import json
 import datetime
 from re import template
 from uuid import uuid4
 from django.conf import settings
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -14,7 +15,7 @@ from django.contrib.postgres.search import SearchVector, SearchQuery
 # Create your views here.
 
 from student_exam import forms
-from student_exam.models import Assignment, Submission
+from student_exam.models import Assignment, Submission,Gradebook
 
 @login_required
 def dashboard(request):
@@ -479,6 +480,99 @@ def pre_submission(request, id):
         "submission": submission_form
     }
     return render(request, "/pass.html", context)
+
+
+'''|Extra views for the gradebook'''
+def context_data(request):
+    fullpath = request.get_full_path()
+    abs_uri = request.build_absolute_uri()
+    abs_uri = abs_uri.split(fullpath)[0]
+    context = {
+        'system_host' : abs_uri,
+        'page_name' : '',
+        'page_title' : '',
+        'system_name' : 'jSchoolWeb',
+    }
+
+    return context
+
+@login_required
+def gradebook(request):
+    context = context_data(request)
+    context['page'] = 'book'
+    context['page_title'] = "Book List"
+    context['books'] = Gradebook.objects.all()
+    return render(request, 'student_exam/gradebook.html', context)
+
+@login_required
+def save_gradebook(request):
+    resp = { 'status': 'failed', 'msg' : '' }
+    print(request)
+    if request.method == 'POST':
+        post = request.POST
+        if not post['id'] == '':
+            gradebook = Gradebook.objects.get(id = post['id'])
+            form = forms.SaveGradebook(request.POST, instance=gradebook)
+        else:
+            form = forms.SaveGradebook(request.POST) 
+
+        if form.is_valid():
+            form.save()
+            if post['id'] == '':
+                messages.success(request, "Gradebook saved successfully.")
+            else:
+                messages.success(request, "Book updated successfully.")
+            resp['status'] = 'success'
+        else:
+            for field in form:
+                for error in field.errors:
+                    if not resp['msg'] == '':
+                        resp['msg'] += str('<br/>')
+                    resp['msg'] += str(f'[{field.name}] {error}')
+    else:
+         resp['msg'] = "No data sent on the request"
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
+@login_required
+def view_gradebook(request, pk = None):
+    context = context_data(request)
+    context['page'] = 'view_gradebook'
+    context['page_title'] = 'View GradeBook'
+    if pk is None:
+        context['books'] = {}
+    else:
+        context['books'] = Gradebook.objects.get(id=pk)
+    
+    return render(request, 'student_exam/view_gradebook.html', context)
+
+@login_required
+def manage_gradebook(request, pk = None):
+    context = context_data(request)
+    context['page'] = 'manage_gradebook'
+    context['page_title'] = 'Manage GradeBook'
+    if pk is None:
+        context['books'] = {}
+    else:
+        context['books'] = Gradebook.objects.get(id=pk)
+   
+    return render(request, 'student_exam/manage_gradebook.html', context)
+
+@login_required
+def delete_gradebook(request, pk = None):
+    resp = { 'status' : 'failed', 'msg':''}
+    if pk is None:
+        resp['msg'] = 'ID is invalid'
+    else:
+        try:
+            Gradebook.objects.filter(pk = pk)
+            messages.success(request, "gradebook line deleted successfully.")
+            resp['status'] = 'success'
+        except:
+            resp['msg'] = "Deleting Failed"
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
 
 
 
