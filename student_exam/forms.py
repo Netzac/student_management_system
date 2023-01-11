@@ -113,5 +113,5 @@ class SaveGradebook(forms.ModelForm):
                 gradebook = models.Gradebook.objects.get(grade = grade)
         except:
             return grade
-        raise forms.ValidationError("ISBN already exists on the Database.")
+        raise forms.ValidationError("Id already exists on the Database.")
   

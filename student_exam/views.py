@@ -551,11 +551,12 @@ def manage_gradebook(request, pk = None):
     context = context_data(request)
     context['page'] = 'manage_gradebook'
     context['page_title'] = 'Manage GradeBook'
-    if pk is None:
-        context['books'] = {}
-    else:
-        context['books'] = Gradebook.objects.get(id=pk)
    
+    if pk is None:
+        context['book'] = {}
+    else:
+        context['book'] = Gradebook.objects.get(id=pk)
+    print('context:',context)
     return render(request, 'student_exam/manage_gradebook.html', context)
 
 @login_required
@@ -565,7 +566,7 @@ def delete_gradebook(request, pk = None):
         resp['msg'] = 'ID is invalid'
     else:
         try:
-            Gradebook.objects.filter(pk = pk)
+            Gradebook.objects.filter(pk = pk).delete()
             messages.success(request, "gradebook line deleted successfully.")
             resp['status'] = 'success'
         except:

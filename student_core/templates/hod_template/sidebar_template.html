@@ -199,7 +199,23 @@
                 </li>
               </ul>
           </li>
-            
+           <!-- <li class="nav-header">School Settings</li> -->
+           <li class="nav-item has-treeview">
+            <a href="#"" class="nav-link"><i class="nav-icon fas fa-copy"></i>
+              <p>School Settings <i class="fas fa-angle-left right"></i></p>
+            </a>
+            <ul class="nav nav-treeview">     
+              <li class="nav-item">
+                {% url 'school-details' as school_details %}
+                <a href="{{ school_details }}" class="nav-link {% if request.path == school_details %} active {% endif %}">
+                  <i class="nav-icon fas fa-school"></i>
+                  <p>
+                    School Details
+                  </p>
+                </a>
+              </li>
+            </ul>
+        </li>
               <!-- <li class="nav-header">General Settings</li> -->
               <li class="nav-item has-treeview">
                     <a href="#"" class="nav-link"><i class="nav-icon fas fa-copy"></i>
