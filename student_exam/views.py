@@ -17,6 +17,11 @@ from django.contrib.postgres.search import SearchVector, SearchQuery
 from student_exam import forms
 from student_exam.models import Assignment, Submission,Gradebook
 
+'''is_ajax deprecated so define a custom function'''
+
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH')=='XMLHttpRequest'
+
 @login_required
 def dashboard(request):
     assignment_form = forms.AssignmentForm(request.POST or None)
@@ -124,7 +129,7 @@ def dashboard(request):
 @login_required
 def create_assignment(request):
 
-    if request.is_ajax():
+    if is_ajax(request=request):
         template_name =  "student_exam/create_assignment_inner.html"
     else:
         template_name =  "student_exam/dashboard.html"
@@ -161,7 +166,7 @@ def create_assignment(request):
 @login_required
 def assignment_submissions(request, id):
     
-    if request.is_ajax() and request.method == 'GET':
+    if is_ajax(request=request) and request.method == 'GET':
         template_name =  "student_exam/submissions_inner.html"
         grade_form = forms.GradeForm()
         context= {'grade_form':grade_form,'submission_id': id}
@@ -292,7 +297,7 @@ def delete_assignment(request, id):
 def submit_assignment(request, id):
 
     
-    if request.is_ajax():
+    if is_ajax(request=request):
         template_name =  "student_exam/edit_submission_inner.html"
     else:
         template_name =  "student_exam/submission.html"
@@ -370,7 +375,7 @@ def edit_submission(request, id):
         "upload": submission.upload
         }
        
-    if request.is_ajax() and request.method=='GET':
+    if is_ajax(request=request) and request.method=='GET':
         template_name =  "student_exam/edit_submission_inner.html"
         submission_form = forms.SubmissionForm(instance=submission)
         context={'submission':submission_form,'submission_id':id}
@@ -425,7 +430,7 @@ def edit_assignment(request, id):
         }
     assignment_form = forms.AssignmentForm(instance=assignment)
 
-    if request.is_ajax() and request.method == 'GET':
+    if is_ajax(request=request) and request.method == 'GET':
         assignment_form = forms.AssignmentForm(instance=assignment)
         template_name =  "student_exam/edit_assignment_inner.html"
         # assignment_form = forms.AssignmentForm()
@@ -501,7 +506,7 @@ def gradebook(request):
     context = context_data(request)
     context['page'] = 'book'
     context['page_title'] = "Book List"
-    context['books'] = Gradebook.objects.all()
+    context['books'] = Gradebook.objects.all().order_by('-lb')
     return render(request, 'student_exam/gradebook.html', context)
 
 @login_required

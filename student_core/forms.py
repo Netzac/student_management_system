@@ -69,6 +69,7 @@ class EditStudentForm(forms.Form):
     address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
 
     #For Displaying Courses
+    gender_list = []
     try:
         courses = Courses.objects.all()
         course_list = []
@@ -90,13 +91,19 @@ class EditStudentForm(forms.Form):
         session_year_list = []
 
     
-    gender_list = (
-        ('Male','Male'),
-        ('Female','Female')
-    )
+     #For Displaying Genders
+    try:
+        genders = Gender.objects.all()
+        gender_list = []
+        for gender in genders:
+            single_gender = (gender.id, gender.gender_name)
+            gender_list.append(single_gender)
+            print("gender_list :",gender_list)
+    except:
+        gender_list = []
     
     course_id = forms.ChoiceField(label="Course", choices=course_list, widget=forms.Select(attrs={"class":"form-control"}))
-    gender = forms.ChoiceField(label="Gender", choices=gender_list, widget=forms.Select(attrs={"class":"form-control"}))
+    gender_id = forms.ChoiceField(label="Gender", choices=gender_list, widget=forms.Select(attrs={"class":"form-control"}))
     session_year_id = forms.ChoiceField(label="Session Year", choices=session_year_list, widget=forms.Select(attrs={"class":"form-control"}))
     # session_start_year = forms.DateField(label="Session Start", widget=DateInput(attrs={"class":"form-control"}))
     # session_end_year = forms.DateField(label="Session End", widget=DateInput(attrs={"class":"form-control"}))

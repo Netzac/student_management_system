@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'search.apps.SearchConfig',
     'order.apps.OrderConfig',
     'cart.apps.CartConfig',
+    'school',
 ]
 
 MIDDLEWARE = [

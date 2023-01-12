@@ -206,11 +206,20 @@
             </a>
             <ul class="nav nav-treeview">     
               <li class="nav-item">
-                {% url 'school-details' as school_details %}
+                {% url 'school-create' as school_create %}
+                <a href="{{ school_create }}" class="nav-link {% if request.path == school_create %} active {% endif %}">
+                  <i class="nav-icon fas fa-school"></i>
+                  <p>
+                    Enter Details
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                {% url 'school-list' as school_details %}
                 <a href="{{ school_details }}" class="nav-link {% if request.path == school_details %} active {% endif %}">
                   <i class="nav-icon fas fa-school"></i>
                   <p>
-                    School Details
+                    View Details
                   </p>
                 </a>
               </li>

@@ -25,10 +25,11 @@
             <tr>
               <th></th>
               <th>Subject</th>
-              <th>Test Score</th>
+              <th>Class Score</th>
               <th>Exam Score</th>
               <th>Total Score</th>
               <th>Grade</th>
+              <th>Remark</th>
             </tr>
           </thead>
           <tbody>
@@ -39,7 +40,8 @@
                 <td>{{ subject.test_score }}</td>
                 <td>{{ subject.exam_score }}</td>
                 <td>{{ subject.total_score }}</td>
-                <td>{{ subject.grade }}</td>
+                <td>{{ subject.grade.0 }}</td>
+                <td>{{ subject.grade.1 }}</td>
               </tr>
             {% endfor %}
           </tbody>

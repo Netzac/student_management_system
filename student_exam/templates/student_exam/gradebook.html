@@ -16,16 +16,16 @@
                     <table class="table table-bordered table-striped" id="book-tbl">
                         <colgroup>
                             <col width="5%">
-                            <col width="20%">
+                           
                             <col width="20%">
                             <col width="15%">
                             <col width="25%">
-                            <col width="15%">
+                            <col width="35%">
                         </colgroup>
                         <thead>
                             <tr>
                                 <th class="text-center">#</th>
-                                <th class="text-center">Date Added</th>
+                             
                                 <th class="text-center">lower bound</th>
                                 <th class="text-center">Grade</th>
                                 <th class="text-center">Remark</th>
@@ -36,7 +36,7 @@
                             {% for book in books %}
                             <tr>
                                 <td class="text-center">{{ forloop.counter }}</td>
-                                <td>{{ book.date_added|date:"Y-m-d h:i A"}}</td>
+                               
                                 <td>{{ book.lb}}</td>
                                 <td>{{ book.grade }}</td>
                                 <td class="text-center">{{book.remark}}</td>

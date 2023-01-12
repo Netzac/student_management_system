@@ -1,0 +1,80 @@
+{% extends 'hod_template/base_template.html' %}
+{% load humanize %}
+{% load static %}
+
+
+
+{% block custom_css %}
+ <link rel="stylesheet" href="{% static 'extra/css/store.css' %}">
+{% endblock custom_css %}
+
+{% block main_content %}
+{% include 'status_message.html' %}
+
+
+{% block breadcumb %}
+
+{% endblock breadcumb %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover table-responsive ">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Motto</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Branch</th>
+                    <th>Logo</th>
+                    <th>Seal</th>
+                    <th>Admin Signature</th>
+                    <th>Action</th>
+                    </tr>
+            </thead>
+                        {% for object in object_list %}
+                        <tr role="row" class="odd">
+                            <td>{{ object.name }}</td>
+                            <td>{{ object.motto }}</td>
+                            <td>{{ object.phone}}</td>
+                            <td>{{ object.email }}</td>
+                            <td>{{ object.address }}</td>
+                            <td>{{ object.branch }}</td>
+                            <td>
+                            {% if object.logo %}
+								<img src="{{ object.logo.url }}" class=""/>
+								{% else %}
+								<div><p>No Logo </p></div>
+							{% endif %}
+                            </td>
+                            <td>
+                            {% if object.seal %}
+								<img src="{{ object.seal.url }}" class=""/>
+								{% else %}
+								<div><p>No Seal </p></div>
+							{% endif %}
+                            </td>
+                            <td>
+                                {% if object.adminSignature %}
+                                    <img src="{{ object.adminSignature.url }}" class=""/>
+                                    {% else %}
+                                    <div><p>No Signature </p></div>
+                                {% endif %}
+                                </td>
+                            <td>
+                                <a href="{% url 'school-update' object.id %}" class="btn btn-primary"><i class="fa fa-edit" title="Edit Record"></i>
+                                </a>
+                                <a href="{% url 'school-delete' object.id %}" class="btn btn-danger"><i class="fa fa-trash" title="Delete Record"></i>
+                                </a>
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+        </table>
+    </div>
+</section>
+{% endblock main_content %}
+
+

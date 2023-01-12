@@ -442,7 +442,7 @@ def add_student_save(request):
             address = form.cleaned_data['address']
             session_year_id = form.cleaned_data['session_year_id']
             course_id = form.cleaned_data['course_id']
-            gender = form.cleaned_data['gender']
+            gender = form.cleaned_data['gender_id']
 
             # Getting Profile Pic first
             # First Check whether the file is selected or not
@@ -501,7 +501,7 @@ def edit_student(request, student_id):
     form.fields['last_name'].initial = student.admin.last_name
     form.fields['address'].initial = student.address
     form.fields['course_id'].initial = student.course_id.id
-    form.fields['gender'].initial = student.gender
+    form.fields['gender_id'].initial = student.gender
     form.fields['session_year_id'].initial = student.session_year_id.id
 
     context = {
@@ -528,7 +528,7 @@ def edit_student_save(request):
             last_name = form.cleaned_data['last_name']
             address = form.cleaned_data['address']
             course_id = form.cleaned_data['course_id']
-            gender = form.cleaned_data['gender']
+            gender_id = form.cleaned_data['gender_id']
             session_year_id = form.cleaned_data['session_year_id']
 
             # Getting Profile Pic first
@@ -542,37 +542,37 @@ def edit_student_save(request):
             else:
                 profile_pic_url = None
 
-            try:
+            #try:
                 # First Update into Custom User Model
-                user = CustomUser.objects.get(id=student_id)
-                user.first_name = first_name
-                user.last_name = last_name
-                user.email = email
-                user.username = username
-                user.save()
+            user = CustomUser.objects.get(id=student_id)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.username = username
+            user.save()
 
-                # Then Update Students Table
-                student_model = Students.objects.get(admin=student_id)
-                student_model.address = address
+            # Then Update Students Table
+            student_model = Students.objects.get(admin=student_id)
+            student_model.address = address
 
-                course = Courses.objects.get(id=course_id)
-                student_model.course_id = course
+            course = Courses.objects.get(id=course_id)
+            student_model.course_id = course
 
-                session_year_obj = SessionYearModel.objects.get(id=session_year_id)
-                student_model.session_year_id = session_year_obj
+            session_year_obj = SessionYearModel.objects.get(id=session_year_id)
+            student_model.session_year_id = session_year_obj
+            gender_obj = Gender.objects.get(id=gender_id)
+            student_model.gender_id = gender_obj
+            if profile_pic_url != None:
+                student_model.profile_pic = profile_pic_url
+            student_model.save()
+            # Delete student_id SESSION after the data is updated
+            del request.session['student_id']
 
-                student_model.gender = gender
-                if profile_pic_url != None:
-                    student_model.profile_pic = profile_pic_url
-                student_model.save()
-                # Delete student_id SESSION after the data is updated
-                del request.session['student_id']
-
-                messages.success(request, "Student Updated Successfully!")
-                return redirect('/edit_student/'+student_id)
-            except:
-                messages.success(request, "Failed to Update Student.")
-                return redirect('/edit_student/'+student_id)
+            messages.success(request, "Student Updated Successfully!")
+            return redirect('/edit_student/'+student_id)
+            # except:
+            #     messages.error(request, "Failed to Update Student.")
+            #     return redirect('/edit_student/'+student_id)
         else:
             return redirect('/edit_student/'+student_id)
 

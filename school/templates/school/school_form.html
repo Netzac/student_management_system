@@ -1,0 +1,27 @@
+{% extends 'hod_template/base_template.html' %}
+{% load humanize %}
+
+{% block main_content %}
+{% include 'status_message.html' %}
+<section class="content">
+<div class="container-fluid">
+<div class="row">
+  <div class="col-8">
+    <form action="" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% include 'form_snippet.html' %}
+
+      <input type="submit" class="btn btn-primary" value="Save">
+
+    </form>
+  </div>
+
+  
+</div>
+</div>
+</section>
+
+
+
+{% endblock main_content %}
