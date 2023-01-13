@@ -1,15 +1,25 @@
 {% extends 'hod_template/base_template.html' %}
-
+{% load static %}
 {% block page_title %}
     Students Result
 {% endblock page_title %}
 
+{% block custom_css %}
+
+<script type="text/css">
+.logo{
+  max-height: 60px;
+  max-width: 80px;
+  margin: auto;
+}
+</script>
+
+{% endblock custom_css %}
 
 {% block main_content %}
 
 
-{% load static %}
-
+{% include 'student_result/result_header.html' with SchoolName=school.name SchoolAddress=school.address logo=school.logo.url SchoolEmail=school.email SchoolPhone=school.phone SchoolBranch=school.branch%}
 <section class="content">
 
   <div class="row">

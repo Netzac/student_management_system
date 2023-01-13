@@ -95,13 +95,16 @@ def edit_results(request,clsid):
     return render(request, "student_result/edit_results.html", {"formset": form})
 
 
+from school.models import School
 class ResultListView(LoginRequiredMixin, View):
+
+
     def get(self, request, *args, **kwargs):
         results = Result.objects.filter(
             session=request.current_session, term=request.current_term
         )
         bulk = {}
-
+        
         for result in results:
             test_total = 0
             exam_total = 0
@@ -120,19 +123,24 @@ class ResultListView(LoginRequiredMixin, View):
                 "total_total": test_total + exam_total,
             }
 
-        context = {"results": bulk}
+        context = {"results": bulk,"school":school}
+       
         return render(request, "student_result/all_results.html", context)
 
 @login_required
 def ResultDetailView(request,student):
     # def get_context_data(self, request,**kwargs):
     #     context= super().get_context_data(**kwargs)
-
+        try:
+            school = School.objects.all().first()
+        except:
+            school={}
         results = Result.objects.filter(
             session=request.current_session, term=request.current_term,student=student
         )
         bulk = {}
         print('result:',results)
+        print('school:',school)
         for result in results:
             test_total = 0
             exam_total = 0
@@ -151,7 +159,7 @@ def ResultDetailView(request,student):
                 "total_total": test_total + exam_total,
             }
 
-        context = {"results": bulk}
+        context = {"results": bulk,"school":school}
         return render(request, "student_result/all_results.html", context)
 
 @login_required
