@@ -19,8 +19,8 @@
 {% block main_content %}
 
 
-{% include 'student_result/result_header.html' with SchoolName=school.name SchoolAddress=school.address logo=school.logo.url SchoolEmail=school.email SchoolPhone=school.phone SchoolBranch=school.branch%}
-<section class="content">
+{% include 'student_result/result_header.html' with SchoolName=school.name SchoolAddress=school.address logo=school.logo.url SchoolEmail=school.email SchoolPhone=school.phone SchoolBranch=school.branch %}
+<section class="">
 
   <div class="row">
     <div class="col-md-12">
@@ -74,5 +74,5 @@
   </div>
 
 </section>
-
+{% include 'student_result/result_footer.html' %}
 {% endblock main_content %}
