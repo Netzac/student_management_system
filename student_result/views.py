@@ -9,6 +9,7 @@ from student_core.models import Courses, Students as Student
 
 from .forms import CreateResults, EditResults
 from .models import Result
+from student_exam.models import Gradebook
 
 
 @login_required
@@ -123,7 +124,7 @@ class ResultListView(LoginRequiredMixin, View):
                 "total_total": test_total + exam_total,
             }
 
-        context = {"results": bulk,"school":school}
+        context = {"results": bulk}
        
         return render(request, "student_result/all_results.html", context)
 
@@ -135,6 +136,12 @@ def ResultDetailView(request,student):
             school = School.objects.all().first()
         except:
             school={}
+
+        try:
+            gradeBook = Gradebook.objects.all().order_by('-lb')
+        except:
+            gradeBook={}
+
         results = Result.objects.filter(
             session=request.current_session, term=request.current_term,student=student
         )
@@ -150,7 +157,7 @@ def ResultDetailView(request,student):
                     subjects.append(subject)
                     test_total += subject.test_score
                     exam_total += subject.exam_score
-
+            
             bulk[result.student.id] = {
                 "student": result.student,
                 "subjects": subjects,
@@ -158,8 +165,13 @@ def ResultDetailView(request,student):
                 "exam_total": exam_total,
                 "total_total": test_total + exam_total,
             }
+            studentClass= result.student.course_id
+            classSize = Student.objects.filter(course_id=studentClass).count()
+            #studentClass = Courses.objects.get(id=studentClass).values('name')
 
-        context = {"results": bulk,"school":school}
+            print("Class:",studentClass)
+
+        context = {"results": bulk,"school":school,'gradeBook':gradeBook,"Class":studentClass,"ClassSize":classSize}
         return render(request, "student_result/all_results.html", context)
 
 @login_required

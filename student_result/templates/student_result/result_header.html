@@ -1,6 +1,6 @@
 <section class="content">
    
-    <div class="row justify-content-center">
+    <div class="row justify-content-center ml-5">
       <div class="col-md-2 mt-3">
         <div class="">
             <div class="card">
@@ -10,7 +10,7 @@
      </div>
     <div class="col-md-10">
         <div class="card-body">
-            <table class="table table-sm table-responsive ">
+            <table class="table table-responsive ">
               <thead class="thead-white">
                 <tr>
                     <th class="text-center" colspan="2">
@@ -27,17 +27,57 @@
                     <td>Email: {{SchoolEmail}}</td>
                 </tr>
                 <tr>
-                    <td colspan="2"> Branch: {{SchoolBranch}}</td>
+                    <td colspan="2" class="text-capitalize"> Branch: {{SchoolBranch}}</td>
                 </tr>
               </tbody>
             <tfoot>
               <tr>
-                <td colspan="2"><h4 class="text-center">End of Term Report</h4></td>
+                <td colspan="2"><h4 class="text-center border-bottom border-dark">End of Term Report</h4></td>
               </tr>
             </tfoot>
           </table>
         </div>
       </div>
       </div>
+
+      <div class="row">
+        <div class="col-sm-1 mt-3">
+          <p class="text-left">Name:</p> 
+       </div>
+       <div class="col-sm-7 mt-3">
+       
+        <p class="border-bottom border-dark text-left"> {% for key, result in results.items %}
+          {{result.student}}
+        {%endfor %}</p>
+       </div>
+       <div class="col-sm-1  mt-3">
+        <p class="text-left">Class:</p> 
+      </div> 
+      <div class="col-sm-3 mt-3 ">
+        <p class="text-left border-bottom border-dark">{{Class}}</p>
+      </div>
+      </div>
+
+      <div class="row text-align-left">
+        <div class="col-sm-auto mt-1 ">
+          <p class="text-left">No. On Roll:</p>
+       </div>
+       <div class="col-sm-2 mt-1">
+        <p class="border-bottom border-dark text-left">{{ClassSize}}</p>
+       </div>
+       <div class="col-sm-2 mt-1">
+        <p>Academic Year:</p>
+     </div>
+     <div class="col-sm-3 mt-1">
+      <p class="border-bottom border-dark text-left">{{current_session}}</p>
+     </div>
+     <div class="col-sm-auto mt-1">
+      <p>Term:</p>
+    </div>
+    <div class="col-sm-2 mt-1">
+      <p class="border-bottom border-dark text-left">{{current_term}}</p>
+     </div>
+      </div>
+  
      
   </section>
