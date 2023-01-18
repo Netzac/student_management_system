@@ -15,7 +15,7 @@ from django.contrib.postgres.search import SearchVector, SearchQuery
 # Create your views here.
 
 from student_exam import forms
-from student_exam.models import Assignment, Submission,Gradebook
+from student_exam.models import Assignment, Submission,Gradebook, OverallGradebook
 
 '''is_ajax deprecated so define a custom function'''
 
@@ -582,3 +582,82 @@ def delete_gradebook(request, pk = None):
 
 
 
+'''|Extra views for the OverallGradebook'''
+
+@login_required
+def overall_gradebook(request):
+    context = context_data(request)
+    context['page'] = 'book'
+    context['page_title'] = "Book List"
+    context['books'] = OverallGradebook.objects.all().order_by('-lb')
+    return render(request, 'student_exam/overall_gradebook.html', context)
+
+@login_required
+def save_overall_gradebook(request):
+    resp = { 'status': 'failed', 'msg' : '' }
+    print(request)
+    if request.method == 'POST':
+        post = request.POST
+        if not post['id'] == '':
+            gradebook = OverallGradebook.objects.get(id = post['id'])
+            form = forms.SaveOverallGradebook(request.POST, instance=gradebook)
+        else:
+            form = forms.SaveOverallGradebook(request.POST) 
+
+        if form.is_valid():
+            form.save()
+            if post['id'] == '':
+                messages.success(request, "Gradebook saved successfully.")
+            else:
+                messages.success(request, "Book updated successfully.")
+            resp['status'] = 'success'
+        else:
+            for field in form:
+                for error in field.errors:
+                    if not resp['msg'] == '':
+                        resp['msg'] += str('<br/>')
+                    resp['msg'] += str(f'[{field.name}] {error}')
+    else:
+         resp['msg'] = "No data sent on the request"
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
+@login_required
+def view_overall_gradebook(request, pk = None):
+    context = context_data(request)
+    context['page'] = 'view_gradebook'
+    context['page_title'] = 'View GradeBook'
+    if pk is None:
+        context['books'] = {}
+    else:
+        context['books'] = OverallGradebook.objects.get(id=pk)
+    
+    return render(request, 'student_exam/view_overall_gradebook.html', context)
+
+@login_required
+def manage_overall_gradebook(request, pk = None):
+    context = context_data(request)
+    context['page'] = 'manage_gradebook'
+    context['page_title'] = 'Manage GradeBook'
+   
+    if pk is None:
+        context['book'] = {}
+    else:
+        context['book'] = OverallGradebook.objects.get(id=pk)
+    print('context:',context)
+    return render(request, 'student_exam/manage_overall_gradebook.html', context)
+
+@login_required
+def delete_overall_gradebook(request, pk = None):
+    resp = { 'status' : 'failed', 'msg':''}
+    if pk is None:
+        resp['msg'] = 'ID is invalid'
+    else:
+        try:
+            OverallGradebook.objects.filter(pk = pk).delete()
+            messages.success(request, "gradebook line deleted successfully.")
+            resp['status'] = 'success'
+        except:
+            resp['msg'] = "Deleting Failed"
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")

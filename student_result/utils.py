@@ -1,4 +1,4 @@
-from student_exam.models import Gradebook
+from student_exam.models import Gradebook, OverallGradebook
 
 def score_grade2(score):
     if score >= 70:
@@ -22,6 +22,17 @@ def score_grade(score):
 
         if score >= lb:
             return (grade,remark,)
+            break
+        else:
+            continue
+
+def score_overall_grade(score):
+
+    gradescale = OverallGradebook.objects.values_list('lb','grade').order_by('-lb')
+    for (lb, grade) in gradescale:
+
+        if score >= lb:
+            return (grade)
             break
         else:
             continue

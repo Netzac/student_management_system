@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView, View
 
 from student_core.models import Courses, Students as Student
+from student_result.utils import score_overall_grade
 
 from .forms import CreateResults, EditResults
 from .models import Result
@@ -57,7 +58,7 @@ def create_result(request,clsid):
 
         # after choosing students
         id_list = request.POST.getlist("students")
-        print(request.POST)
+        #print(request.POST)
         if id_list:
             form = CreateResults(
                 initial={
@@ -145,9 +146,14 @@ def ResultDetailView(request,student):
         results = Result.objects.filter(
             session=request.current_session, term=request.current_term,student=student
         )
+        '''Extra Context Variables'''
+        report_dates ={"closing":'',"opening":''}
+        
         bulk = {}
-        print('result:',results)
-        print('school:',school)
+        gradebook_with_ub=[]
+        studentClass=''
+        classSize=0
+        overall_grade=[]
         for result in results:
             test_total = 0
             exam_total = 0
@@ -157,21 +163,35 @@ def ResultDetailView(request,student):
                     subjects.append(subject)
                     test_total += subject.test_score
                     exam_total += subject.exam_score
-            
+
+            total_total=test_total + exam_total
+
             bulk[result.student.id] = {
                 "student": result.student,
                 "subjects": subjects,
                 "test_total": test_total,
                 "exam_total": exam_total,
-                "total_total": test_total + exam_total,
+                "total_total":total_total ,
             }
+            '''Extra data for report header'''
             studentClass= result.student.course_id
             classSize = Student.objects.filter(course_id=studentClass).count()
+            overall_grade = score_overall_grade(total_total)
             #studentClass = Courses.objects.get(id=studentClass).values('name')
+            report_dates['closing']= str(request.current_session).split('to',1)[1]
+            report_dates['opening']=request.current_session.re_opening_date
+            print("Opening Date:",report_dates["opening"])
+            grade_lb_list = list(gradeBook)
+            grade_ub_list =[100]
 
-            print("Class:",studentClass)
+            for i in range(len(grade_lb_list[:-1])):
+                grade_ub_list.append(grade_lb_list[i].lb-1)
+            
+            gradebook_with_ub =zip(gradeBook,grade_ub_list)
+            # for i,j in gradebookall:
+            #     print("Zip list:", i,j,i.lb,i.remark)
 
-        context = {"results": bulk,"school":school,'gradeBook':gradeBook,"Class":studentClass,"ClassSize":classSize}
+        context = {"results": bulk,"school":school,'gradeBook':gradebook_with_ub,"Class":studentClass,"ClassSize":classSize,"overall_grade":overall_grade,"report_dates":report_dates}
         return render(request, "student_result/all_results.html", context)
 
 @login_required

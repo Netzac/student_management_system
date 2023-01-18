@@ -115,3 +115,39 @@ class SaveGradebook(forms.ModelForm):
             return grade
         raise forms.ValidationError("Id already exists on the Database.")
   
+
+
+'''Overall Gradebook Forms'''
+
+class OverallGradeBookForm(forms.ModelForm):
+    lb = forms.IntegerField(required=True,help_text='For 70-100 enter 70 ')
+    grade = forms.CharField(required=True,help_text='1 or A ')
+    remark= forms.TextInput()
+
+    class Meta:
+        fields=['lb','grade','remark']
+        model = models.OverallGradebook
+
+class SaveOverallGradebook(forms.ModelForm):
+   
+    lb = forms.IntegerField(required=True,help_text='For 70-100 enter 70 ')
+    grade = forms.CharField(required=True,help_text='A ')
+    remark= forms.TextInput()
+
+
+    class Meta:
+        fields=['lb','grade','remark']
+        model = models.OverallGradebook
+
+    def clean_grade(self):
+        id = int(self.data['id']) if (self.data['id']).isnumeric() else 0
+        grade = self.cleaned_data['grade']
+        try:
+            if id > 0:
+                gradebook = models.OverallGradebook.objects.exclude(id = id).get(grade = grade)
+            else:
+                gradebook = models.OverallGradebook.objects.get(grade = grade)
+        except:
+            return grade
+        raise forms.ValidationError("Id already exists on the Database.")
+  

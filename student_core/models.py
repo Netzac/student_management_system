@@ -11,6 +11,7 @@ class SessionYearModel(models.Model):
     id = models.AutoField(primary_key=True)
     session_start_year = models.DateField()
     session_end_year = models.DateField()
+    re_opening_date = models.DateField(null=True,blank=True)
 
     name = models.CharField(max_length=200, unique=True)
     current = models.BooleanField(default=True)

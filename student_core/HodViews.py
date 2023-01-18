@@ -359,6 +359,7 @@ def add_session_save(request):
         session_end_year = request.POST.get('session_end_year')
         name = request.POST.get('session')
         current = True if(request.POST.get('current')) else False
+        re_opening_date = request.POST.get('re_opening_date')
         #print(session_end_year)
         #print(name)
         #print(current)
@@ -366,7 +367,7 @@ def add_session_save(request):
 
         try:
             sessionyear = SessionYearModel(session_start_year=session_start_year, 
-            session_end_year=session_end_year, name=name,current=current)
+            session_end_year=session_end_year, name=name,current=current,re_opening_date=re_opening_date)
             sessionyear.save()
             messages.success(request, "Session Year added Successfully!")
             return redirect("add_session")
@@ -380,6 +381,7 @@ def edit_session(request, session_id):
     context = {
         "session_year": session_year
     }
+    print('Session Year',session_year.re_opening_date)
     return render(request, "hod_template/edit_session_template.html", context)
 
 
@@ -391,11 +393,13 @@ def edit_session_save(request):
         session_id = request.POST.get('session_id')
         session_start_year = request.POST.get('session_start_year')
         session_end_year = request.POST.get('session_end_year')
+        re_opening_date = request.POST.get('re_opening_date')
 
         try:
             session_year = SessionYearModel.objects.get(id=session_id)
             session_year.session_start_year = session_start_year
             session_year.session_end_year = session_end_year
+            session_year.re_opening_date = re_opening_date
             session_year.save()
 
             messages.success(request, "Session Year Updated Successfully.")

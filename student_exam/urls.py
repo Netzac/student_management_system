@@ -6,6 +6,8 @@ from student_exam.views import (
     assignment_detail,delete_assignment, edit_submission,
      edit_assignment, delete_submission, edit_submission, submit_assignment,
      gradebook,manage_gradebook,save_gradebook,delete_gradebook,view_gradebook,
+     overall_gradebook,manage_overall_gradebook,delete_overall_gradebook,save_overall_gradebook,
+     view_overall_gradebook,
 )
 
 urlpatterns = [
@@ -27,5 +29,13 @@ urlpatterns = [
     path('view_book/<int:pk>',view_gradebook,name='view-gradebook-pk'),
     path('save_book',save_gradebook,name='save-gradebook'),
     path('delete_book/<int:pk>',delete_gradebook,name='delete-gradebook'),
+
+
+    path('overall_gradebook',overall_gradebook,name='overall-gradebook'),
+    path('manage_overall_gradebook',manage_overall_gradebook,name='manage-overall-gradebook'),
+    path('manage_overall_gradebook/<int:pk>',manage_overall_gradebook,name='manage-overall-gradebook-pk'),
+    path('view_overall_gradebook/<int:pk>',view_overall_gradebook,name='view-overall-gradebook-pk'),
+    path('save_overall_gradebook',save_overall_gradebook,name='save-overall-gradebook'),
+    path('delete_overall_gradebook/<int:pk>',delete_overall_gradebook,name='delete-overall-gradebook'),
     
 ]

@@ -272,16 +272,33 @@
                     </li>
                     <!-- Gender settings end here-->
                       <!-- Settings for Gradebook-->
-                      <li class="nav-item">
-                        {% url 'gradebook' as add_gradebook %}
-                          <a href="{{ add_gradebook }}" class="nav-link {% if request.path == add_gradebook %} active {% endif %}">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                              Manage Gradebook
-                            </p>
-                          </a>
-                        </li>
-                      
+
+                    <li class="nav-item has-treeview">
+                      <a href="#"" class="nav-link"><i class="nav-icon fas fa-copy"></i>
+                        <p>Grade Books  <i class="fas fa-angle-left right"></i></p>
+                      </a>
+                      <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                          {% url 'gradebook' as add_gradebook %}
+                            <a href="{{ add_gradebook }}" class="nav-link {% if request.path == add_gradebook %} active {% endif %}">
+                              <i class="nav-icon fas fa-th"></i>
+                              <p>
+                                Subject Grade Book 
+                              </p>
+                            </a>
+                          </li>
+                       <!-- Settings for OverallGradebook-->
+                        <li class="nav-item">
+                          {% url 'overall-gradebook' as add_gradebook %}
+                            <a href="{{ add_gradebook }}" class="nav-link {% if request.path == add_gradebook %} active {% endif %}">
+                              <i class="nav-icon fas fa-th"></i>
+                              <p>
+                                Overall Grade Book
+                              </p>
+                            </a>
+                          </li>
+                      </ul>
+                    </li> 
                       <!-- Gradebook settings end here-->
                    
                     <li class="nav-item">

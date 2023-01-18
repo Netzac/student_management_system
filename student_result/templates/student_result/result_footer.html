@@ -96,16 +96,16 @@
           <thead class="thead-light text-center">
             <tr>
               <th>#</th>
-              <th>(> or =) </th>
+              <th>Marks</th>
               <th>Grade</th>
               <th>Remark</th>
             </tr>
           </thead>
           <tbody>
-            {% for item in gradeBook %}
+            {% for item,ub in gradeBook %}
               <tr class="text-center" style="font-size: x-small;">
                 <td>{{forloop.counter}}</td>
-                <td>{{ item.lb }}</td>
+                <td>{{ item.lb }}-{{ub}}</td>
                 <td>{{ item.grade }}</td>
                 <td>{{ item.remark }}</td>
               </tr>

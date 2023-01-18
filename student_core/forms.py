@@ -44,7 +44,7 @@ class AddStudentForm(forms.Form):
         for gender in genders:
             single_gender = (gender.id, gender.gender_name)
             gender_list.append(single_gender)
-            print("gender_list :",gender_list)
+           # print("gender_list :",gender_list)
     except:
         gender_list = []
     # gender_list = (
@@ -98,7 +98,7 @@ class EditStudentForm(forms.Form):
         for gender in genders:
             single_gender = (gender.id, gender.gender_name)
             gender_list.append(single_gender)
-            print("gender_list :",gender_list)
+           # print("gender_list :",gender_list)
     except:
         gender_list = []
     

@@ -65,6 +65,18 @@ class Gradebook(models.Model):
     date_added=models.DateTimeField(auto_now=True)
 
     class meta:
-        ordering=['lb']
+        ordering=['-lb']
+    def __str__(self):
+        return self.grade
+
+
+class OverallGradebook(models.Model):
+    lb = models.IntegerField()
+    grade = models.CharField(max_length=15)
+    remark = models.CharField(max_length=50)
+    date_added=models.DateTimeField(auto_now=True)
+
+    class meta:
+        ordering=['-lb']
     def __str__(self):
         return self.grade

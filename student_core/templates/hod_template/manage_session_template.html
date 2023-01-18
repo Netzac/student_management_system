@@ -63,6 +63,7 @@
                                 <th>Term Start Year</th>
                                 <th>Term End Year</th>
                                 <th>Session</th>
+                                <th>Re-opening Date</th>
                                 <th>Action</th>
                                 </tr>
                             </thead>
@@ -73,6 +74,7 @@
                                 <td>{{ session_year.session_start_year }}</td>
                                 <td>{{ session_year.session_end_year }}</td>
                                 <td>{{ session_year.name }}</td>
+                                <td>{{ session_year.re_opening_date }}</td>
                                 <td>
                                     <a href="{% url 'edit_session' session_year.id %}" class="btn btn-success">Edit</a> 
                                     <a href="{% url 'delete_session' session_year.id %}" class="btn btn-danger">Delete</a>

@@ -13,8 +13,8 @@
             <table class="table table-responsive ">
               <thead class="thead-white">
                 <tr>
-                    <th class="text-center" colspan="2">
-                        <h1>{{SchoolName}} </h1>
+                    <th class="text-center text-uppercase" colspan="2">
+                        <h2>{{SchoolName}} </h2>
                     </th>
                 </tr>
               </thead>
@@ -24,7 +24,7 @@
                 </tr>
                 <tr>
                     <td>Phone: {{SchoolPhone}}</td>
-                    <td>Email: {{SchoolEmail}}</td>
+                    <td class="text-right">Email: {{SchoolEmail}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" class="text-capitalize"> Branch: {{SchoolBranch}}</td>
@@ -32,7 +32,7 @@
               </tbody>
             <tfoot>
               <tr>
-                <td colspan="2"><h4 class="text-center border-bottom border-dark">End of Term Report</h4></td>
+                <td colspan="2"><h4 class="text-center border-bottom border-dark text-uppercase">End of Term Report</h4></td>
               </tr>
             </tfoot>
           </table>
@@ -79,5 +79,27 @@
      </div>
       </div>
   
+
+
+      <div class="row text-align-left">
+        <div class="col-sm-auto mt-1 ">
+          <p class="text-left">Closing Date:</p>
+       </div>
+       <div class="col-sm-2 mt-1">
+        <p class="border-bottom border-dark text-left">{{report_dates.closing}}</p>
+       </div>
+       <div class="col-sm-2 mt-1">
+        <p>Re-opening Date:</p>
+     </div>
+     <div class="col-sm-3 mt-1">
+      <p class="border-bottom border-dark text-left">{{report_dates.opening}}</p>
+     </div>
+     <div class="col-sm-auto mt-1">
+      <p>Grade:</p>
+    </div>
+    <div class="col-sm-2 mt-1">
+      <p class="border-bottom border-dark text-left text-bold">{{overall_grade}}</p>
+     </div>
+      </div>
      
   </section>
