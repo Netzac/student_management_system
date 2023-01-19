@@ -54,8 +54,9 @@
                             <div class="form-group">
                                 <label>Subject Name </label>
                                 <input type="text" class="form-control" name="subject" value="{{ subject.subject_name }}">
+                                <input type="hidden" name="subject_id" value="{{ subject.id }}" />
                             </div>
-
+                            {% comment %}
                             <div class="form-group">
                                 <label>Course/Class </label>
                                 <select class="form-control" name="course">
@@ -72,10 +73,8 @@
                                         <option value="{{ staff.id }}" {% if staff.id == subject.staff_id.id %} selected {% endif %}>{{ staff.first_name }} {{ staff.last_name }}</option>
                                     {% endfor %}
                                 </select>
-                                
-                                <input type="hidden" name="subject_id" value="{{ subject.id }}" />
                             </div>
-
+                            {% endcomment %}
                         </div>
                         <!-- /.card-body -->
 

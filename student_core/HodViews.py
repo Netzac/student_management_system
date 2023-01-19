@@ -41,7 +41,7 @@ def admin_home(request):
     student_count_list_in_course = []
 
     for course in course_all:
-        subjects = Subjects.objects.filter(course_id=course.id).count()
+        subjects = Subjects.objects.all().count()
         students = Students.objects.filter(course_id=course.id).count()
         course_name_list.append(course.course_name)
         subject_count_list.append(subjects)
@@ -51,8 +51,10 @@ def admin_home(request):
     subject_list = []
     student_count_list_in_subject = []
     for subject in subject_all:
-        course = Courses.objects.get(id=subject.course_id.id)
-        student_count = Students.objects.filter(course_id=course.id).count()
+        #course = Courses.objects.get(id=subject.course_id.id)
+        course = Courses.objects.all()
+        #student_count = Students.objects.filter(course_id=course.id).count()
+        student_count = Students.objects.all().count()
         subject_list.append(subject.subject_name)
         student_count_list_in_subject.append(student_count)
     
@@ -64,7 +66,8 @@ def admin_home(request):
     staffs = Staffs.objects.all()
     for staff in staffs:
         #subject_ids = Subjects.objects.filter(staff_id=staff.admin.id)
-        class_ids = Subjects.objects.filter(staff_id=staff.admin.id).values('course_id')
+        #class_ids = Subjects.objects.filter(staff_id=staff.admin.id).values('course_id')
+        class_ids = Courses.objects.all().values('id')
         attendance = Attendance.objects.filter(course_id__in=class_ids).count()
         leaves = LeaveReportStaff.objects.filter(staff_id=staff.id, leave_status=1).count()
         staff_attendance_present_list.append(attendance)
@@ -446,7 +449,7 @@ def add_student_save(request):
             address = form.cleaned_data['address']
             session_year_id = form.cleaned_data['session_year_id']
             course_id = form.cleaned_data['course_id']
-            gender = form.cleaned_data['gender_id']
+            gender_id = form.cleaned_data['gender_id']
 
             # Getting Profile Pic first
             # First Check whether the file is selected or not
@@ -460,26 +463,28 @@ def add_student_save(request):
                 profile_pic_url = None
 
 
-            try:
-               
-                user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=3)
-                print("obhect :",user.username)
-                user.students.address = address
-                course_obj = Courses.objects.get(id=course_id)
-                user.students.course_id = course_obj
+            # try:
+            print("Gender is :", gender_id)
+            user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=3)
+            print("obhect :",user.username)
+            user.students.address = address
+            course_obj = Courses.objects.get(id=course_id)
+            user.students.course_id = course_obj
 
-                session_year_obj = SessionYearModel.objects.get(id=session_year_id)
-                user.students.session_year_id = session_year_obj
-
-                user.students.gender = gender
-                user.students.profile_pic = profile_pic_url
-                
-                user.save()
-                messages.success(request, "Student Added Successfully!")
-                return redirect('add_student')
-            except:
-                messages.error(request, "Failed to Add Student!")
-                return redirect('add_student')
+            session_year_obj = SessionYearModel.objects.get(id=session_year_id)
+            user.students.session_year_id = session_year_obj
+           
+            gender_obj = Gender.objects.get(id=gender_id)
+           
+            user.students.gender = gender_obj
+            user.students.profile_pic = profile_pic_url
+            
+            user.save()
+            messages.success(request, "Student Added Successfully!")
+            return redirect('add_student')
+            # except:
+            #     messages.error(request, "Failed to Add Student!")
+            #     return redirect('add_student')
         else:
             return redirect('add_student')
 
@@ -593,10 +598,10 @@ def delete_student(request, student_id):
 
 
 def add_subject(request):
-    courses = Courses.objects.all()
+    #courses = Courses.objects.all()
     staffs = CustomUser.objects.filter(user_type='2')
     context = {
-        "courses": courses,
+    
         "staffs": staffs
     }
     return render(request, 'hod_template/add_subject_template.html', context)
@@ -610,17 +615,17 @@ def add_subject_save(request):
     else:
         subject_name = request.POST.get('subject')
 
-        course_id = request.POST.get('course')
-        course = Courses.objects.get(id=course_id)
+        #course_id = request.POST.get('course')
+        #course = Courses.objects.get(id=course_id)
         
-        staff_id = request.POST.get('staff')
-        staff = CustomUser.objects.get(id=staff_id)
+        # staff_id = request.POST.get('staff')
+        # staff = CustomUser.objects.get(id=staff_id)
 
         try:
-            subject = Subjects(subject_name=subject_name, course_id=course, staff_id=staff)
+            subject = Subjects(subject_name=subject_name)
             subject.save()
             messages.success(request, "Subject Added Successfully!")
-            return redirect('add_subject')
+            return redirect('manage_subject')
         except:
             messages.error(request, "Failed to Add Subject!")
             return redirect('add_subject')
@@ -636,12 +641,10 @@ def manage_subject(request):
 
 def edit_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
-    courses = Courses.objects.all()
-    staffs = CustomUser.objects.filter(user_type='2')
+    #courses = Courses.objects.all()
+    # staffs = CustomUser.objects.filter(user_type='2')
     context = {
         "subject": subject,
-        "courses": courses,
-        "staffs": staffs,
         "id": subject_id
     }
     return render(request, 'hod_template/edit_subject_template.html', context)
@@ -653,18 +656,14 @@ def edit_subject_save(request):
     else:
         subject_id = request.POST.get('subject_id')
         subject_name = request.POST.get('subject')
-        course_id = request.POST.get('course')
-        staff_id = request.POST.get('staff')
+     #   course_id = request.POST.get('course')
 
         try:
             subject = Subjects.objects.get(id=subject_id)
             subject.subject_name = subject_name
 
-            course = Courses.objects.get(id=course_id)
-            subject.course_id = course
-
-            staff = CustomUser.objects.get(id=staff_id)
-            subject.staff_id = staff
+           # course = Courses.objects.get(id=course_id)
+           # subject.course_id = course
             
             subject.save()
 
