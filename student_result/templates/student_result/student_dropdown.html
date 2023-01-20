@@ -1,6 +1,13 @@
-<option value="">Select Student</option>
-{% for student in students %}
 
-<option value=" {{student.id}}">{{student}}</option>
 
-{% endfor %}
+{%if students %}
+    <option value="">Select Student</option>
+    <option value="All">All Students</option>
+    {% for student in students %}
+        <option value=" {{student.id}}">{{student}}</option>
+    {% endfor %}
+{% else %}
+    <option value="">No Students </option>
+{%endif%}
+
+

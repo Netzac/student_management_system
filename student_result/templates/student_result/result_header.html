@@ -54,7 +54,7 @@
         <p class="text-left">Class:</p> 
       </div> 
       <div class="col-sm-3 mt-3 ">
-        <p class="text-left border-bottom border-dark">{{Class}}</p>
+        <p class="text-left border-bottom border-dark">{{result.Class}}</p>
       </div>
       </div>
 
@@ -63,13 +63,13 @@
           <p class="text-left">No. On Roll:</p>
        </div>
        <div class="col-sm-2 mt-1">
-        <p class="border-bottom border-dark text-left">{{ClassSize}}</p>
+        <p class="border-bottom border-dark text-left">{{result.ClassSize}}</p>
        </div>
        <div class="col-sm-2 mt-1">
         <p>Academic Year:</p>
      </div>
      <div class="col-sm-3 mt-1">
-      <p class="border-bottom border-dark text-left">{{report_dates.closing|slice:5}}</p>
+      <p class="border-bottom border-dark text-left">{{result.report_dates.closing|slice:5}}</p>
      </div>
      <div class="col-sm-auto mt-1">
       <p>Term:</p>
@@ -86,19 +86,19 @@
           <p class="text-left">Closing Date:</p>
        </div>
        <div class="col-sm-2 mt-1">
-        <p class="border-bottom border-dark text-left">{{report_dates.closing}}</p>
+        <p class="border-bottom border-dark text-left">{{result.report_dates.closing}}</p>
        </div>
        <div class="col-sm-2 mt-1">
         <p>Re-opening Date:</p>
      </div>
      <div class="col-sm-3 mt-1">
-      <p class="border-bottom border-dark text-left">{{report_dates.opening}}</p>
+      <p class="border-bottom border-dark text-left">{{result.report_dates.opening}}</p>
      </div>
      <div class="col-sm-auto mt-1">
       <p>Grade:</p>
     </div>
     <div class="col-sm-2 mt-1">
-      <p class="border-bottom border-dark text-left text-bold">{{overall_grade}}</p>
+      <p class="border-bottom border-dark text-left text-bold">{{result.overall_grade}}</p>
      </div>
       </div>
      

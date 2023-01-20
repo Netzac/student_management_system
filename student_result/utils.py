@@ -1,3 +1,8 @@
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.http import HttpResponse
+from io import BytesIO
+
 from student_exam.models import Gradebook, OverallGradebook
 
 def score_grade2(score):
@@ -37,3 +42,13 @@ def score_overall_grade(score):
         else:
             continue
        
+
+def renderPdf(template, content={}):
+    t = get_template(template)
+    send_data = t.render(content)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(send_data.encode("ISO-8859-1")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    else:
+        return None
