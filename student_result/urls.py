@@ -9,7 +9,7 @@ from .views import (
 
 urlpatterns = [
     path("create/<clsid>", create_result, name="create-result"),
-    path("edit-results/<clsid>", edit_results, name="edit-results"),
+    path("edit-results/<clsid>/<students>", edit_results, name="edit-results"),
     # re_path(r'^edit-results/(?P<student>\d+,*\d*)', edit_results, name="edit-results"),
     path('get-result/<student>',ResultDetailView, name='get-result'),
     path('get-class-result/<clsid>/All/',ClassResultDetailView, name='get-class-result'),

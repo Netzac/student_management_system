@@ -3,16 +3,18 @@
 
 
 {% block page_title %}
-  Select all the subjects you want to create
+  Select subjects to create marks sheet
 {% endblock page_title %}
 
 
 {% block main_content %}
-<section class="content">
-  <div class="container-fluid">
-
-  <p>You selected <b>{{ count }} students</b> from the previous page.</p>
-
+<section class="">
+  <div class="row">
+    <div class="col-md-12">
+ {%comment%} <p>You selected <b>{{ count }} student{{ count| pluralize}}</b>. {% if count > 1 %} To avoid errors, One is selected. {%endif%}</p>{%endcomment%}
+ <p>You selected  student with ID: {{students.0}}</b>. {% if count > 1 %} To avoid errors, One is selected. {%endif%}</p>
+  <div class="card">
+    <div class="card-body">
   <form method="POST">
     {% csrf_token %}
 
@@ -29,10 +31,12 @@
       <label class="col-2" for="{{ form.term.id_for_label }}">{{ form.term.label_tag}}</label>
       <div class="col">{{ form.term | add_class:"form-control" }}</div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row ">
       {{ form.subjects.errors }}
       <label class="col-2" for="{{ form.subjects.id_for_label }}">{{ form.subjects.label_tag}}</label>
-      <div class="col">{{ form.subjects | add_class:"form-check-input" }}</div>
+      <div class="card">
+      <div class=" card-body">{{ form.subjects}}</div>
+    </div>
     </div>
 
     <input type="hidden" name="finish" value="True">
@@ -40,7 +44,9 @@
 
     <input type="submit" class="btn btn-success" value="Create">
   </form>
-
+</div>
+</div>
+</div>
 </div>
 </section>
 {% endblock main_content %}

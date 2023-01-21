@@ -5,6 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render,  get_object_or_404
 from django.views.generic import DetailView, ListView, View
 
+from django.db.models import Q
+
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.http import HttpResponse, Http404
@@ -56,14 +58,16 @@ def create_result(request,clsid):
                                         student=stu,
                                     )
                                 )
+                            else:
+                                 messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
 
                 Result.objects.bulk_create(results)
                 
-                return redirect("edit-results",clsid=clsid)
+                return redirect("edit-results",clsid=clsid,students=students)
 
         # after choosing students
         id_list = request.POST.getlist("students")
-        #print(request.POST)
+       
         if id_list:
             form = CreateResults(
                 initial={
@@ -72,10 +76,10 @@ def create_result(request,clsid):
                 }
             )
             studentlist = ",".join(id_list)
+            context = {"students": studentlist, "form": form, "count": len(id_list)}
             return render(
                 request,
-                "student_result/create_result_page2.html",
-                {"students": studentlist, "form": form, "count": len(id_list)},
+                "student_result/create_result_page2.html",context,
             )
         else:
             messages.warning(request, "You didnt select any student.")
@@ -83,21 +87,23 @@ def create_result(request,clsid):
 
 
 @login_required
-def edit_results(request,clsid):
+def edit_results(request,clsid,students):
     
-    # ids = [eval(i) for i in [student]]
-    
+    ids = [eval(i) for i in [students]]
+    #not_ids = Student.objects.exclude(id__in=[ids])
+    print('set ', ids)
     if request.method == "POST":
         form = EditResults(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Results successfully updated")
-            return redirect("edit-results",clsid)
+           
+            return redirect("edit-results",clsid=clsid,students=students)
     else:
         results = Result.objects.filter(
             session=request.current_session, term=request.current_term,current_class=clsid
-        )
-        print('set ', results)
+            ).exclude(~Q(student__in=ids))
+    
         form = EditResults(queryset=results)
     return render(request, "student_result/edit_results.html", {"formset": form})
 
@@ -347,6 +353,6 @@ def load_students(request):
 
 class pdf(View):
     def get(self,request):
-        context= resultContext
+        context= {}
         article_pdf = renderPdf("student_result/all_results.html", context)
         return HttpResponse(article_pdf, content_type='application/pdf')

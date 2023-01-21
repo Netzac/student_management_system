@@ -2,7 +2,7 @@
 
 
 {% block page_title %}
-  Please select Student(s) <span class="small">to proceed</span> 
+  Please select a student <span class="small">to proceed</span> 
 {% endblock page_title %}
 
 
@@ -15,7 +15,7 @@
     </h3>
 
     <div class="card-tools">
-      <p class="small btn btn-tool">You can also search by name/class by typing in the search box</p>
+      <p class="small btn btn-tool">You can also search by name/class </p>
     </div>
   </div>
 {% endblock content-header %}
@@ -25,9 +25,9 @@
   <table id="studenttable" class="table table-sm table-bordered" data-page-length='100'>
     <thead class="thead-light">
       <tr>
-        <th><input type="checkbox" id="selecter"></th>
+        <th><input type="checkbox" id="selecter" disabled></th>
         <th>Name</th>
-        <th>Current Class</th>
+        {% comment %}<th>Class</th> {% endcomment %}
       </tr>
     </thead>
     <tbody>
@@ -35,7 +35,7 @@
         <tr>
           <td><input type="checkbox" id="{{ student.id }}" name="students" value="{{ student.id}}"></td>
           <td>{{student}} </td>
-          <td>{{student.course_id}}</td>
+          {% comment %} <td>{{student.course_id}}</td> {% endcomment %}
         </tr>
       {% endfor %}
     </tbody>
