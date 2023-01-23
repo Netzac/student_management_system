@@ -117,6 +117,11 @@ urlpatterns = [
     path('edit_gender_save/', HodViews.edit_gender_save, name="edit_gender_save"),
     path('delete_gender/<gender_id>/', HodViews.delete_gender, name="delete_gender"),
 
-   
+
+    #URLS for Class Teacher Setups
+    path('add_class_teacher_assignment/', HodViews.ClassTeacherAddView.as_view(), name="add_class_teacher"),
+    path('manage_class_teacher/', HodViews.ClassTeacherListView.as_view(), name="class_teacher_list"),
+    path("ClassTeacher/<int:pk>/update/", HodViews.CTUpdateView.as_view(), name="ct-update"),
+    path("ClassTeacher/<int:pk>/delete/", HodViews.CTDeleteView.as_view(), name="ct-delete"),
     
 ]

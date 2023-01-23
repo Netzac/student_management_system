@@ -18,12 +18,12 @@ from django.core import serializers
 import json
 from student_account.forms import FeeTypeForm
 
-from student_core.models import (CustomUser, Staffs, Courses, Subjects, Gender,
+from student_core.models import (ClassTeacher, CustomUser, Staffs, Courses, Subjects, Gender,
 Students, SessionYearModel, FeedBackStudent, FeedBackStaffs, 
 LeaveReportStudent, LeaveReportStaff, Attendance,
  AttendanceReport, AcademicTerm,
 )
-from .forms import AddStudentForm, EditStudentForm, AcademicTermForm, CurrentSessionForm
+from .forms import AddStudentForm, ClassTeacherFormSet, ClassTeacherFormSet, EditStudentForm, AcademicTermForm, CurrentSessionForm
 from student_account.forms import FeeTypeForm
 from student_account.models import FeeType
 
@@ -125,9 +125,21 @@ def add_staff_save(request):
         password = request.POST.get('password')
         address = request.POST.get('address')
 
+          # Getting Profile Pic first
+            # First Check whether the file is selected or not
+            # Upload only if file is selected
+        if len(request.FILES) != 0:
+            signature = request.FILES['signature']
+            fs = FileSystemStorage('media/signature/')
+            filename = fs.save(signature.name, signature)
+            signature_url = fs.url(filename)
+        else:
+            signature_url = None
+
         try:
             user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=2)
             user.staffs.address = address
+            user.staffs.signature=signature_url
             user.save()
             messages.success(request, "Staff Added Successfully!")
             return redirect('add_staff')
@@ -166,6 +178,15 @@ def edit_staff_save(request):
         last_name = request.POST.get('last_name')
         address = request.POST.get('address')
 
+        if len(request.FILES) != 0:
+            signature = request.FILES['signature']
+            fs = FileSystemStorage('media/signature/')
+            filename = fs.save(signature.name, signature)
+            signature_url = (fs.url(filename)).replace("media",'signature')
+            print("filename:",signature_url)
+        else:
+            signature_url = None
+
         try:
             # INSERTING into Customuser Model
             user = CustomUser.objects.get(id=staff_id)
@@ -178,6 +199,7 @@ def edit_staff_save(request):
             # INSERTING into Staff Model
             staff_model = Staffs.objects.get(admin=staff_id)
             staff_model.address = address
+            staff_model.signature= signature_url
             staff_model.save()
 
             messages.success(request, "Staff Updated Successfully.")
@@ -464,9 +486,9 @@ def add_student_save(request):
 
 
             # try:
-            print("Gender is :", gender_id)
+            #print("Gender is :", gender_id)
             user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=3)
-            print("obhect :",user.username)
+           # print("obhect :",user.username)
             user.students.address = address
             course_obj = Courses.objects.get(id=course_id)
             user.students.course_id = course_obj
@@ -1020,3 +1042,43 @@ def take_attendance(request, cls_id):
         a.save()
 
     return HttpResponseRedirect(reverse('attendance'))
+
+
+class ClassTeacherAddView(TemplateView):
+    template_name="hod_template/class_teacher_form.html"
+    error_message ="Class to Teacher combination not allowed"
+    success_message = "Item successfully added."
+
+    def get(self,*args,**kwargs):
+        formset=ClassTeacherFormSet(queryset=ClassTeacher.objects.none())
+        return self.render_to_response({"class_teacher_formset":formset})
+
+    def post(self,*args,**kwargs):
+        formset= ClassTeacherFormSet(data=self.request.POST)
+        #print('formset: ',formset)
+        if formset.is_valid():
+            formset.save()
+            return redirect(reverse_lazy("class_teacher_list"))
+        return self.render_to_response({"class_teacher_formset":formset})
+
+class ClassTeacherListView(ListView):
+    model=ClassTeacher
+    template_name="hod_template/class_teacher_list.html"
+
+
+class CTUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = ClassTeacher
+    form_class = ClassTeacherFormSet
+    success_url = reverse_lazy("class_teacher_list")
+    success_message = "Item successfully updated."
+   # template_name = "hod_template/mgt_form.html"
+
+
+
+class CTDeleteView(LoginRequiredMixin, DeleteView):
+    model = ClassTeacher
+    success_url = reverse_lazy("class_teacher_list")
+    template_name = "hod_template/core_confirm_delete.html"
+    success_message = "The term {} has been deleted with all its attached content"
+   
+

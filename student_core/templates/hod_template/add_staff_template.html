@@ -20,7 +20,7 @@
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form role="form" method="POST" action="{% url 'add_staff_save' %}">
+                    <form role="form" method="POST" action="{% url 'add_staff_save' %}" enctype="multipart/form-data">
                         {% csrf_token %}
 
                         
@@ -82,7 +82,14 @@
                             </div>
 
                             
-
+                            <div class="row">
+                                <div class="file-field input-field col sm-6">
+                                    <label for="signature">Signature</label>
+                                    <div class="file-path-wrapper col sm-6">
+                                    <input type="file" placeholder="Upload a signature" name="signature">
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                         <!-- /.card-body -->

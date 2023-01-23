@@ -59,7 +59,11 @@ class Staffs(models.Model):
     address = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    signature = models.FileField(upload_to="staff/",null=True,blank=True)
     objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.admin.last_name} {self.admin.first_name}"
 
 
 class Gender(models.Model):
@@ -94,7 +98,14 @@ class Courses(models.Model):
     # def __str__(self):
 	#     return self.course_name
 
+class ClassTeacher(models.Model):
+    id=models.AutoField(primary_key=True)
+    staff_id= models.OneToOneField(Staffs,on_delete=models.DO_NOTHING,default=1)
+    cls_id =models.OneToOneField(Courses,on_delete = models.DO_NOTHING,default=1)
+    objects = models.Manager()
 
+    def __str__(self):
+        return f"{self.staff_id}"
 
 class Subjects(models.Model):
     id =models.AutoField(primary_key=True)

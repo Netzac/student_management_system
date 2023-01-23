@@ -1,0 +1,70 @@
+{% extends 'hod_template/base_template.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{% endblock title %}
+{% block page_title %}
+  {% if object %}
+    Update  {{ object }}
+  {% else %}
+    Add New
+  {% endif %}
+{% endblock page_title %}
+
+
+{% block breadcrumb %}
+
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+{% include 'status_message.html' %}
+<section class="content">
+  <div class="container-fluid">
+
+<form method="POST">
+  {% csrf_token %}
+
+  <div class="row">
+    
+    <div class="col-sm-12 callout callout-info">
+      {{ class_teacher_formset.management_form }}
+      <div class="text-center"><strong>CLASS TEACHER ASSIGNMENT</strong> </div>
+      <hr>
+      <div class="row">
+        <div class="col"><strong>Teacher</strong></div>
+        <div class="col"><strong>Class</strong></div>
+      </div>
+      {% for item in class_teacher_formset %}
+      <div class="form-group row items-group">
+        {{ item.id}}
+        <div class="col">{{ item.staff_id | add_class:"form-control"}}</div>
+        <div class="col">{{ item.cls_id | add_class:"form-control"}}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <input type="submit" class="btn btn-primary" value="Save Record">
+</form>
+
+<hr>
+
+</div>
+</section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script src="{% static 'dist/js/jquery.formset.js' %}"> </script>
+<script>
+  $(".items-group").formset(
+    {
+      prefix: '{{ items.prefix }}',
+      deleteText: "<div class='btn btn-danger btn-circle'><i class='fas fa-trash'></i></div>",
+      addText: "<div class='btn btn-success btn-circle'><i class='fas fa-plus'></i></div>"
+    }
+  )
+</script>
+
+{% endblock custom_js %}

@@ -1,0 +1,45 @@
+{% extends 'hod_template/base_template.html' %}
+{% load widget_tweaks %}
+
+
+{% block page_title %}
+    Class to Teacher Assignments
+{% endblock page_title %}
+
+
+
+
+{% block breadcrumb %}
+  <a class="btn btn-primary" href="{% url 'add_class_teacher' %}">
+    <i class="fa fa-plus"></i>
+    New Class to Teacher Assignemnt
+  </a>
+{% endblock breadcrumb %}
+  
+
+{% block main_content %}
+  <div class="row">
+    <div class="col-sm-12">
+
+        <table class="table table-bordered">
+          <tbody>
+            {% for object in object_list %}
+            <tr>
+              <td>{{ object.staff_id }}</td>
+              <td>
+                {{object.cls_id}}
+              </td>
+              <td>
+                <a href="{% url 'ct-delete' object.id %}"><i class="fa fa-trash-alt"></i></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+    </div>
+  </div>
+
+
+{% endblock main_content %}
+

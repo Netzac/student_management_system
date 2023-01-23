@@ -1,3 +1,4 @@
+from inspect import signature
 from sys import exec_prefix
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -12,7 +13,7 @@ from django.template.loader import get_template
 from django.http import HttpResponse, Http404
 from io import BytesIO
 
-from student_core.models import Courses, Students as Student
+from student_core.models import ClassTeacher, Courses, Students as Student
 from student_result.utils import score_overall_grade,renderPdf
 
 from .forms import CreateResults, EditResults
@@ -184,7 +185,8 @@ def ResultDetailView(request,student):
             #studentClass = Courses.objects.get(id=studentClass).values('name')
             report_dates['closing']= str(request.current_session).split('to',1)[1]
             report_dates['opening']=request.current_session.re_opening_date
-           
+            teacher = ClassTeacher.objects.get(cls_id=studentClass)
+            print("Teacher:", teacher.staff_id.signature,)
             grade_lb_list = list(gradeBook)
             grade_ub_list =[100]
 
@@ -202,6 +204,7 @@ def ResultDetailView(request,student):
                 "school":school,
                 'gradeBook':gradebook_with_ub,
                 "Class":studentClass,
+                "staff": teacher.staff_id,
                 "ClassSize":classSize,
                 "overall_grade":overall_grade,
                 "report_dates":report_dates               
@@ -280,7 +283,8 @@ def ClassResultDetailView(request,clsid):
                     "test_total": test_total,
                     "exam_total": exam_total,
                     "total_total":total_total ,
-                    "overall_grade":overall_grade,"school":school,
+                    "overall_grade":overall_grade,
+                    "school":school,
                     'gradeBook':gradebook_with_ub,
                     "Class":studentClass,
                     "ClassSize":classSize,

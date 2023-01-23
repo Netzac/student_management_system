@@ -250,6 +250,27 @@
                         </p>
                       </a>
                     </li>
+                    <!--Setting for class teacher assignment-->
+                    <li class="nav-item">
+                      {% url 'add_class_teacher' as add_class_teacher %}
+                      
+                        <a href="{{ add_class_teacher }}" class="nav-link {% if request.path == add_class_teacher %} active {% endif %}">
+                          <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                          <p>
+                            Class To Teacher Mapping
+                          </p>
+                        </a>
+                      </li>
+                    <li class="nav-item">
+                      {% url 'class_teacher_list' as manage_class_teacher %}
+                      {% url 'edit_class_teacher' ct_id=id as edit_class_teacher %}
+                      <a href="{{ manage_class_teacher }}" class="nav-link {% if request.path == manage_class_teacher %} active {% endif %} {% if request.path == edit_class_teacher %} active {% endif %}">
+                        <i class="nav-icon fas fa-chalkboard"></i>
+                        <p>
+                          Manage CT Mapping
+                        </p>
+                      </a>
+                    </li>
                     <!-- Settings for Gender-->
                     <li class="nav-item">
                       {% url 'add_gender' as add_gender %}
