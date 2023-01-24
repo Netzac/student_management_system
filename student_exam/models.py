@@ -15,7 +15,7 @@ def unique_passcode():
     return passcode[0:8]
 
 
-from student_core.models import (CustomUser as User,Courses, Subjects, 
+from student_core.models import (CustomUser as User,Courses, SessionYearModel, Students, Subjects, 
 
 )
 
@@ -80,3 +80,7 @@ class OverallGradebook(models.Model):
         ordering=['-lb']
     def __str__(self):
         return self.grade
+
+
+
+

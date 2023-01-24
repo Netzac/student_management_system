@@ -1082,3 +1082,4 @@ class CTDeleteView(LoginRequiredMixin, DeleteView):
     success_message = "The term {} has been deleted with all its attached content"
    
 
+'''Class Exercise HOD Views'''

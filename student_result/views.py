@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render,  get_object_or_404
 from django.views.generic import DetailView, ListView, View
 
-from django.db.models import Q
+from django.db.models import Q,Count
 
 from xhtml2pdf import pisa
 from django.template.loader import get_template
@@ -24,6 +24,7 @@ from student_exam.models import Gradebook
 @login_required
 def create_result(request,clsid):
     students = Student.objects.all().filter(course_id=clsid)
+    sheet_exists= False
     if request.method == "POST":
        
         # after visiting the second page
@@ -36,7 +37,7 @@ def create_result(request,clsid):
                 session = form.cleaned_data["session"]
                 term = form.cleaned_data["term"]
                 students = request.POST["students"]
-                print('Posted here',students)
+                print('Students again:',students)
                 results = []
                 for student in students.split(","):
                     stu = Student.objects.get(pk=student)
@@ -60,8 +61,10 @@ def create_result(request,clsid):
                                     )
                                 )
                             else:
-                                 messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
-
+                                sheet_exists=True
+                if sheet_exists:  
+                    messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
+                
                 Result.objects.bulk_create(results)
                 
                 return redirect("edit-results",clsid=clsid,students=students)
@@ -77,12 +80,13 @@ def create_result(request,clsid):
                 }
             )
             studentlist = ",".join(id_list)
+            print("Students:" ,studentlist)
             context = {"students": studentlist, "form": form, "count": len(id_list)}
             return render(
                 request,
                 "student_result/create_result_page2.html",context,
             )
-        else:
+         
             messages.warning(request, "You didnt select any student.")
     return render(request, "student_result/create_result.html", {"students": students})
 
@@ -90,7 +94,7 @@ def create_result(request,clsid):
 @login_required
 def edit_results(request,clsid,students):
     
-    ids = [eval(i) for i in [students]]
+    ids =[int(i) for i in students.split(',')]
     #not_ids = Student.objects.exclude(id__in=[ids])
     print('set ', ids)
     if request.method == "POST":
@@ -103,8 +107,10 @@ def edit_results(request,clsid,students):
     else:
         results = Result.objects.filter(
             session=request.current_session, term=request.current_term,current_class=clsid
-            ).exclude(~Q(student__in=ids))
-    
+            ).exclude(~Q(student__in=ids)).annotate(studnet_count=Count('student')).order_by('subject')
+        # results = Result.objects.filter(
+        # session=request.current_session, term=request.current_term,current_class=clsid
+        # ).in_bulk(ids)
         form = EditResults(queryset=results)
     return render(request, "student_result/edit_results.html", {"formset": form})
 

@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 
 {% block page_title %}
-    Update Results
+    Exams Results Mark Sheet
 {% endblock page_title %}
 
 
@@ -14,7 +14,7 @@
   {% csrf_token %}
   {{ formset.management_form}}
 
-  <table id="studenttable" class="table table-sm">
+  <table id="studenttable" class="table table-sm table-dark">
     <thead>
       <tr>
         <th></th>
@@ -29,10 +29,18 @@
     <tbody>
       {% for form in formset %}
       {{ form.id}}
-        <tr>
+       {% ifchanged form.instance.subject %} <tr class="{% cycle 'bg-light' 'bg-primary' 'bg-success' 'bg-warning' 'bg-white' 'bg-danger' 'bg-info' 'bg-secondary' %}" > 
+      
+        
+        {% else %}
+      <tr>
+      {% endifchanged %}
+      
           <td>{{forloop.counter }}</td>
-          <td>{{form.instance.student }}</td>
-          <td>{{form.instance.subject}}</td>
+           <td>{{form.instance.student }} </td>
+          <td>{% ifchanged form.instance.subject %} 
+            {{form.instance.subject| upper}} 
+            {%endifchanged %}</td>
           <td style="width: 10%;">{{form.test_score | add_class:"form-control form-control-sm"}}</td>
           <td style="width: 10%;">{{form.exam_score | add_class:"form-control form-control-sm"}}</td>
           <td>{{form.instance.total_score}}</td>

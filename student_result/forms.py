@@ -16,7 +16,7 @@ class CreateResults(forms.Form):
 
 
 EditResults = modelformset_factory(
-    Result, fields=("test_score", "exam_score"), extra=0, can_delete=True
+    Result, fields=("test_score", "exam_score"), extra=0, can_delete=True,can_order=True
 )
 
 

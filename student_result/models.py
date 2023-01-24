@@ -34,3 +34,28 @@ class Result(models.Model):
 
     def grade(self):
         return score_grade(self.total_score())
+
+
+class Exercise(models.Model):
+    name= models.CharField(max_length=15)
+
+    class meta:
+        ordering=['name']
+
+    def __str__(self):
+        return self.name
+
+class ClassExercise(models.Model):
+    student = models.ForeignKey(Student,on_delete=models.CASCADE)
+    session = models.ForeignKey(AcademicSession, on_delete=models.CASCADE)
+    term = models.ForeignKey(AcademicTerm, on_delete=models.CASCADE)
+    current_class = models.ForeignKey(StudentClass, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
+    exercise= models.ForeignKey(Exercise,on_delete=models.CASCADE)
+    score= models.ImageField()
+
+    class meta:
+        ordering=['exercise']
+
+    def __str__(self):
+        return self.score
