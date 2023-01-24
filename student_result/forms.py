@@ -3,7 +3,7 @@ from django.forms import modelformset_factory
 
 from student_core.models import SessionYearModel as AcademicSession, AcademicTerm, Subjects as Subject
 
-from .models import Result
+from .models import Result,ClassExercise
 from student_core.models import Courses,Students
 
 
@@ -19,6 +19,9 @@ EditResults = modelformset_factory(
     Result, fields=("test_score", "exam_score"), extra=0, can_delete=True,can_order=True
 )
 
+EditExResults = modelformset_factory(
+    ClassExercise, fields=("score",), extra=0, can_delete=True,can_order=True
+)
 
 class FindResultForm(forms.ModelForm):
 

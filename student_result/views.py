@@ -16,9 +16,9 @@ from io import BytesIO
 from student_core.models import ClassTeacher, Courses, Students as Student
 from student_result.utils import score_overall_grade,renderPdf
 
-from .forms import CreateResults, EditResults
-from .models import Result
-from student_exam.models import Gradebook
+from .forms import CreateResults, EditResults,EditExResults
+from .models import ClassExercise, Result
+from student_exam.models import Gradebook,Exercise
 
 
 @login_required
@@ -107,7 +107,7 @@ def edit_results(request,clsid,students):
     else:
         results = Result.objects.filter(
             session=request.current_session, term=request.current_term,current_class=clsid
-            ).exclude(~Q(student__in=ids)).annotate(studnet_count=Count('student')).order_by('subject')
+            ).exclude(~Q(student__in=ids)).annotate(studnet_count=Count('student')).order_by('subject','exercise')
         # results = Result.objects.filter(
         # session=request.current_session, term=request.current_term,current_class=clsid
         # ).in_bulk(ids)
@@ -392,37 +392,45 @@ def create_ex_result(request,clsid):
                 session = form.cleaned_data["session"]
                 term = form.cleaned_data["term"]
                 students = request.POST["students"]
-                print('Students again:',students)
+                exercises = Exercise.objects.all()
+                
                 results = []
                 for student in students.split(","):
                     stu = Student.objects.get(pk=student)
                     if stu.course_id:
+                        
                         for subject in subjects:
-                            check = Result.objects.filter(
-                                session=session,
-                                term=term,
-                                current_class=stu.course_id,
-                                subject=subject,
-                                student=stu,
-                            ).first()
-                            if not check:
-                                results.append(
-                                    Result(
+                           
+                            for ex in exercises:
+                                print('Students again in Exercise:',students)
+                                check = ClassExercise.objects.filter(
+                                    session=session,
+                                    term=term,
+                                    current_class=stu.course_id,
+                                    subject=subject,
+                                    exercise=ex,
+                                    student=stu,
+
+                                ).first()
+                                if not check:
+                                    results.append(
+                                        ClassExercise(
                                         session=session,
                                         term=term,
                                         current_class=stu.course_id,
                                         subject=subject,
+                                        exercise=ex,
                                         student=stu,
+                                        )
                                     )
-                                )
-                            else:
-                                sheet_exists=True
+                                else:
+                                    sheet_exists=True
                 if sheet_exists:  
                     messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
                 
-                Result.objects.bulk_create(results)
+                ClassExercise.objects.bulk_create(results)
                 
-                return redirect("edit-results",clsid=clsid,students=students)
+                return redirect("edit-ex-results",clsid=clsid,students=students)
 
         # after choosing students
         id_list = request.POST.getlist("students")
@@ -445,6 +453,29 @@ def create_ex_result(request,clsid):
             messages.warning(request, "You didnt select any student.")
     return render(request, "student_result/create_result.html", {"students": students})
 
+
+@login_required
+def edit_ex_results(request,clsid,students):
+    
+    ids =[int(i) for i in students.split(',')]
+    #not_ids = Student.objects.exclude(id__in=[ids])
+    print(' |Ex set ', ids)
+    if request.method == "POST":
+        form = EditExResults(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Results successfully updated")
+           
+            return redirect("edit-ex-results",clsid=clsid,students=students)
+    else:
+        results = ClassExercise.objects.filter(
+            session=request.current_session, term=request.current_term,current_class=clsid
+            ).exclude(~Q(student__in=ids)).annotate(studnet_count=Count('student')).order_by('subject')
+        # results = Result.objects.filter(
+        # session=request.current_session, term=request.current_term,current_class=clsid
+        # ).in_bulk(ids)
+        form = EditExResults(queryset=results)
+    return render(request, "student_result/edit_ex_results.html", {"formset": form})
 
 def load_students(request):
     cls_id = request.GET.get('cls_id')

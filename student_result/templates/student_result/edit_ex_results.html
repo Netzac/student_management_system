@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 
 {% block page_title %}
-    Exams Results Mark Sheet
+    Class Exercise Mark Sheet
 {% endblock page_title %}
 
 
@@ -20,9 +20,8 @@
         <th>#</th>
         <th>Name</th>
         <th>Subject</th>
-        <th>Test Score</th>
-        <th>Exam Score</th>
-        <th>Total</th>
+        <th>Exercise</th>
+        <th>Score</th>
         <th>Delete</th>
       </tr>
     </thead>
@@ -31,7 +30,16 @@
       {{ form.id}}
        {% ifchanged form.instance.subject %} 
        <tr class="{% cycle 'bg-light' 'bg-primary' 'bg-success' 'bg-warning' 'bg-white' 'bg-danger' 'bg-info' 'bg-secondary' %}" > 
-          <td colspan="7"></td>
+          <td colspan="6"></td>
+       </tr>
+       <tr>
+        {% else %}
+      <tr>
+      {% endifchanged %}
+
+      {% ifchanged form.instance.student %} 
+       <tr>
+          <td colspan="6"> <hr class="bg-white"> </td>
        </tr>
        <tr>
         {% else %}
@@ -39,13 +47,10 @@
       {% endifchanged %}
       
           <td>{{forloop.counter }}</td>
-           <td>{{form.instance.student }} </td>
-          <td>{% ifchanged form.instance.subject %} 
-            {{form.instance.subject| upper}} 
-            {%endifchanged %}</td>
-          <td style="width: 10%;">{{form.test_score | add_class:"form-control form-control-sm"}}</td>
-          <td style="width: 10%;">{{form.exam_score | add_class:"form-control form-control-sm"}}</td>
-          <td>{{form.instance.total_score}}</td>
+           <td>{% ifchanged form.instance.student %}  {{form.instance.student}} {% endifchanged %}</td>
+          <td>{% ifchanged form.instance.subject %} {{form.instance.subject| upper}} {% endifchanged %}</td>
+          <td>{% ifchanged form.instance.exercise %} {{form.instance.exercise| upper}} {% endifchanged %}</td>
+          <td style="width: 10%;">{{form.score | add_class:"form-control form-control-sm"}}</td>
           <td>{{form.DELETE}}</td>
 
         </tr>

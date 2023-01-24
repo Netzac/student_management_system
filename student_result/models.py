@@ -45,7 +45,7 @@ class ClassExercise(models.Model):
     current_class = models.ForeignKey(StudentClass, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
     exercise= models.ForeignKey(Exercise,on_delete=models.CASCADE)
-    score= models.ImageField()
+    score= models.IntegerField(default=0)
 
     class meta:
         ordering=['exercise']
