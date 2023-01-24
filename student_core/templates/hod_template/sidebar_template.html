@@ -124,13 +124,24 @@
                 <a href="#"" class="nav-link"><i class="nav-icon fas fa-copy"></i>
                   <p>Students Result  <i class="fas fa-angle-left right"></i></p>
                 </a>
-                <ul class="nav nav-treeview">     
+                <ul class="nav nav-treeview">   
+                  
+                  <li class="nav-item">
+                    {% url 'ex-result-class' as ex_result_class %}
+                    <a href="{{ ex_result_class }}" class="nav-link {% if request.path == ex_result_class %} active {% endif %}">
+                      <i class="nav-icon fas fa-running"></i>
+                      <p>
+                       Class Exercises Entry
+                      </p>
+                    </a>
+                  </li>
+
                   <li class="nav-item">
                     {% url 'select-result-class' as select_result_class %}
                     <a href="{{ select_result_class }}" class="nav-link {% if request.path == select_result_class %} active {% endif %}">
                       <i class="nav-icon fas fa-money-bill-alt"></i>
                       <p>
-                        Results Entry
+                       Exam Results Entry
                       </p>
                     </a>
                   </li>
@@ -271,6 +282,18 @@
                         </p>
                       </a>
                     </li>
+                      <!-- Settings for Gender-->
+                      <li class="nav-item">
+                        {% url 'exercises' as add_exercise %}
+                          <a href="{{ add_exercise }}" class="nav-link {% if request.path == add_exercise %} active {% endif %}">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                              Class Exercises
+                            </p>
+                          </a>
+                        </li>
+                      
+  
                     <!-- Settings for Gender-->
                     <li class="nav-item">
                       {% url 'add_gender' as add_gender %}

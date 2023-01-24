@@ -102,12 +102,18 @@ urlpatterns = [
     path('student_profile_update/', StudentViews.student_profile_update, name="student_profile_update"),
     path('student_view_result/', StudentViews.student_view_result, name="student_view_result"),
 
-    #URLS FOR Setups
+    #URLS FOR term Setups
     path("term/list/", HodViews.TermListView.as_view(), name="terms"),
     path("term/list/", HodViews.TermListView.as_view(), name="terms"),
     path("term/create/", HodViews.TermCreateView.as_view(), name="term-create"),
     path("term/<int:pk>/update/", HodViews.TermUpdateView.as_view(), name="term-update"),
     path("term/<int:pk>/delete/", HodViews.TermDeleteView.as_view(), name="term-delete"),
+
+    #URLS FOR exercise Setups
+    path("exercise/list/", HodViews.ExerciseListView.as_view(), name="exercises"),
+    path("exercise/create/", HodViews.ExerciseCreateView.as_view(), name="exercise-create"),
+    path("exercise/<int:pk>/update/", HodViews.ExerciseUpdateView.as_view(), name="exercise-update"),
+    path("exercise/<int:pk>/delete/", HodViews.ExerciseDeleteView.as_view(), name="exercise-delete"),
 
     #URLS for Gender Setups
     path('add_gender/', HodViews.add_gender, name="add_gender"),

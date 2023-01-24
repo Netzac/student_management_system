@@ -2,6 +2,8 @@ from django import forms
 from django.forms import Form,ModelForm, modelformset_factory
 from student_core.models import ClassTeacher, Courses, SessionYearModel, AcademicTerm,Gender
 
+from student_exam.models import Exercise
+
 
 class DateInput(forms.DateInput):
     input_type = "date"
@@ -131,6 +133,13 @@ class CurrentSessionForm(forms.Form):
         help_text='Click <a href="/term/create/?next=current-session/">here</a> to add new term',
     )
 
+class ExerciseForm(ModelForm):
+    prefix = "Exercise"
+
+    class Meta:
+        model = Exercise
+        fields = ["name"]
+        
 ClassTeacherFormSet = modelformset_factory(
     ClassTeacher,fields=('staff_id','cls_id'),can_delete=True,extra=1
 )

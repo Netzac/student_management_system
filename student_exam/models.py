@@ -19,6 +19,15 @@ from student_core.models import (CustomUser as User,Courses, SessionYearModel, S
 
 )
 
+class Exercise(models.Model):
+    name= models.CharField(max_length=15)
+    objects=models.Manager()
+
+    class meta:
+        ordering=['name']
+
+    def __str__(self):
+        return self.name
 
 class Assignment(models.Model):
     title = models.CharField(max_length=255)

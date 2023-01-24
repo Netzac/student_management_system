@@ -354,6 +354,98 @@ def select_result_class(request):
 
     return render(request, 'student_result/select_class.html', {'class':classes})
 
+@login_required
+def select_ex_class(request):
+    classes = Courses.objects.all()
+    students=None
+    if request.method == "POST":
+        data = request.POST
+        #clsid=0
+        try:
+        
+            clsid = data['classes']
+            #classes = Courses.objects.all().filter(id=clsid)
+        #students = Student.objects.filter(course_id=clsid)
+        except:
+            # classes = Courses.objects.all()
+            #return redirect('select-result-class')
+            cls_id=0
+        return redirect('create-ex-result', clsid=clsid)
+
+    return render(request, 'student_result/select_class.html', {'class':classes})
+
+
+
+@login_required
+def create_ex_result(request,clsid):
+    students = Student.objects.all().filter(course_id=clsid)
+    sheet_exists= False
+    if request.method == "POST":
+       
+        # after visiting the second page
+        if "finish" in request.POST:
+           
+            form = CreateResults(request.POST)
+            if form.is_valid():
+               
+                subjects = form.cleaned_data["subjects"]
+                session = form.cleaned_data["session"]
+                term = form.cleaned_data["term"]
+                students = request.POST["students"]
+                print('Students again:',students)
+                results = []
+                for student in students.split(","):
+                    stu = Student.objects.get(pk=student)
+                    if stu.course_id:
+                        for subject in subjects:
+                            check = Result.objects.filter(
+                                session=session,
+                                term=term,
+                                current_class=stu.course_id,
+                                subject=subject,
+                                student=stu,
+                            ).first()
+                            if not check:
+                                results.append(
+                                    Result(
+                                        session=session,
+                                        term=term,
+                                        current_class=stu.course_id,
+                                        subject=subject,
+                                        student=stu,
+                                    )
+                                )
+                            else:
+                                sheet_exists=True
+                if sheet_exists:  
+                    messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
+                
+                Result.objects.bulk_create(results)
+                
+                return redirect("edit-results",clsid=clsid,students=students)
+
+        # after choosing students
+        id_list = request.POST.getlist("students")
+       
+        if id_list:
+            form = CreateResults(
+                initial={
+                    "session": request.current_session,
+                    "term": request.current_term,
+                }
+            )
+            studentlist = ",".join(id_list)
+            print("Students:" ,studentlist)
+            context = {"students": studentlist, "form": form, "count": len(id_list)}
+            return render(
+                request,
+                "student_result/create_result_page2.html",context,
+            )
+         
+            messages.warning(request, "You didnt select any student.")
+    return render(request, "student_result/create_result.html", {"students": students})
+
+
 def load_students(request):
     cls_id = request.GET.get('cls_id')
     students = Student.objects.filter(course_id=cls_id)

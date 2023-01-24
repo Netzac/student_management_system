@@ -23,9 +23,12 @@ Students, SessionYearModel, FeedBackStudent, FeedBackStaffs,
 LeaveReportStudent, LeaveReportStaff, Attendance,
  AttendanceReport, AcademicTerm,
 )
-from .forms import AddStudentForm, ClassTeacherFormSet, ClassTeacherFormSet, EditStudentForm, AcademicTermForm, CurrentSessionForm
+from .forms import (AddStudentForm, ClassTeacherFormSet, ClassTeacherFormSet, EditStudentForm,
+ AcademicTermForm, CurrentSessionForm, ExerciseForm)
 from student_account.forms import FeeTypeForm
 from student_account.models import FeeType
+
+from student_exam.models import Exercise
 
 
 def admin_home(request):
@@ -1083,3 +1086,34 @@ class CTDeleteView(LoginRequiredMixin, DeleteView):
    
 
 '''Class Exercise HOD Views'''
+class ExerciseListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
+    model = Exercise
+    template_name = "hod_template/exercise_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = ExerciseForm()
+        return context
+
+class ExerciseCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = AcademicTerm
+    form_class = ExerciseForm
+    template_name = "hod_template/mgt_form.html"
+    success_url = reverse_lazy("exercises")
+    success_message = "New Exercise successfully added"
+    
+
+
+class ExerciseUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Exercise
+    form_class = ExerciseForm
+    success_url = reverse_lazy("exercises")
+    success_message = "Exercise successfully updated."
+    template_name = "hod_template/mgt_form.html"
+
+
+class ExerciseDeleteView(LoginRequiredMixin, DeleteView):
+    model = Exercise
+    success_url = reverse_lazy("exercises")
+    template_name = "hod_template/core_confirm_delete.html"
+    success_message = "The exercise {} has been deleted"

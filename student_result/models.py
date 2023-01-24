@@ -36,15 +36,8 @@ class Result(models.Model):
         return score_grade(self.total_score())
 
 
-class Exercise(models.Model):
-    name= models.CharField(max_length=15)
 
-    class meta:
-        ordering=['name']
-
-    def __str__(self):
-        return self.name
-
+from student_exam.models import Exercise
 class ClassExercise(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     session = models.ForeignKey(AcademicSession, on_delete=models.CASCADE)
