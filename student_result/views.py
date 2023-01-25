@@ -1,12 +1,15 @@
+from distutils import dist
 from inspect import signature
 from sys import exec_prefix
+import math
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render,  get_object_or_404
 from django.views.generic import DetailView, ListView, View
 
-from django.db.models import Q,Count
+from django.db.models import Q,Count,Avg
+
 
 from xhtml2pdf import pisa
 from django.template.loader import get_template
@@ -107,7 +110,7 @@ def edit_results(request,clsid,students):
     else:
         results = Result.objects.filter(
             session=request.current_session, term=request.current_term,current_class=clsid
-            ).exclude(~Q(student__in=ids)).annotate(studnet_count=Count('student')).order_by('subject','exercise')
+            ).exclude(~Q(student__in=ids)).annotate(studnet_count=Count('student')).order_by('subject')
         # results = Result.objects.filter(
         # session=request.current_session, term=request.current_term,current_class=clsid
         # ).in_bulk(ids)
@@ -427,9 +430,10 @@ def create_ex_result(request,clsid):
                                     sheet_exists=True
                 if sheet_exists:  
                     messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
-                
+                    
+
                 ClassExercise.objects.bulk_create(results)
-                
+                load_class_scores(session,term,clsid,students)
                 return redirect("edit-ex-results",clsid=clsid,students=students)
 
         # after choosing students
@@ -470,12 +474,56 @@ def edit_ex_results(request,clsid,students):
     else:
         results = ClassExercise.objects.filter(
             session=request.current_session, term=request.current_term,current_class=clsid
-            ).exclude(~Q(student__in=ids)).annotate(studnet_count=Count('student')).order_by('subject')
+            ).exclude(~Q(student__in=ids)).annotate(student_count=Count('student')).order_by('subject')
         # results = Result.objects.filter(
         # session=request.current_session, term=request.current_term,current_class=clsid
         # ).in_bulk(ids)
         form = EditExResults(queryset=results)
     return render(request, "student_result/edit_ex_results.html", {"formset": form})
+
+
+
+def load_class_scores(current_session,current_term,clsid,students):
+    ids =[int(i) for i in students.split(',')]
+   
+    total_num_ex = Exercise.objects.count()
+    results = Result.objects.filter(
+        session=current_session, term=current_term,current_class=clsid
+        ).exclude(~Q(student__in=ids))
+   
+    # results = Result.objects.filter(
+    # session=request.current_session, term=request.current_term,current_class=clsid
+    # ).in_bulk(ids)
+    all_scores ={}
+    for result in results:
+        check = ClassExercise.objects.filter(
+                                    session=result.session,
+                                    term=result.term,
+                                    current_class=result.current_class,
+                                    subject=result.subject,
+                                    student=result.student,
+                                ).first()
+    
+        if check:
+           res= ClassExercise.objects.filter(
+            session=result.session,
+            term=result.term,
+            current_class=result.current_class,
+            subject=result.subject,
+            student=result.student,
+            ).aggregate(Avg('score'))
+
+           '''Update Exams Results'''
+           Result.objects.filter(
+           session=result.session,
+           term=result.term,
+           current_class=result.current_class,
+           subject=result.subject,
+           student=result.student,
+            ).update(test_score=math.ceil(res['score__avg']))
+           
+           print('Ex score is',math.ceil(res['score__avg']))
+    return None
 
 def load_students(request):
     cls_id = request.GET.get('cls_id')

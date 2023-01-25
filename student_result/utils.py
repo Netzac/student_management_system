@@ -30,7 +30,7 @@ def score_grade(score):
             break
         else:
             continue
-
+    
 def score_overall_grade(score):
 
     gradescale = OverallGradebook.objects.values_list('lb','grade').order_by('-lb')

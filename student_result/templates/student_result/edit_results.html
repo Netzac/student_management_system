@@ -39,11 +39,11 @@
       {% endifchanged %}
       
           <td>{{forloop.counter }}</td>
-           <td>{{form.instance.student }} </td>
+          <td>{% ifchanged form.instance.student %}  {{form.instance.student}} {% endifchanged %}</td>
           <td>{% ifchanged form.instance.subject %} 
             {{form.instance.subject| upper}} 
             {%endifchanged %}</td>
-          <td style="width: 10%;">{{form.test_score | add_class:"form-control form-control-sm"}}</td>
+          <td style="width: 10%; pointer-events: none;">{{form.test_score | add_class:"form-control form-control-sm "}} </td>
           <td style="width: 10%;">{{form.exam_score | add_class:"form-control form-control-sm"}}</td>
           <td>{{form.instance.total_score}}</td>
           <td>{{form.DELETE}}</td>

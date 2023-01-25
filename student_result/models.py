@@ -51,4 +51,4 @@ class ClassExercise(models.Model):
         ordering=['exercise']
 
     def __str__(self):
-        return self.score
+        return f"{self.student } {self.subject.subject_name} {self.exercise.name}"
