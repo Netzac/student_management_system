@@ -1,3 +1,4 @@
+from ast import Not
 from distutils import dist
 from inspect import signature
 from sys import exec_prefix
@@ -16,9 +17,9 @@ from django.template.loader import get_template
 from django.http import HttpResponse, Http404
 from io import BytesIO
 
-from student_core.models import ClassTeacher, Courses, Students as Student
+from student_core.models import ClassTeacher, ConductInterestRemarks, Courses, Students as Student
 from student_result.utils import score_overall_grade,renderPdf
-
+from student_core.forms import ConductInterestRemarksFormset
 from .forms import CreateResults, EditResults,EditExResults
 from .models import ClassExercise, Result
 from student_exam.models import Gradebook,Exercise
@@ -398,6 +399,7 @@ def create_ex_result(request,clsid):
                 exercises = Exercise.objects.all()
                 
                 results = []
+                msg_added=False
                 for student in students.split(","):
                     stu = Student.objects.get(pk=student)
                     if stu.course_id:
@@ -405,7 +407,7 @@ def create_ex_result(request,clsid):
                         for subject in subjects:
                            
                             for ex in exercises:
-                                print('Students again in Exercise:',students)
+                                #print('Students again in Exercise:',students)
                                 check = ClassExercise.objects.filter(
                                     session=session,
                                     term=term,
@@ -428,9 +430,9 @@ def create_ex_result(request,clsid):
                                     )
                                 else:
                                     sheet_exists=True
-                if sheet_exists:  
+                if sheet_exists and not msg_added:  
                     messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
-                    
+                    msg_added=True
 
                 ClassExercise.objects.bulk_create(results)
                 load_class_scores(session,term,clsid,students)
@@ -447,7 +449,7 @@ def create_ex_result(request,clsid):
                 }
             )
             studentlist = ",".join(id_list)
-            print("Students:" ,studentlist)
+            print("Students from ex:" ,studentlist)
             context = {"students": studentlist, "form": form, "count": len(id_list)}
             return render(
                 request,
@@ -460,7 +462,7 @@ def create_ex_result(request,clsid):
 
 @login_required
 def edit_ex_results(request,clsid,students):
-    
+    print("students",students)
     ids =[int(i) for i in students.split(',')]
     #not_ids = Student.objects.exclude(id__in=[ids])
     print(' |Ex set ', ids)
@@ -524,6 +526,91 @@ def load_class_scores(current_session,current_term,clsid,students):
            
            print('Ex score is',math.ceil(res['score__avg']))
     return None
+
+'''cir abbreviation for conduct interest remarks'''
+@login_required
+def select_cir_class(request):
+    classes = Courses.objects.all()
+    students=None
+    if request.method == "POST":
+        data = request.POST
+        #clsid=0
+        try:
+        
+            clsid = data['classes']
+            #classes = Courses.objects.all().filter(id=clsid)
+        #students = Student.objects.filter(course_id=clsid)
+        except:
+            # classes = Courses.objects.all()
+            #return redirect('select-result-class')
+            cls_id=0
+        return redirect('create-conduct-interest-remarks', clsid=clsid)
+
+    return render(request, 'student_result/select_class.html', {'class':classes})
+
+@login_required
+def create_conduct_interest_remarks(request,clsid):
+    students = Student.objects.all().filter(course_id=clsid)
+    sheet_exists= False
+
+    if request.method == "POST":
+        id_list = request.POST.getlist("students")
+        student_list = ",".join(id_list)
+        if not id_list:
+            messages.warning(request, "You didnt select any student.")
+            return redirect('create-conduct-interest-remarks', clsid=clsid)
+        print("I am valid:",id_list)
+        results = []
+        for student in id_list:
+            stu = Student.objects.get(pk=student)
+            if stu:
+                check = ConductInterestRemarks.objects.filter(
+                    student=stu,
+                ).first()
+                if not check:
+                    results.append(
+                        ConductInterestRemarks(
+                        student=stu,
+                        )
+                    )
+                else:
+                    sheet_exists=True
+        if sheet_exists:  
+            messages.warning(request, "Mark Sheet for this student(s) already exists, You could only edit")
+            
+
+        ConductInterestRemarks.objects.bulk_create(results)
+        print('Students before passing ',student_list)
+        return redirect("edit-conduct-interest-remarks",clsid=clsid,students=student_list)
+
+        # after choosing students
+    return render(request, "student_result/create_result.html", {"students": students})
+
+
+@login_required
+def edit_conduct_interest_remarks(request,clsid,students):
+    print("students: ",students)
+    ids =[int(i) for i in students.split(',')]
+    #ids = " ".join(students)
+    #not_ids = Student.objects.exclude(id__in=[ids])
+    print(' New set ', ids)
+    if request.method == "POST":
+        form = ConductInterestRemarksFormset(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Sheet successfully updated")
+           
+            return redirect("edit-conduct-interest-remarks",clsid=clsid,students=students)
+    else:
+        results = ConductInterestRemarks.objects.exclude(~Q(student__in=ids)).order_by('student')
+        # results = Result.objects.filter(
+        # session=request.current_session, term=request.current_term,current_class=clsid
+        # ).in_bulk(ids)
+        form = ConductInterestRemarksFormset(queryset=results)
+    return render(request, "student_result/edit_conduct_interest_remarks.html", {"formset": form})
+
+
+
 
 def load_students(request):
     cls_id = request.GET.get('cls_id')

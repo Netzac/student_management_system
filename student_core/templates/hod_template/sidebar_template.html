@@ -147,11 +147,21 @@
                   </li>
 
                   <li class="nav-item">
+                    {% url 'cir-class' as select_cdi_class %}
+                    <a href="{{ select_cdi_class }}" class="nav-link {% if request.path == select_cdi_class %} active {% endif %}">
+                      <i class="nav-icon fas fa-thumbs-up"></i>
+                      <p>
+                       Conduct Interest... Entry
+                      </p>
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
                     {% url 'find-result' as find_result %}
                     <a href="{{ find_result }}" class="nav-link {% if request.path == find_result %} active {% endif %}">
-                      <i class="nav-icon fas fa-money-bill-alt"></i>
+                      <i class="nav-icon fas fa-list-alt"></i>
                       <p>
-                        Results Search
+                        Term Reports
                       </p>
                     </a>
                   </li>

@@ -1,3 +1,4 @@
+from email.policy import default
 from faulthandler import disable
 #from typing_extensions import Required
 from django.contrib.auth.models import AbstractUser
@@ -246,6 +247,15 @@ class StudentResult(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
 
+
+class ConductInterestRemarks(models.Model):
+    id = models.AutoField(primary_key=True)
+    student = models.ForeignKey(Students, on_delete=models.DO_NOTHING)
+    conduct = models.CharField(max_length= 255 ,null=True,blank=True)
+    interest = models.CharField(max_length= 255 ,null=True,blank=True)
+    remarks =  models.CharField(max_length= 255 ,null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
 
 #Creating Django Signals
 

@@ -4,7 +4,8 @@ from django.urls import path,re_path
 from .views import (
     ResultListView,ResultDetailView,ClassResultDetailView, create_result,
      edit_results,find_result, 
-     load_students,select_result_class,pdf,select_ex_class,create_ex_result,edit_ex_results
+     load_students,select_result_class,pdf,select_ex_class,create_ex_result,edit_ex_results,
+     create_conduct_interest_remarks,edit_conduct_interest_remarks,select_cir_class
 )
 
 urlpatterns = [
@@ -20,6 +21,10 @@ urlpatterns = [
     path('select-exercise-class/',select_ex_class, name='ex-result-class'),
     path("create/<clsid>/ex/", create_ex_result, name="create-ex-result"),
     path("edit-ex-results/<clsid>/<students>/ex", edit_ex_results, name="edit-ex-results"),
+
+    path('select-conduct-class/',select_cir_class, name='cir-class'),
+    path("create/<clsid>/cir/", create_conduct_interest_remarks, name="create-conduct-interest-remarks"),
+    path("edit-conduct-interest-remarks/<clsid>/<students>/cir", edit_conduct_interest_remarks, name="edit-conduct-interest-remarks"),
 
     path("ajax/load-students",load_students , name="load-students"),
 path('pdf/', pdf.as_view(), name='results-pdf'),

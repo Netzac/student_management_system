@@ -1,6 +1,8 @@
 from django import forms 
 from django.forms import Form,ModelForm, modelformset_factory
-from student_core.models import ClassTeacher, Courses, SessionYearModel, AcademicTerm,Gender
+from student_core.models import (
+    ClassTeacher, Courses, SessionYearModel, 
+    AcademicTerm,Gender, ConductInterestRemarks,)
 
 from student_exam.models import Exercise
 
@@ -141,5 +143,10 @@ class ExerciseForm(ModelForm):
         fields = ["name"]
         
 ClassTeacherFormSet = modelformset_factory(
-    ClassTeacher,fields=('staff_id','cls_id'),can_delete=True,extra=1
+    ClassTeacher,fields=('staff_id','cls_id'),can_delete=True,extra=0
+)
+
+
+ConductInterestRemarksFormset = modelformset_factory(
+    ConductInterestRemarks,fields=('conduct','interest','remarks'),can_delete=True,extra=0
 )

@@ -1,0 +1,56 @@
+{% extends 'hod_template/base_template.html' %}
+{% load widget_tweaks %}
+
+{% block page_title %}
+   Student Conduct, Interest, and Class Teacher Remarks Sheet
+{% endblock page_title %}
+
+
+{% block main_content %}
+{% include 'status_message.html' %}
+<section class="content">
+  <div class="container-fluid">
+  <form method="POST">
+  {% csrf_token %}
+  {{ formset.management_form}}
+
+  <table id="studenttable" class="table table-sm table-dark">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Conduct</th>
+        <th>Interest</th>
+        <th>Remarks</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for form in formset %}
+      {{ form.id}}
+      {% ifchanged form.instance.student %} 
+       <tr>
+          <td colspan="6"> <hr class="bg-white"> </td>
+       </tr>
+       <tr>
+        {% else %}
+      <tr>
+      {% endifchanged %}
+      
+          <td>{{forloop.counter }}</td>
+          <td>  {{form.instance.student|title}} </td>
+          <td>{{form.conduct | add_class:"form-control form-control-sm"}} </td>
+          <td>{{form.interest| add_class:"form-control form-control-sm"}} </td>
+          <td>{{form.remarks | add_class:"form-control form-control-sm"}}</td>
+          <td>{{form.DELETE}}</td>
+
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <input type="submit" class="btn btn-success" value="Save">
+  </form>
+  </div>
+</section>
+{% endblock main_content %}
