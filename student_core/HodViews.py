@@ -1035,7 +1035,8 @@ def take_attendance(request, cls_id):
     
     cls = get_object_or_404(Courses, id=cls_id)
     for i, s in enumerate(cls.students_set.all()):
-        status = request.POST.get('s.id')
+        status = request.POST.get(str(s.id))
+        print('Status is :',status, i, s.id,request.POST)
         if status == 'present':
             status = 'True'
         else:
@@ -1043,7 +1044,7 @@ def take_attendance(request, cls_id):
         date = request.POST['date']
         a = Attendance(course_id=cls, student_id=s, status=status, attendance_date=date, session_year_id=session_year_id)
         a.save()
-
+        messages.success(request,"Attendance successfully taken")
     return HttpResponseRedirect(reverse('attendance'))
 
 

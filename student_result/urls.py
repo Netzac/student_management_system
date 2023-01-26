@@ -5,7 +5,8 @@ from .views import (
     ResultListView,ResultDetailView,ClassResultDetailView, create_result,
      edit_results,find_result, 
      load_students,select_result_class,pdf,select_ex_class,create_ex_result,edit_ex_results,
-     create_conduct_interest_remarks,edit_conduct_interest_remarks,select_cir_class
+     create_conduct_interest_remarks,edit_conduct_interest_remarks,select_cir_class,load_grades,
+     promote_students,
 )
 
 urlpatterns = [
@@ -26,6 +27,9 @@ urlpatterns = [
     path("create/<clsid>/cir/", create_conduct_interest_remarks, name="create-conduct-interest-remarks"),
     path("edit-conduct-interest-remarks/<clsid>/<students>/cir", edit_conduct_interest_remarks, name="edit-conduct-interest-remarks"),
 
+    path("promote-students/",promote_students , name="promote-students"),
+
     path("ajax/load-students",load_students , name="load-students"),
-path('pdf/', pdf.as_view(), name='results-pdf'),
+    path("ajax/load-grades",load_grades , name="load-grades"),
+    path('pdf/', pdf.as_view(), name='results-pdf'),
 ]

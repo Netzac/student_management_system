@@ -5,6 +5,7 @@
 {% endblock page_title %}
 
 {% block main_content %}
+{% include 'status_message.html' %}
 {% if cls.students_set.all %}
 {% load static %}
 
@@ -66,11 +67,11 @@
                                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
             
                                             <label class="btn btn-outline-success active">
-                                                <input type="radio" name="{{ s.id}}" id="option1" autocomplete="off" value="present" checked> Present
+                                                <input type="radio" name={{s.id}} id="option1" autocomplete="off" value="present" checked> Present
                                             </label>
             
                                             <label class="btn btn-outline-danger">
-                                                <input type="radio" name="{{ s.id}}" id="option2" autocomplete="off" value="absent"> Absent
+                                                <input type="radio" name={{s.id}} id="option2" autocomplete="off" value="absent"> Absent
                                             </label>
                                     </div>
                                 </td>

@@ -1,0 +1,12 @@
+
+
+{%if grades %}
+    <option value="">Select Grade</option>
+    {% for grade in grades %}
+        <option value=" {{grade.id}}">{{grade.grade}}</option>
+    {% endfor %}
+{% else %}
+    <option value="">No Grades Setup </option>
+{%endif%}
+
+

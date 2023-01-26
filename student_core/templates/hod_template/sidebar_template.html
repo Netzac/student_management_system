@@ -165,6 +165,17 @@
                       </p>
                     </a>
                   </li>
+
+                  
+                  <li class="nav-item">
+                    {% url 'promote-students' as promote_students %}
+                    <a href="{{ promote_students }}" class="nav-link {% if request.path == promote_students %} active {% endif %}">
+                      <i class="nav-icon fas fa-list-alt"></i>
+                      <p>
+                        Promote Students
+                      </p>
+                    </a>
+                  </li>
                 </ul>
             </li>
             <!-- <li class="nav-header">Assigments Creation</li> -->

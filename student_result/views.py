@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render,  get_object_or_404
 from django.views.generic import DetailView, ListView, View
 
-from django.db.models import Q,Count,Avg
+from django.db.models import Q,Count,Avg,Case,When
 
 
 from xhtml2pdf import pisa
@@ -17,7 +17,7 @@ from django.template.loader import get_template
 from django.http import HttpResponse, Http404
 from io import BytesIO
 
-from student_core.models import ClassTeacher, ConductInterestRemarks, Courses, Students as Student
+from student_core.models import Attendance, ClassTeacher, ConductInterestRemarks, Courses, Students as Student
 from student_result.utils import score_overall_grade,renderPdf
 from student_core.forms import ConductInterestRemarksFormset
 from .forms import CreateResults, EditResults,EditExResults
@@ -189,6 +189,10 @@ def ResultDetailView(request,student):
 
             total_total=test_total + exam_total
             '''Extra data for report header'''
+            term_attendance_res = Attendance.objects.filter(student_id=student,session_year_id=request.current_session_id)
+            total_attendance= term_attendance_res.count()
+            student_attendance= term_attendance_res.aggregate(stu_attendance=Count(Case(When(status=True,then=1))))['stu_attendance']
+
             studentClass= result.student.course_id
             classSize = Student.objects.filter(course_id=studentClass).count()
             overall_grade = score_overall_grade(total_total)
@@ -217,7 +221,9 @@ def ResultDetailView(request,student):
                 "staff": teacher.staff_id,
                 "ClassSize":classSize,
                 "overall_grade":overall_grade,
-                "report_dates":report_dates               
+                "report_dates":report_dates,
+                "total_attendance":total_attendance,
+                "student_attendance":student_attendance               
                  }
            
       
@@ -272,6 +278,11 @@ def ClassResultDetailView(request,clsid):
                 total_total=test_total + exam_total
 
                 '''Extra data for report header'''
+                term_attendance_res = Attendance.objects.filter(student_id=student,session_year_id=request.current_session_id)
+                total_attendance= term_attendance_res.count()
+                student_attendance= term_attendance_res.aggregate(stu_attendance=Count(Case(When(status=True,then=1))))['stu_attendance']
+                
+                #print("Student_attendance:", student_attendance['stu_attendance'])
                 studentClass= result.student.course_id
                 classSize = Student.objects.filter(course_id=studentClass).count()
                 overall_grade = score_overall_grade(total_total)
@@ -298,13 +309,15 @@ def ClassResultDetailView(request,clsid):
                     'gradeBook':gradebook_with_ub,
                     "Class":studentClass,
                     "ClassSize":classSize,
-                    "report_dates":report_dates
+                    "report_dates":report_dates,
+                    "total_attendance":total_attendance,
+                    "student_attendance":student_attendance
                 }
                
                 # for i,j in gradebookall:
                 #     print("Zip list:", i,j,i.lb,i.remark)
             results={}
-        print("Bulk results: ",bulk)
+        #print("Bulk results: ",bulk)
         context = {"results": bulk}
         
         return render(request, "student_result/all_results_list.html", context)
@@ -524,7 +537,7 @@ def load_class_scores(current_session,current_term,clsid,students):
            student=result.student,
             ).update(test_score=math.ceil(res['score__avg']))
            
-           print('Ex score is',math.ceil(res['score__avg']))
+           #print('Ex score is',math.ceil(res['score__avg']))
     return None
 
 '''cir abbreviation for conduct interest remarks'''
@@ -576,7 +589,7 @@ def create_conduct_interest_remarks(request,clsid):
                 else:
                     sheet_exists=True
         if sheet_exists:  
-            messages.warning(request, "Mark Sheet for this student(s) already exists, You could only edit")
+            messages.warning(request, "Sheet for this student(s) already exists, You could only edit")
             
 
         ConductInterestRemarks.objects.bulk_create(results)
@@ -610,12 +623,30 @@ def edit_conduct_interest_remarks(request,clsid,students):
     return render(request, "student_result/edit_conduct_interest_remarks.html", {"formset": form})
 
 
-
-
+def promote_students(request):
+    
+    
+    context ={}
+    if request.method=='POST':
+        data = request.POST
+        if data['crit']=="":
+             messages.error(request,"Criterion must be selected")
+             return redirect('promote-students')
+        messages.success(request,"Students successfully promoted ")
+        return redirect('promote-students')
+    return render(request,"student_result/promotion_criteria.html",context)
+    
 def load_students(request):
     cls_id = request.GET.get('cls_id')
     students = Student.objects.filter(course_id=cls_id)
     return render(request, 'student_result/student_dropdown.html', {'students': students})
+
+def load_grades(request):
+    crit_id = request.GET.get('crit_id')
+    print("crit ", crit_id)
+    if crit_id=="2":
+        grades = Gradebook.objects.all().values('grade').order_by('grade')
+    return render(request, 'student_result/grade_dropdown.html', {'grades': grades})
 
 
 

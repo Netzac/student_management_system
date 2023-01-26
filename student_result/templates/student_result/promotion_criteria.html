@@ -1,0 +1,105 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Promote Students
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% include 'status_message.html' %}
+{% load static %}
+
+<!-- <section class="content"> -->
+        <div class="main-wrapper"> 
+
+            <div class="login-bg-color bg-black-300">
+                <div class="row">
+                    <div class="col-md-12 col-md-offset-0">
+                        <div class="panel login-box"  style="margin:auto">
+                            <div class="panel-heading">
+                                <div class="panel-title text-center">
+                                    <!-- <h4>Result Management Module</h4> -->
+                                </div>
+                                <div id="query_alert">
+                                    
+                                </div>
+                            </div>
+                            <div class="panel-body p-20">
+                                {% url 'load-grades' as student_grades %} 
+                                <form class="query-form" id="searchform" data-grades-url= "{{student_grades}}" method="post" novalidate > 
+                                    {% csrf_token %}
+                    
+                                    <div class="form-group">
+                                        <label for="default" class="">Promotion Criterion</label>
+                                        <select name="crit" class="form-control" id="crit" required="required">
+                                            <option value="">Select Promotion Cut-Off</option>
+                                            
+                                           
+                                                <option value="1">By Wholesale </option>
+                                                <option value="2">By Grade</option>
+                                           
+                                                
+                                        </select>
+                                    <div class="form-group" id="gradesDiv">
+                                        <label for="grade" class="">Overall Grade Equals Or Below</label>
+                                        <select name="grade" class="form-control" id="grade" required="required">
+                        
+                                        </select>
+                                    </div>
+            
+            
+                                    <div class="form-group mt-20">
+                                        <div class="">
+            
+                                            <button type="submit" class="btn btn-success btn-labeled pull-right">Promote<span class="btn-label btn-label-right"><i
+                                                        class="fa fa-check"></i></span></button>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+            
+                                    <!-- <div class="col-sm-6">
+                                        <a href="{% url 'admin_home' %}">Back to Home</a>
+                                    </div> -->
+                                </form>
+            
+                                <hr>
+            
+                            </div>
+                        </div>
+         </div>
+    <!--  </section> -->
+
+  {% endblock main_content %}
+
+  {% block custom_js %}
+<script>
+  
+$(function(){
+    var gradediv =  $('#gradesDiv');
+    gradediv.hide();
+    $("#crit").change(function () {
+    var crit_id = $(this).val();
+    var url = $('#searchform').attr('data-grades-url');
+    console.log(url);
+
+    $.ajax({
+
+        url:url,
+        data:{
+            'crit_id':crit_id,
+
+        },
+        success: function(data){
+            $('#grade').html(data);
+            gradediv.show();
+        }
+
+
+    });
+    
+  });
+
+});
+</script>
+
+{% endblock custom_js %}
