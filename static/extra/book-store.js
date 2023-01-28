@@ -1,4 +1,4 @@
-'use strict'
+// 'use strict'
 $(function() {
 	$("body").on("click", "#addTocart", function(event){
 		var id = $(this).attr("data-book-id");

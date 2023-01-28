@@ -1,17 +1,19 @@
 {% extends 'hod_template/base_template.html' %}
 {% load humanize %}
+{% load static %}
 
 {% block main_content %}
 <section class="content">
 <div class="container-fluid">
 <div class="row">
   <div class="col-8">
-    <form action="" method="POST">
+    <form id="paymentForm" action="" method="POST">
       {% csrf_token %}
 
       {% include 'form_snippet.html' %}
-
+      <input type="hidden" value={{request.user.email}} id="email-address">
       <input type="submit" class="btn btn-primary" value="Add payment">
+      <input type="button"  id="payOnlineBtn" class="btn btn-secondary" onclick="payOnline()" data-url="#" value="PayOnline">
 
     </form>
   </div>
@@ -40,3 +42,54 @@
 
 
 {% endblock main_content %}
+
+{% block custom_js %}
+  <!-- <script src="https://js.paystack.co/v2/popup.js"></script> -->
+  <script src="{% static '/extra/popup.js' %}"> </script>
+  <script src="{% static '/extra/payment-gateway.js' %}"> </script>
+
+  <script>
+  
+
+    // $(function(){
+
+      function payOnline() {
+        callback_url= document.getElementById('payOnlineBtn').getAttribute('data-url')
+        const pt = new PaystackPop();
+        pt.newTransaction({
+        key: 'pk_test_3d5f8b0a0a0a186389674dec3ee907cb471c319d', // Replace with your public key
+        email: document.getElementById('email-address').value,
+        amount: document.getElementById('id_amount_paid').value * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
+        currency: 'GHS', // Use GHS for Ghana Cedis or USD for US Dollars
+        //ref: 'YOUR_REFERENCE', // Replace with a reference you generated
+        onSuccess: (transaction) => {
+        //this happens after the payment is completed successfully
+        var reference = response.reference;
+        alert('Payment complete! Reference: ' + reference);
+        // Make an AJAX call to your server with the reference to verify the transaction
+          $.ajax({
+            url: callback_url + response.reference,
+            method: 'post',
+            success: function (data) {
+              alert("Transaction successful")
+            }
+        });
+    },
+    onCancel: () => {
+      alert('Transaction was not completed, window closed.');
+    },
+  });
+ 
+}
+
+
+      // payOnline2()
+
+    
+
+
+ 
+   
+  </script>
+
+{% endblock custom_js %}
