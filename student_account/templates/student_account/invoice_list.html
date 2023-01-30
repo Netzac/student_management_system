@@ -1,9 +1,9 @@
 {% extends 'hod_template/base_template.html' %}
 {% load humanize %}
-
+{% load static %}
 {% block title %}{% endblock title %}
 {% block page_title %}
-  List of Student Bills
+  List of Bills - Double click an item for details
 {% endblock page_title %}
 
 
@@ -15,8 +15,8 @@
 {% endblock breadcrumb %}
 
 {% block main_content %}
-{% load static %}
 
+{% include 'status_message.html' %}
 <section class="content">
   <div class="container-fluid">
   <div class="table-responsive">

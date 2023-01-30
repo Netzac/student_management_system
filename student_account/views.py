@@ -3,9 +3,11 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+
+from django.views.decorators.csrf import csrf_exempt
 
 from student_core.models import Students as Student
 
@@ -163,3 +165,19 @@ class FeeTypeDeleteView(LoginRequiredMixin, DeleteView):
 @login_required
 def bulk_invoice(request):
     return render(request, "account/bulk_invoice.html")
+
+
+from paystackapi.transaction import Transaction
+
+@csrf_exempt
+def verify_online_payment(request,ref,invoice):
+    redirect_url = reverse('receipt-create')
+    response = Transaction.verify(reference=str(ref))
+    print("response",response,ref)
+
+   
+    invoice = Invoice.objects.get(pk=invoice)
+    obj = Receipt(invoice=invoice,amount_paid=10)
+    obj.save()
+    messages.success(request,"Thank You! Payment made successfully.")
+    return redirect("invoice-list")
