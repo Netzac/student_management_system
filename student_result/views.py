@@ -3,13 +3,15 @@ from distutils import dist
 from inspect import signature
 from sys import exec_prefix
 import math
+from tokenize import Number
+from unittest import result
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render,  get_object_or_404
 from django.views.generic import DetailView, ListView, View
 
-from django.db.models import Q,Count,Avg,Case,When
+from django.db.models import F,Q,Count,Avg,Case,When
 
 
 from xhtml2pdf import pisa
@@ -21,7 +23,7 @@ from student_core.models import Attendance, ClassTeacher, ConductInterestRemarks
 from student_result.utils import score_overall_grade,renderPdf
 from student_core.forms import ConductInterestRemarksFormset
 from .forms import CreateResults, EditResults,EditExResults
-from .models import ClassExercise, Result
+from .models import ClassExercise, Result,ResultSummary
 from student_exam.models import Gradebook,Exercise
 
 
@@ -156,6 +158,9 @@ class ResultListView(LoginRequiredMixin, View):
 def ResultDetailView(request,student):
     # def get_context_data(self, request,**kwargs):
     #     context= super().get_context_data(**kwargs)
+        session =request.current_session
+        term = request.current_term
+
         try:
             school = School.objects.all().first()
         except:
@@ -167,7 +172,7 @@ def ResultDetailView(request,student):
             gradeBook={}
 
         results = Result.objects.filter(
-            session=request.current_session, term=request.current_term,student=student
+            session=session, term=term,student=student
         )
         '''Extra Context Variables'''
         report_dates ={"closing":'',"opening":''}
@@ -225,10 +230,10 @@ def ResultDetailView(request,student):
                 "total_attendance":total_attendance,
                 "student_attendance":student_attendance               
                  }
-           
+            get_result_summary(student,session,term,total=total_total,grade=overall_grade,attendance=total_attendance)
       
         context = {"results": bulk}
-        
+       
         return render(request, "student_result/all_results.html", context)
 
 
@@ -239,6 +244,9 @@ def ResultDetailView(request,student):
 def ClassResultDetailView(request,clsid):
     # def get_context_data(self, request,**kwargs):
     #     context= super().get_context_data(**kwargs)
+        session =request.current_session
+        term = request.current_term
+
         try:
             school = School.objects.all().first()
         except:
@@ -252,11 +260,11 @@ def ClassResultDetailView(request,clsid):
         student_list =Student.objects.filter(course_id=clsid) 
         bulk = {}
         for student in student_list:
-            results = Result.objects.filter(session=request.current_session, term=request.current_term,student=student.id)
+            results = Result.objects.filter(session=session, term=term,student=student.id)
 
         #class_name = Courses.objects.get(id=clsid)
         
-            print("Results:",results)
+            #print("Results:",results)
 
             '''Extra Context Variables'''
             report_dates ={"closing":'',"opening":''}
@@ -316,6 +324,7 @@ def ClassResultDetailView(request,clsid):
                
                 # for i,j in gradebookall:
                 #     print("Zip list:", i,j,i.lb,i.remark)
+            get_result_summary(student,session,term,total=total_total,grade=overall_grade,attendance=total_attendance)
             results={}
         #print("Bulk results: ",bulk)
         context = {"results": bulk}
@@ -540,6 +549,25 @@ def load_class_scores(current_session,current_term,clsid,students):
            #print('Ex score is',math.ceil(res['score__avg']))
     return None
 
+from django.db import transaction
+def get_result_summary(student,session,term,**kwargs):
+
+    data = kwargs
+    if  type(student) is Number:
+        stud = Student.objects.get(id=student)
+    else:
+        stud=student
+
+    instance, created = ResultSummary.objects.get_or_create(student=stud,session=session,term=term,**data)
+
+    if not created:
+        with transaction.atomic():
+            #for k,v in data.items():
+            ResultSummary.objects.filter(student=student).update(total=data['total'],grade=data['grade'],attendance=data['attendance'])
+
+    return None
+
+
 '''cir abbreviation for conduct interest remarks'''
 @login_required
 def select_cir_class(request):
@@ -622,7 +650,7 @@ def edit_conduct_interest_remarks(request,clsid,students):
         form = ConductInterestRemarksFormset(queryset=results)
     return render(request, "student_result/edit_conduct_interest_remarks.html", {"formset": form})
 
-
+#from django.db.models import F
 def promote_students(request):
     
     
@@ -632,9 +660,14 @@ def promote_students(request):
         if data['crit']=="":
              messages.error(request,"Criterion must be selected")
              return redirect('promote-students')
+        #students_to_demote = Result.objects.filter((F('test_score')+F('exam_score')))
+        #print("Demoted ", students_to_demote)
+        #students_to_promote = Student.objects.filter()
         messages.success(request,"Students successfully promoted ")
         return redirect('promote-students')
     return render(request,"student_result/promotion_criteria.html",context)
+
+
     
 def load_students(request):
     cls_id = request.GET.get('cls_id')

@@ -35,7 +35,20 @@ class Result(models.Model):
     def grade(self):
         return score_grade(self.total_score())
 
+class ResultSummary(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    session = models.ForeignKey(AcademicSession, on_delete=models.CASCADE)
+    term = models.ForeignKey(AcademicTerm, on_delete=models.CASCADE)
+    total = models.IntegerField()
+    grade = models.CharField(max_length=15)
+    attendance = models.IntegerField(default=0)
+   
 
+    class Meta:
+        ordering = ["-total"]
+
+    def __str__(self):
+        return f"{self.student} {self.total} {self.grade} {self.attendance}"
 
 from student_exam.models import Exercise
 class ClassExercise(models.Model):

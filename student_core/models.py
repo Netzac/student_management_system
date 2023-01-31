@@ -92,7 +92,7 @@ class Courses(models.Model):
     class Meta:
         verbose_name = "Class"
         verbose_name_plural = "Classes"
-        ordering = ["course_name"]
+        ordering = ["id"]
     def __str__(self):
         return self.course_name
 

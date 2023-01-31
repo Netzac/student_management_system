@@ -173,7 +173,7 @@ from paystackapi.transaction import Transaction
 def verify_online_payment(request,ref,invoice):
     redirect_url = reverse('receipt-create')
     response = Transaction.verify(reference=str(ref))
-    print("response",response,ref)
+    print("response: ",response,ref)
 
    
     invoice = Invoice.objects.get(pk=invoice)
