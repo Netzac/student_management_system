@@ -3,7 +3,7 @@ from distutils import dist
 from inspect import signature
 from sys import exec_prefix
 import math
-from tokenize import Number
+from tokenize import Number, String
 from unittest import result
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -11,7 +11,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render,  get_object_or_404
 from django.views.generic import DetailView, ListView, View
 
-from django.db.models import F,Q,Count,Avg,Case,When
+from django.db.models import F,Q,Count,Avg,Case,When,Value
+from numpy import empty
 
 
 from xhtml2pdf import pisa
@@ -24,7 +25,7 @@ from student_result.utils import score_overall_grade,renderPdf
 from student_core.forms import ConductInterestRemarksFormset
 from .forms import CreateResults, EditResults,EditExResults
 from .models import ClassExercise, Result,ResultSummary
-from student_exam.models import Gradebook,Exercise
+from student_exam.models import Gradebook,Exercise,OverallGradebook
 
 
 @login_required
@@ -553,7 +554,8 @@ from django.db import transaction
 def get_result_summary(student,session,term,**kwargs):
 
     data = kwargs
-    if  type(student) is Number:
+    print("Student type",type(student))
+    if  type(student) is str:
         stud = Student.objects.get(id=student)
     else:
         stud=student
@@ -657,12 +659,32 @@ def promote_students(request):
     context ={}
     if request.method=='POST':
         data = request.POST
-        if data['crit']=="":
+        grade=""
+        crit = data['crit']
+        if 'grade' in data:
+             grade = data['grade']
+        print('Data:',data,grade,crit)
+        if crit =="":
              messages.error(request,"Criterion must be selected")
              return redirect('promote-students')
-        #students_to_demote = Result.objects.filter((F('test_score')+F('exam_score')))
-        #print("Demoted ", students_to_demote)
-        #students_to_promote = Student.objects.filter()
+        elif crit=="2" and grade=="0":
+             messages.error(request,"Grade must be selected")
+             return redirect('promote-students')
+        
+        highest_class = Courses.objects.values('id').last()
+
+        '''Promotion criterion has been set as overall grade cutoff'''
+        if crit =="2":
+           
+            students_to_demote = ResultSummary.objects.filter(Q(grade__gte=grade) | Q(student__course_id=highest_class['id'])).values('student')
+        else:
+             students_to_demote = ResultSummary.objects.filter(Q(student__course_id=highest_class['id'])).values('student')
+        
+        print("To demote:", students_to_demote,highest_class['id'],grade)
+        with transaction.atomic():
+             Student.objects.exclude(id__in =students_to_demote).update(course_id=F("course_id")+1)
+        res = Student.objects.exclude(id__in =students_to_demote)
+        print("Promted ", res)
         messages.success(request,"Students successfully promoted ")
         return redirect('promote-students')
     return render(request,"student_result/promotion_criteria.html",context)
@@ -678,7 +700,7 @@ def load_grades(request):
     crit_id = request.GET.get('crit_id')
     print("crit ", crit_id)
     if crit_id=="2":
-        grades = Gradebook.objects.all().values('grade').order_by('grade')
+        grades = OverallGradebook.objects.all().values('id','grade').order_by('grade')
     return render(request, 'student_result/grade_dropdown.html', {'grades': grades})
 
 
