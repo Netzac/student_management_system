@@ -8,8 +8,9 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from django.views.decorators.csrf import csrf_exempt
+from requests import request
 
-from student_core.models import Students as Student
+from student_core.models import AcademicTerm, Courses, SessionYearModel, Students as Student
 
 from .forms import InvoiceItemFormset, InvoiceReceiptFormSet, Invoices,FeeTypeForm
 from .models import Invoice, InvoiceItem, Receipt,FeeType
@@ -38,12 +39,51 @@ class InvoiceCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         formset = context["items"]
         self.object = form.save()
+        print('object:', self.object)
         if self.object.id != None:
             if form.is_valid() and formset.is_valid():
                 formset.instance = self.object
                 formset.save()
         return super().form_valid(form)
 
+class ClassInvoiceCreateView(LoginRequiredMixin, CreateView):
+    model = Invoice
+    fields = ['session','term','class_for']
+    template_name='student_account/class_invoice_form.html'
+    success_url = "/studentaccount/list"
+
+    def get_context_data(self, **kwargs):
+        context = super(ClassInvoiceCreateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context["items"] = InvoiceItemFormset(
+                self.request.POST, prefix="invoiceitem_set"
+            )
+        else:
+            context["items"] = InvoiceItemFormset(prefix="invoiceitem_set")
+        return context
+
+    def form_valid(self, form):
+        cls_id=Courses.objects.get(id= self.request.POST.get('class_for'))
+        session=SessionYearModel.objects.get(id=self.request.POST.get('session'))
+        term=AcademicTerm.objects.get(id=self.request.POST.get('session'))
+        students = Student.objects.filter(course_id=cls_id)
+        bulk =[]
+        for student in students:
+            #invoice =Invoice(student=student,session=session,term=term,class_for=cls_id)
+            #bulk.append(Invoice(student=student,session=session,term=term,class_for=cls_id))
+            print("Class:", student.id,session,term,cls_id)
+        
+            saved = Invoice.objects.create(student=student,session=session,term=term,class_for=cls_id)
+            form.instance.student=saved.student
+            print("Saved",saved)
+            context = self.get_context_data()
+            formset = context["items"]
+            self.object = saved
+            if saved != None:
+                if formset.is_valid():
+                    formset.instance = self.object
+                    formset.save()
+        return redirect("invoice-list")
 
 class InvoiceDetailView(LoginRequiredMixin, DetailView):
     model = Invoice

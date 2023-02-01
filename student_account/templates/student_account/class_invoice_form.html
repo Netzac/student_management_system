@@ -6,15 +6,16 @@
   {% if object %}
     Update invoice {{ object }}
   {% else %}
-    Add new invoice
+    Add new Invoice
   {% endif %}
 {% endblock page_title %}
 
 
 {% block breadcrumb %}
-<a class="btn btn-primary" href="{% url 'invoice-create' %}"><i
-    class="fas fa-plus"></i> New Invoice</a>
-
+<a class="btn btn-primary" href="{% url 'class-invoice-create' %}"><i
+    class="fas fa-plus"></i> New Class Invoice</a>
+<!-- <a class="btn btn-primary" href="{% url 'bulk-invoice' %}"><i
+    class="fas fa-upload"></i> Bulk Invoice</a> -->
 {% endblock breadcrumb %}
 
 {% block main_content %}

@@ -4,13 +4,10 @@
 {% block breadcrumb %}
 <!-- <div class="card-header"> -->
   <div class="card-tools">
-    <a href="#" onclick="window.print()" class="btn btn-tool">Print</a>
-    <a href="{% url 'invoice-update' object.id %}" class="btn btn-tool">
-      <i class="fas fa-edit"></i>
-    </a>
-    <a href="{% url 'invoice-delete' object.id %}" class="btn btn-tool">
-      <i class="fas fa-times"></i>
-    </a>
+   <button class="bg-primary"> <a href="#" onclick="window.print()" class="btn btn-tool"><i class="fas fa-print"></i>Print</a></button>
+  <button class="bg-secondary"><a href="{% url 'invoice-update' object.id %}" class="btn btn-tool"><i class="fas fa-edit"></i>Edit</a></button>
+  <button class="bg-light"> <a href="{% url 'invoice-delete' object.id %}" class="btn btn-tool">
+      <i class="fas fa-times"></i>Delete</a></button>
   </div>
 <!--</div> -->
 {% endblock breadcrumb %}

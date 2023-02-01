@@ -14,7 +14,7 @@ from .views import (
     InvoiceUpdateView,
     ReceiptCreateView,
     ReceiptUpdateView,
-    FeeTypeCreateView, FeeTypeUpdateView, FeeTypeDeleteView, FeeTypeListView,
+    FeeTypeCreateView, FeeTypeUpdateView, FeeTypeDeleteView, FeeTypeListView,ClassInvoiceCreateView,
     bulk_invoice,
     verify_online_payment,
 )
@@ -22,6 +22,7 @@ from .views import (
 urlpatterns = [
     path("list/", InvoiceListView.as_view(), name="invoice-list"),
     path("create/", InvoiceCreateView.as_view(), name="invoice-create"),
+    path("create/class/", ClassInvoiceCreateView.as_view(), name="class-invoice-create"),
     path("<int:pk>/detail/", InvoiceDetailView.as_view(), name="invoice-detail"),
     path("<int:pk>/update/", InvoiceUpdateView.as_view(), name="invoice-update"),
     path("<int:pk>/delete/", InvoiceDeleteView.as_view(), name="invoice-delete"),
