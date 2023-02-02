@@ -52,12 +52,14 @@
       <div class="row">
         <div class="col"><strong>Fee Type</strong></div>
         <div class="col"><strong>Amount</strong></div>
+        <div class="col"><strong>Description</strong></div>
       </div>
       {% for item in items %}
       <div class="form-group row items-group">
         {{ item.id}}
         <div class="col">{{ item.feetype | add_class:"form-control"}}</div>
         <div class="col">{{ item.amount | add_class:"form-control"}}</div>
+        <div class="col">{{ item.description| add_class:"form-control"}}</div>
       </div>
       {% endfor %}
     </div>
@@ -117,5 +119,21 @@
     }
   )
 </script>
+
+
+<script>
+  
+  $(function(){
+      var desc =  $('#id_invoiceitem_set-0-description');
+      $("#id_invoiceitem_set-0-feetype").change(function () {
+       value =$("#id_invoiceitem_set-0-feetype option:selected")
+       desc.val((value.text()))
+        console.log(value.text());
+  
+    });
+  
+  });
+  </script>
+  
 
 {% endblock custom_js %}
