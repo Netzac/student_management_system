@@ -211,26 +211,27 @@
                   </p>
                 </a>
               </li>
+              <li class="nav-item">
+                {% url 'admin_view_attendance' as admin_view_attendance %}
+                <a href="{{ admin_view_attendance }}" class="nav-link {% if request.path == admin_view_attendance %} active {% endif %}">
+                  <i class="nav-icon fas fa-calendar-alt"></i>
+                  <p>
+                    Attendance Report
+                  </p>
+                </a>
+              </li>
               
             </ul>
         </li>
              <!-- <li class="nav-header">General Reports</li> -->
-             <li class="nav-item has-treeview">
+             <!-- <li class="nav-item has-treeview">
               <a href="#"" class="nav-link"><i class="nav-icon fas fa-copy"></i>
                 <p>Students Report  <i class="fas fa-angle-left right"></i></p>
               </a>
               <ul class="nav nav-treeview">     
-                <li class="nav-item">
-                  {% url 'admin_view_attendance' as admin_view_attendance %}
-                  <a href="{{ admin_view_attendance }}" class="nav-link {% if request.path == admin_view_attendance %} active {% endif %}">
-                    <i class="nav-icon fas fa-calendar-alt"></i>
-                    <p>
-                      Attendance
-                    </p>
-                  </a>
-                </li>
+               
               </ul>
-          </li>
+          </li> -->
            <!-- <li class="nav-header">School Settings</li> -->
            <li class="nav-item has-treeview">
             <a href="#"" class="nav-link"><i class="nav-icon fas fa-copy"></i>

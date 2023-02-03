@@ -825,10 +825,10 @@ def staff_leave_reject(request, leave_id):
 
 
 def admin_view_attendance(request):
-    subjects = Subjects.objects.all()
+    classes = Courses.objects.all()
     session_years = SessionYearModel.objects.all()
     context = {
-        "subjects": subjects,
+        "classes": classes,
         "session_years": session_years
     }
     return render(request, "hod_template/admin_view_attendance.html", context)
@@ -837,17 +837,17 @@ def admin_view_attendance(request):
 @csrf_exempt
 def admin_get_attendance_dates(request):
     # Getting Values from Ajax POST 'Fetch Student'
-    subject_id = request.POST.get("subject")
+    cls_id = request.POST.get("cls")
     session_year = request.POST.get("session_year_id")
 
     # Students enroll to Course, Course has Subjects
     # Getting all data from subject model based on subject_id
-    subject_model = Subjects.objects.get(id=subject_id)
+    cls_model = Courses.objects.get(id=cls_id)
 
     session_model = SessionYearModel.objects.get(id=session_year)
 
     # students = Students.objects.filter(course_id=subject_model.course_id, session_year_id=session_model)
-    attendance = Attendance.objects.filter(subject_id=subject_model, session_year_id=session_model)
+    attendance = Attendance.objects.filter(course_id=cls_id, session_year_id=session_year).distinct('attendance_date')
 
     # Only Passing Student Id and Student Name Only
     list_data = []
@@ -863,9 +863,9 @@ def admin_get_attendance_dates(request):
 def admin_get_attendance_student(request):
     # Getting Values from Ajax POST 'Fetch Student'
     attendance_date = request.POST.get('attendance_date')
-    attendance = Attendance.objects.get(id=attendance_date)
+    attendance = Attendance.objects.get(id=attendance_date).attendance_date
 
-    attendance_data = AttendanceReport.objects.filter(attendance_id=attendance)
+    attendance_data = Attendance.objects.filter(attendance_date=attendance)
     # Only Passing Student Id and Student Name Only
     list_data = []
 
