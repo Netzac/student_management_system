@@ -17,6 +17,9 @@ class FeeType(models.Model):
     def __str__(self):
         return self.type
 
+
+
+        
 class Invoice(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
     session = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
@@ -28,7 +31,8 @@ class Invoice(models.Model):
         choices=[("active", "Active"), ("closed", "Closed")],
         default="active",
     )
-
+    objects= models.Manager()
+   
     class Meta:
         ordering = ["student", "term"]
     def __str__(self):

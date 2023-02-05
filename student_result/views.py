@@ -11,7 +11,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render,  get_object_or_404
 from django.views.generic import DetailView, ListView, View
 
-from django.db.models import F,Q,Count,Avg,Case,When,Value
+from django.db.models import F,Q,Count,Avg,Case,When,Value,Sum,Min,Max
+
 from numpy import empty
 
 
@@ -214,7 +215,7 @@ def ResultDetailView(request,student):
                 grade_ub_list.append(grade_lb_list[i].lb-1)
             
             gradebook_with_ub =zip(gradeBook,grade_ub_list)
-
+            graph_data = get_chart_data(student,session,term)
             bulk[result.student.id] = {
                 "student": result.student,
                 "subjects": subjects,
@@ -229,7 +230,8 @@ def ResultDetailView(request,student):
                 "overall_grade":overall_grade,
                 "report_dates":report_dates,
                 "total_attendance":total_attendance,
-                "student_attendance":student_attendance               
+                "student_attendance":student_attendance,
+                 "graph":graph_data               
                  }
             get_result_summary(student,session,term,total=total_total,grade=overall_grade,attendance=total_attendance)
       
@@ -290,7 +292,7 @@ def ClassResultDetailView(request,clsid):
                 term_attendance_res = Attendance.objects.filter(student_id=student,session_year_id=request.current_session_id)
                 total_attendance= term_attendance_res.count()
                 student_attendance= term_attendance_res.aggregate(stu_attendance=Count(Case(When(status=True,then=1))))['stu_attendance']
-                
+                conductInterestRemarks =ConductInterestRemarks.objects.get(student=student)
                 #print("Student_attendance:", student_attendance['stu_attendance'])
                 studentClass= result.student.course_id
                 classSize = Student.objects.filter(course_id=studentClass).count()
@@ -306,7 +308,7 @@ def ClassResultDetailView(request,clsid):
                     grade_ub_list.append(grade_lb_list[i].lb-1)
                 
                 gradebook_with_ub =zip(gradeBook,grade_ub_list)
-
+                graph_data = get_chart_data(student,session,term)
                 bulk[result.student.id] = {
                     "student": result.student,
                     "subjects": subjects,
@@ -320,14 +322,17 @@ def ClassResultDetailView(request,clsid):
                     "ClassSize":classSize,
                     "report_dates":report_dates,
                     "total_attendance":total_attendance,
-                    "student_attendance":student_attendance
+                    "student_attendance":student_attendance,
+                    "cir":conductInterestRemarks,
+                    "graph":graph_data
                 }
                
                 # for i,j in gradebookall:
                 #     print("Zip list:", i,j,i.lb,i.remark)
             get_result_summary(student,session,term,total=total_total,grade=overall_grade,attendance=total_attendance)
+           
             results={}
-        #print("Bulk results: ",bulk)
+        print("Bulk results: ",bulk[2]['graph'])
         context = {"results": bulk}
         
         return render(request, "student_result/all_results_list.html", context)
@@ -560,6 +565,7 @@ def get_result_summary(student,session,term,**kwargs):
     else:
         stud=student
 
+    ResultSummary.objects.filter(student=stud,session=session,term=term).delete()
     instance, created = ResultSummary.objects.get_or_create(student=stud,session=session,term=term,**data)
 
     if not created:
@@ -568,6 +574,24 @@ def get_result_summary(student,session,term,**kwargs):
             ResultSummary.objects.filter(student=student).update(total=data['total'],grade=data['grade'],attendance=data['attendance'])
 
     return None
+
+def get_chart_data(student,session,term):
+    means =[]
+    labels =['Student Overall Score','Class Min','Class Average','Class Max']
+    data ={}
+    data['labels']=labels
+
+    rs= ResultSummary.objects.all()
+    student_score =rs.filter(student=student).aggregate( Sum("total"))['total__sum']
+    cls_avg =rs.aggregate(Avg("total"))['total__avg']
+    cls_min = rs.aggregate(Min("total"))['total__min']
+    cls_max =rs.aggregate(Max("total"))['total__max']
+    means.extend([student_score,cls_min,cls_avg,cls_max])
+
+    data['means']= means
+
+    #print("Sum is:" ,student_score,cls_avg,cls_min,cls_max)
+    return data
 
 
 '''cir abbreviation for conduct interest remarks'''

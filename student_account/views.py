@@ -87,6 +87,7 @@ class ClassInvoiceCreateView(LoginRequiredMixin, CreateView):
                 if formset.is_valid():
                     formset.instance = self.object
                     formset.save()
+           
         return redirect("invoice-list")
 
 class InvoiceDetailView(LoginRequiredMixin, DetailView):

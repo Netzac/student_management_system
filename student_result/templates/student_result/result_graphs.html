@@ -1,0 +1,60 @@
+{% load static %}
+<section class="content">
+    <!-- jQuery -->
+<script src="{% static "jquery/jquery.min.js"  %}"></script>
+<div>
+    <div class="row justify-content-center responsive">
+        <div class="lg-col-8">
+            <canvas id="{{'meanChart'}}{{key}}" width="500" height="300">
+
+            </canvas>
+        </div>
+        
+        <div class="lg-col-2">
+            
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+    
+          //-------------
+          //- PIE CHART -
+          //-------------
+          console.log({{result.graph.labels|safe}})
+          var lineData        = {
+            labels: {{result.graph.labels|safe}},
+            datasets: [
+              {
+                data:{{result.graph.means}},
+                label:"Student Performance Against Class",
+                backgroundColor: 'rgba(75,192,192,1)',
+                borderColor: 'rgba(75,192,192,0.2'
+              }
+            ]
+          }
+          // Get context with jQuery - using jQuery's .get() method.
+          id="#" + "meanChart"+{{key|safe}}
+          console.log(id)
+          var ctx = $(id).get(0).getContext('2d')
+          var pieData        = lineData;
+          var pieOptions     = {
+                scales:{
+                    yAxes:[{ticks:{beginAtzero:true}}]
+                },
+                responsive : true
+          }
+          //Create pie or douhnut chart
+          // You can switch between pie and douhnut using the method below.
+          var meanChart = new Chart(ctx, {
+            type: 'line',
+            data: lineData,
+            options: pieOptions      
+          })
+    
+    
+        })
+    
+</script>
+  
+</section>

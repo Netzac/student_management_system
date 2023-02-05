@@ -45,7 +45,7 @@
                 <div class="inner">
                   <h3>{{ course_count }}</h3>
 
-                  <p>Total Courses</p>
+                  <p>Total Classes</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -97,7 +97,7 @@
               <!-- DONUT CHART -->
               <div class="card card-danger">
                 <div class="card-header">
-                  <h3 class="card-title">Total Subjects in Each Course</h3>
+                  <h3 class="card-title">Total Subjects in Each Class</h3>
 
                   <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -121,7 +121,7 @@
               <!-- PIE CHART -->
               <div class="card card-info">
                 <div class="card-header">
-                  <h3 class="card-title">Total Student in Each Course</h3>
+                  <h3 class="card-title">Total Students in Each Class</h3>
 
                   <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -140,7 +140,7 @@
               <!-- PIE CHART -->
               <div class="card card-info">
                 <div class="card-header">
-                  <h3 class="card-title">Total Students in Each Subject</h3>
+                  <h3 class="card-title">Gender Distribution</h3>
 
                   <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -315,13 +315,13 @@
       })
 
       // Total Students in Each Subject
-      var student_count_list_in_subject = {{ student_count_list_in_subject }}
-      var subject_list = {{ subject_list|safe }}
+      var gender_count = {{ gender_list_count }}
+      var gender_list = {{ gender_list|safe }}
       var pieData3 = {
-        labels: subject_list,
+        labels: gender_list,
         datasets: [
           {
-            data: student_count_list_in_subject,
+            data: gender_count,
             backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
           }
         ]

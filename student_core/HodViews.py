@@ -10,6 +10,8 @@ from django.urls import reverse
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 
+from django.db import models
+
 from django.views.generic import ListView, TemplateView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
@@ -91,6 +93,20 @@ def admin_home(request):
         student_attendance_leave_list.append(leaves+absent)
         student_name_list.append(student.admin.first_name)
 
+    '''For Gender Distribution'''
+    from django.db.models import Count
+    gender_obj = Gender.objects.all()
+    gender_list = [gender.gender_name for gender in gender_obj]
+  
+    print("Gender list :", gender_list)
+    gender_count = []
+    gender_distr = Students.objects.values("gender").annotate(g_count=Count("id"))
+    gender_count = [gender['g_count'] for gender in gender_distr]
+    diff = len(gender_list)-len(gender_count)
+    extra = [0]*diff
+    gender_count.extend(extra)
+
+    print("Gender_distr:", gender_count)
 
     context={
         "all_student_count": all_student_count,
@@ -108,6 +124,8 @@ def admin_home(request):
         "student_attendance_present_list": student_attendance_present_list,
         "student_attendance_leave_list": student_attendance_leave_list,
         "student_name_list": student_name_list,
+        "gender_list":gender_list,
+        "gender_list_count":gender_count
     }
     return render(request, "hod_template/home_content.html", context)
 
