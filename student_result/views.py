@@ -21,7 +21,7 @@ from django.template.loader import get_template
 from django.http import HttpResponse, Http404
 from io import BytesIO
 
-from student_core.models import Attendance, ClassTeacher, ConductInterestRemarks, Courses, Students as Student
+from student_core.models import Attendance, ClassTeacher, ConductInterestRemarks, Courses, Students as Student, Subjects
 from student_result.utils import score_overall_grade,renderPdf
 from student_core.forms import ConductInterestRemarksFormset
 from .forms import CreateResults, EditResults,EditExResults
@@ -184,6 +184,7 @@ def ResultDetailView(request,student):
         studentClass=''
         classSize=0
         overall_grade=[]
+        computeChart =True
         for result in results:
             test_total = 0
             exam_total = 0
@@ -215,7 +216,10 @@ def ResultDetailView(request,student):
                 grade_ub_list.append(grade_lb_list[i].lb-1)
             
             gradebook_with_ub =zip(gradeBook,grade_ub_list)
-            graph_data = get_chart_data(student,session,term)
+            if computeChart:
+                 graph_data = get_chart_data(student,session,term)
+                 computeChart=False
+                 
             bulk[result.student.id] = {
                 "student": result.student,
                 "subjects": subjects,
@@ -231,11 +235,16 @@ def ResultDetailView(request,student):
                 "report_dates":report_dates,
                 "total_attendance":total_attendance,
                 "student_attendance":student_attendance,
-                 "graph":graph_data               
+                "graph":graph_data          
                  }
             get_result_summary(student,session,term,total=total_total,grade=overall_grade,attendance=total_attendance)
       
-        context = {"results": bulk}
+        mean_labels,subject_labels= get_chart_labels()
+        graph_labels ={"mean_labels":mean_labels,
+                    "subject_labels":subject_labels
+        }
+        #print("Bulk results: ",bulk[2]['graph'])
+        context = {"results": bulk,"graph":graph_labels}
        
         return render(request, "student_result/all_results.html", context)
 
@@ -249,6 +258,7 @@ def ClassResultDetailView(request,clsid):
     #     context= super().get_context_data(**kwargs)
         session =request.current_session
         term = request.current_term
+        computeChart=True
 
         try:
             school = School.objects.all().first()
@@ -308,7 +318,11 @@ def ClassResultDetailView(request,clsid):
                     grade_ub_list.append(grade_lb_list[i].lb-1)
                 
                 gradebook_with_ub =zip(gradeBook,grade_ub_list)
-                graph_data = get_chart_data(student,session,term)
+
+                if computeChart:
+                 graph_data = get_chart_data(student,session,term)
+                 computeChart=False
+
                 bulk[result.student.id] = {
                     "student": result.student,
                     "subjects": subjects,
@@ -324,7 +338,8 @@ def ClassResultDetailView(request,clsid):
                     "total_attendance":total_attendance,
                     "student_attendance":student_attendance,
                     "cir":conductInterestRemarks,
-                    "graph":graph_data
+                    "graph":graph_data,
+                   
                 }
                
                 # for i,j in gradebookall:
@@ -332,8 +347,12 @@ def ClassResultDetailView(request,clsid):
             get_result_summary(student,session,term,total=total_total,grade=overall_grade,attendance=total_attendance)
            
             results={}
-        print("Bulk results: ",bulk[2]['graph'])
-        context = {"results": bulk}
+        mean_labels,subject_labels= get_chart_labels()
+        graph_labels ={"mean_labels":mean_labels,
+                    "subject_labels":subject_labels
+        }
+        #print("Bulk results: ",bulk[2]['graph'])
+        context = {"results": bulk,"graph":graph_labels}
         
         return render(request, "student_result/all_results_list.html", context)
 
@@ -559,7 +578,7 @@ from django.db import transaction
 def get_result_summary(student,session,term,**kwargs):
 
     data = kwargs
-    print("Student type",type(student))
+    #print("Student type",type(student))
     if  type(student) is str:
         stud = Student.objects.get(id=student)
     else:
@@ -576,22 +595,61 @@ def get_result_summary(student,session,term,**kwargs):
     return None
 
 def get_chart_data(student,session,term):
+    ''' Returns a tuple of computed values as data and graph labels'''
     means =[]
-    labels =['Student Overall Score','Class Min','Class Average','Class Max']
     data ={}
-    data['labels']=labels
-
+    subj_total=[]
+    cls_subj_avg =[]
+    test_scores=[]
+    cls_test_avg=[]
+    #data['labels']=labels
+    ''' Computing student means'''
     rs= ResultSummary.objects.all()
     student_score =rs.filter(student=student).aggregate( Sum("total"))['total__sum']
     cls_avg =rs.aggregate(Avg("total"))['total__avg']
     cls_min = rs.aggregate(Min("total"))['total__min']
     cls_max =rs.aggregate(Max("total"))['total__max']
     means.extend([student_score,cls_min,cls_avg,cls_max])
-
     data['means']= means
 
-    #print("Sum is:" ,student_score,cls_avg,cls_min,cls_max)
+    '''Computing total score per subject '''
+    all_result = Result.objects.select_related("subject").all()
+    result = all_result.filter(student=student)
+
+    subjects= result.annotate(subject_total=(F("test_score")+F("exam_score")))
+    class_subjects = all_result.values('subject').annotate(cls_avg=(Avg((F("test_score")+F("exam_score")))))
+
+    tests= result.values('test_score')
+    class_tests = all_result.values('subject').annotate(test_avg=(Avg((F("test_score")))))
+
+    for sub in subjects:
+        subj_total.append(sub.subject_total)
+    data["subjects"] = subj_total
+    data['subjects_avg'] =cls_subj_avg
+
+    for sub in class_subjects:
+       cls_subj_avg.append(sub['cls_avg'])
+       #print("class_avg is", sub['cls_avg'])
+
+    for test in tests:
+       #cls_subj_avg.append(sub['cls_avg'])
+       test_scores.append( test['test_score'])
+       
+    for test in class_tests:
+       #cls_subj_avg.append(sub['cls_avg'])
+       cls_test_avg.append( test['test_avg'])
+       print("test avgs:",test['test_avg'])
+
+    data['tests'] =test_scores
+    data['tests_avg'] =cls_test_avg    
     return data
+
+def get_chart_labels():
+    mean_labels =['Student Overall Score','Class Min','Class Average','Class Max']
+    subjects_labels = get_subject_list()
+
+    return mean_labels,subjects_labels
+
 
 
 '''cir abbreviation for conduct interest remarks'''
@@ -734,3 +792,13 @@ class pdf(View):
         context= {}
         article_pdf = renderPdf("student_result/all_results.html", context)
         return HttpResponse(article_pdf, content_type='application/pdf')
+
+def get_subject_list():
+    subject_all = Subjects.objects.all()
+    subject_list = []
+    for subject in subject_all:
+        subject_list.append(subject.subject_name)
+
+    #print("Subject list", subject_list)
+       
+    return subject_list

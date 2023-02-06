@@ -11,7 +11,7 @@
 
 <section class="content">
     
-    <div class="row text-align-left">
+    <div class="row text-align-left mt-5">
       <div class="col-sm-auto mt-1 ">
         <p class="text-left">Attendance:</p>
      </div>
@@ -28,7 +28,7 @@
     <p>Promoted To:</p>
   </div>
   <div class="col-sm-2 mt-1">
-    <p class="border-bottom border-dark text-left">{{result.PromotedTo}}</p>
+    <p class="border-bottom border-dark text-left">{{result.PromotedTo|default:"N/A"}}</p>
    </div>
     </div>
 
@@ -80,19 +80,19 @@
 
 
 
-    <div class="row text-align-left">
-      <div class="col-sm-auto mt-1">
+    <div class="row text-align-left mt-5 mb-5">
+      <div class="col-sm-auto mt-5">
         <p class="text-left">School Seal:</p> 
      </div>
-     <div class="col-sm-4 mt-1">
+     <div class="col-sm-4 mt-5">
       <div class="">
         <img src={{result.school.seal.url}} style="width:7em; height: 3em;" class=" border-bottom border-dark text-left" >
        </div>
      </div>
-     <div class="col-sm-auto  mt-1">
+     <div class="col-sm-auto  mt-5">
       <p class="text-left">Grade Scale:</p> 
     </div> 
-    <div class="col-sm-3 mt-1 ">
+    <div class="col-sm-3 mt-5 ">
       
         <table class="table table-bordered border-dark table-sm">
           <thead class="thead-light text-center">

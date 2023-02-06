@@ -2,16 +2,22 @@
 <section class="content">
     <!-- jQuery -->
 <script src="{% static "jquery/jquery.min.js"  %}"></script>
-<div>
+<div class="mt-5 mb-5">
+    <div class="row justify-content-center mt-4 mb-4"><h5>Student Performance Graphical Analysis</h5></div>
     <div class="row justify-content-center responsive">
-        <div class="lg-col-8">
-            <canvas id="{{'meanChart'}}{{key}}" width="500" height="300">
-
+        <div class="lg-col-4">
+            <canvas id="{{'meanChart'}}{{key}}" width="350" height="280">
             </canvas>
         </div>
         
-        <div class="lg-col-2">
-            
+        <div class="lg-col-4">
+            <canvas id="{{'subjectChart'}}{{key}}" width="350" height="280">
+            </canvas>
+        </div>
+
+        <div class="lg-col-4">
+            <canvas id="{{'testsChart'}}{{key}}" width="320" height="280">
+            </canvas>
         </div>
     </div>
 </div>
@@ -21,15 +27,15 @@
           //-------------
           //- PIE CHART -
           //-------------
-          console.log({{result.graph.labels|safe}})
+          console.log({{graph.labels|safe}})
           var lineData        = {
-            labels: {{result.graph.labels|safe}},
+            labels: {{graph.mean_labels|safe}},
             datasets: [
               {
                 data:{{result.graph.means}},
                 label:"Student Performance Against Class",
-                backgroundColor: 'rgba(75,192,192,1)',
-                borderColor: 'rgba(75,192,192,0.2'
+                backgroundColor: 'rgba(300,100,200,0.8)',
+                borderColor: 'rgba(20,50,192,0.2'
               }
             ]
           }
@@ -51,7 +57,86 @@
             data: lineData,
             options: pieOptions      
           })
-    
+
+          // Student performance per subjects
+
+          console.log({{graph.labels|safe}})
+          var lineData        = {
+            labels: {{graph.subject_labels|safe}},
+            datasets: [
+              {
+                data:{{result.graph.subjects}},
+                label:"Student Subjects Performance ",
+                backgroundColor: 'rgba(75,192,192,1)',
+                borderColor: 'rgba(250,200,100,0.5'
+              },
+              {
+                type:'line',
+                data:{{result.graph.subjects_avg}},
+                label:"Class Subjects Average Performance ",
+                backgroundColor: 'rgba(192,75,192,0.5)',
+                borderColor: 'rgba(0,0,100,0.5'
+              }
+            ]
+          }
+          // Get context with jQuery - using jQuery's .get() method.
+          id="#" + "subjectChart"+{{key|safe}}
+          console.log(id)
+          var ctx = $(id).get(0).getContext('2d')
+          var pieData        = lineData;
+          var pieOptions     = {
+                scales:{
+                    yAxes:[{ticks:{beginAtzero:true}}]
+                },
+                responsive : true
+          }
+          //Create pie or douhnut chart
+          // You can switch between pie and douhnut using the method below.
+          var meanChart = new Chart(ctx, {
+            type: 'bar',
+            data: lineData,
+            options: pieOptions      
+          })
+
+          // // Student Class Exercises Assessment
+
+          //console.log({{graph.labels|safe}})
+          var lineData        = {
+            labels: {{graph.subject_labels|safe}},
+            datasets: [
+              {
+                data:{{result.graph.tests}},
+                label:"Student Class Exercises Assessment ",
+                backgroundColor: 'rgba(75,192,192,1)',
+                borderColor: 'rgba(250,200,100,0.5'
+              },
+              {
+                type:'line',
+                data:{{result.graph.tests_avg}},
+                label:"General Class Exercises Assessment  ",
+                backgroundColor: 'rgba(192,75,192,0.5)',
+                borderColor: 'rgba(0,0,0,0'
+              }
+            ]
+          }
+          // Get context with jQuery - using jQuery's .get() method.
+          id="#" + "testsChart"+{{key|safe}}
+          console.log(id)
+          var ctx = $(id).get(0).getContext('2d')
+          var pieData        = lineData;
+          var pieOptions     = {
+                scales:{
+                    yAxes:[{ticks:{beginAtzero:true}}]
+                },
+                responsive : true
+          }
+          //Create pie or douhnut chart
+          // You can switch between pie and douhnut using the method below.
+          var meanChart = new Chart(ctx, {
+            type: 'bar',
+            data: lineData,
+            options: pieOptions      
+          })
     
         })
     

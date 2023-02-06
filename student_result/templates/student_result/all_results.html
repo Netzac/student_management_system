@@ -27,6 +27,7 @@
 {% for key, result in results.items %}
 
 {% include 'student_result/result_header.html' with SchoolName=result.school.name SchoolAddress=result.school.address logo=result.school.logo.url SchoolEmail=result.school.email SchoolPhone=result.school.phone SchoolBranch=result.school.branch %}
+{% include 'student_result/result_graphs.html' %}
 <section class="">
 
   <div class="row">
@@ -82,7 +83,7 @@
 
 </section>
 {% include 'student_result/result_footer.html' with gradeBook=result.gradeBook %}
-{% include 'student_result/result_graphs.html' %}
+
 
 {% endfor %}
 {% endblock main_content %}
