@@ -1,4 +1,6 @@
+from cProfile import label
 from enum import unique
+from tabnanny import verbose
 from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.urls import reverse
@@ -73,7 +75,7 @@ class InvoiceItem(models.Model):
 
 class Receipt(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
-    amount_paid = models.IntegerField()
+    amount_paid = models.IntegerField(verbose_name="Amount")
     date_paid = models.DateField(default=timezone.now)
     comment = models.CharField(max_length=200, blank=True)
 

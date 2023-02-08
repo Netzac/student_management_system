@@ -51,8 +51,9 @@
   <script src="{% static '/extra/payment-gateway.js' %}"> </script>
 
   <script>
-  
-
+    var amt = document.getElementById('id_amount_paid');
+    amt.value={{invoice.balance}}
+    console.log({{invoice.balance}})
     // $(function(){
 
     function payOnline() {

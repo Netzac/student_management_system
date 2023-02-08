@@ -1,5 +1,6 @@
 {% extends 'hod_template/base_template.html' %}
 {% load static %}
+{% load customfunction %}
 {% block page_title %}
     Students Result
 {% endblock page_title %}
@@ -43,8 +44,9 @@
             <tr>
               <th></th>
               <th>Subject</th>
-              <th>Class Score</th>
-              <th>Exam Score</th>
+              <th>Class Score<br>50%</th>
+              <th>Exam Score<br>100%</th>
+              <th>Exam Score<br/><verbatim> 50% </verbatim> </th>
               <th>Total Score</th>
               <th>Grade</th>
               <th>Remark</th>
@@ -57,6 +59,7 @@
                 <td>{{ subject.subject }}</td>
                 <td>{{ subject.test_score }}</td>
                 <td>{{ subject.exam_score }}</td>
+                <td>{{ subject.exam_score |multiply:0.5 }}</td>
                 <td>{{ subject.total_score }}</td>
                 <td>{{ subject.grade.0 }}</td>
                 <td>{{ subject.grade.1 }}</td>

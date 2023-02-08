@@ -1,5 +1,6 @@
 #from django.shortcuts import render, redirect, get_object_or_404
 #from ..models import Category, Writer, Book
+import math
 from django.http import HttpResponse
 from django.db.models import Avg, Max, Min, Sum
 from django.utils.safestring import mark_safe
@@ -50,3 +51,7 @@ def averagerating(value, args):
 @register.filter(name='subtotal')
 def subtotal(value, args):
 	return value*args
+
+@register.filter(name='multiply')
+def multiply(value, args):
+	return math.ceil(value*args)
