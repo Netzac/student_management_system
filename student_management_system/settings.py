@@ -99,6 +99,14 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '',
     }
+    #   'default' : {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'cpihstje',
+    #     'USER': 'cpihstje',
+    #     'PASSWORD': 'HGUDEym3spUCcPbcXvTkQBFpgByIgP2i',
+    #     'HOST': 'rogue.db.elephantsql.com',
+    #     'PORT': '',
+    # }
 }
 
 

@@ -217,8 +217,8 @@ def ResultDetailView(request,student):
             
             gradebook_with_ub =zip(gradeBook,grade_ub_list)
             if computeChart:
-                 graph_data = get_chart_data(student,session,term)
-                 computeChart=False
+                 graph_data = get_chart_data(result.student,session,term)
+                 computeChart=True
                  
             bulk[result.student.id] = {
                 "student": result.student,
@@ -320,8 +320,8 @@ def ClassResultDetailView(request,clsid):
                 gradebook_with_ub =zip(gradeBook,grade_ub_list)
 
                 if computeChart:
-                 graph_data = get_chart_data(student,session,term)
-                 computeChart=False
+                 graph_data = get_chart_data(result.student,session,term)
+                 computeChart=True
 
                 bulk[result.student.id] = {
                     "student": result.student,
@@ -603,9 +603,13 @@ def get_chart_data(student,session,term):
     test_scores=[]
     cls_test_avg=[]
     #data['labels']=labels
+    
+    cls = student.course_id #Courses.objects.filter(id=student.course_id)
+    cls_list =cls.students_set.all()
+    print('class list is', cls_list)
     ''' Computing student means'''
-    rs= ResultSummary.objects.all()
-    student_score =rs.filter(student=student).aggregate( Sum("total"))['total__sum']
+    rs= ResultSummary.objects.filter(student__in=cls_list)
+    student_score =rs.filter(student=student.id).aggregate( Sum("total"))['total__sum']
     cls_avg =rs.aggregate(Avg("total"))['total__avg']
     cls_min = rs.aggregate(Min("total"))['total__min']
     cls_max =rs.aggregate(Max("total"))['total__max']
