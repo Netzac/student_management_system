@@ -560,7 +560,7 @@ def load_class_scores(current_session,current_term,clsid,students):
             current_class=result.current_class,
             subject=result.subject,
             student=result.student,
-            ).aggregate(Avg('score'))
+            ).aggregate(Sum('score'))
 
            '''Update Exams Results'''
            Result.objects.filter(
@@ -569,7 +569,7 @@ def load_class_scores(current_session,current_term,clsid,students):
            current_class=result.current_class,
            subject=result.subject,
            student=result.student,
-            ).update(test_score=math.ceil(res['score__avg']))
+            ).update(test_score=math.ceil(res['score__sum']))
            
            #print('Ex score is',math.ceil(res['score__avg']))
     return None
