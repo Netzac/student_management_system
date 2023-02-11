@@ -15,14 +15,13 @@ def student_home(request):
     attendance_absent = AttendanceReport.objects.filter(student_id=student_obj, status=False).count()
 
     course_obj = Courses.objects.get(id=student_obj.course_id.id)
-    total_subjects = Subjects.objects.filter(course_id=course_obj).count()
-
+    total_subjects = Subjects .objects.all().count()
     subject_name = []
     data_present = []
     data_absent = []
-    subject_data = Subjects.objects.filter(course_id=student_obj.course_id)
+    subject_data = Subjects.objects.all()
     for subject in subject_data:
-        attendance = Attendance.objects.filter(subject_id=subject.id)
+        attendance = Attendance.objects.all()
         attendance_present_count = AttendanceReport.objects.filter(attendance_id__in=attendance, status=True, student_id=student_obj.id).count()
         attendance_absent_count = AttendanceReport.objects.filter(attendance_id__in=attendance, status=False, student_id=student_obj.id).count()
         subject_name.append(subject.subject_name)

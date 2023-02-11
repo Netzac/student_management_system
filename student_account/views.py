@@ -215,14 +215,15 @@ def bulk_invoice(request):
 from paystackapi.transaction import Transaction
 
 @csrf_exempt
-def verify_online_payment(request,ref,invoice):
+def verify_online_payment(request,ref,invoice,amount):
+    
     redirect_url = reverse('receipt-create')
     response = Transaction.verify(reference=str(ref))
     print("response: ",response,ref)
 
    
     invoice = Invoice.objects.get(pk=invoice)
-    obj = Receipt(invoice=invoice,amount_paid=10)
+    obj = Receipt(invoice=invoice,amount_paid=amount)
     obj.save()
     messages.success(request,"Thank You! Payment made successfully.")
     return redirect("invoice-list")

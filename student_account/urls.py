@@ -36,5 +36,5 @@ urlpatterns = [
     path("feetype/<int:pk>/update/", FeeTypeUpdateView.as_view(), name="feetype-update"),
     path("feetype/<int:pk>/delete/", FeeTypeDeleteView.as_view(),name="feetype-delete"),
 
-    path("ajax/verify-online-payment/<ref>/<invoice>/",verify_online_payment,name="verify-online-payment")
+    path("ajax/verify-online-payment/<ref>/<invoice>/<amount>/",verify_online_payment,name="verify-online-payment")
 ]

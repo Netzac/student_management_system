@@ -1,6 +1,6 @@
 {% extends 'hod_template/base_template.html' %}
 {% load widget_tweaks %}
-
+{% load customfunction %}
 {% block page_title %}
     Exams Results Mark Sheet
 {% endblock page_title %}
@@ -20,7 +20,7 @@
         <th>#</th>
         <th>Name</th>
         <th>Subject</th>
-        <th>Test Score</th>
+        <th>Class Score</th>
         <th>Exam Score</th>
         <th>Total</th>
         <th>Delete</th>
@@ -44,7 +44,7 @@
             {{form.instance.subject| upper}} 
             {%endifchanged %}</td>
           <td style="width: 10%; pointer-events: none;">{{form.test_score | add_class:"form-control form-control-sm "}} </td>
-          <td style="width: 10%;">{{form.exam_score | add_class:"form-control form-control-sm"}}</td>
+          <td style="width: 10%;">{{form.exam_score| add_class:"form-control form-control-sm"}}</td>
           <td>{{form.instance.total_score}}</td>
           <td>{{form.DELETE}}</td>
 

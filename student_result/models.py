@@ -23,6 +23,10 @@ class Result(models.Model):
     test_score = models.IntegerField(default=0)
     exam_score = models.IntegerField(default=0)
 
+    def clean(self):
+        if self.exam_score > 0:
+            self.exam_score = self.exam_score * 0.5
+
     class Meta:
         ordering = ["subject"]
 

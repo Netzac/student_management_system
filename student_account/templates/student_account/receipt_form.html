@@ -58,12 +58,13 @@
 
     function payOnline() {
         callback_url= document.getElementById('payOnlineBtn').getAttribute('data-url')
-        invoice =document.getElementById('invoice-id').value
+       const  invoice =document.getElementById('invoice-id').value
+       const amount_paid = document.getElementById('id_amount_paid').value
         const pt = new PaystackPop();
         pt.newTransaction({
         key: 'pk_test_3d5f8b0a0a0a186389674dec3ee907cb471c319d', // Replace with your public key
         email: document.getElementById('email-address').value,
-        amount: document.getElementById('id_amount_paid').value * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
+        amount:  amount_paid * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
         currency: 'GHS', // Use GHS for Ghana Cedis or USD for US Dollars
         //ref: 'YOUR_REFERENCE', // Replace with a reference you generated
       onSuccess: (transaction) => {
@@ -72,7 +73,7 @@
           alert('Thank you! Your payment was successful! Reference: ' + ref );
         // Make an AJAX call to your server with the reference to verify the transaction
           $.ajax({
-            url: '../ajax/verify-online-payment/' + ref + '/' + invoice + '/',
+            url: '../ajax/verify-online-payment/' + ref + '/' + invoice + '/' + amount_paid + '/',
             method: 'post',
             error: err => {
 			        console.log();
