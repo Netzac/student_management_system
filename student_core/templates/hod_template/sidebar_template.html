@@ -438,6 +438,16 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
+                  {% url 'account-dashboard' as dashboard %}
+                  <a href="{{ dashboard }}" class="nav-link {% if request.path == dashboard %} active {% endif %}">
+                    <i class="nav-icon fas fa-bars"></i>
+                    <p>
+                     Acounts Dashboard
+                    </p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
                   {% url 'invoice-list' as invoice_list %}
                   <a href="{{ invoice_list }}" class="nav-link {% if request.path == invoice_list %} active {% endif %}">
                     <i class="nav-icon fas fa-bars"></i>

@@ -16,7 +16,7 @@ from .views import (
     ReceiptUpdateView,
     FeeTypeCreateView, FeeTypeUpdateView, FeeTypeDeleteView, FeeTypeListView,ClassInvoiceCreateView,
     bulk_invoice,
-    verify_online_payment,
+    verify_online_payment,dashboard
 )
 
 urlpatterns = [
@@ -30,7 +30,7 @@ urlpatterns = [
     path("receipt/<int:pk>/update/", ReceiptUpdateView.as_view(), name="receipt-update"),
     path("bulk-invoice/", bulk_invoice, name="bulk-invoice"),
 
-
+    path("dashboard/",dashboard, name="account-dashboard"),
     path("feetype/list/", FeeTypeListView.as_view(), name="feetype-list"),
     path("create", FeeTypeCreateView.as_view(), name="feetype-create"),
     path("feetype/<int:pk>/update/", FeeTypeUpdateView.as_view(), name="feetype-update"),

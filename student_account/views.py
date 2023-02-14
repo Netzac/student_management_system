@@ -216,6 +216,7 @@ from paystackapi.transaction import Transaction
 
 @csrf_exempt
 def verify_online_payment(request,ref,invoice,amount):
+
     
     redirect_url = reverse('receipt-create')
     response = Transaction.verify(reference=str(ref))
@@ -227,3 +228,53 @@ def verify_online_payment(request,ref,invoice,amount):
     obj.save()
     messages.success(request,"Thank You! Payment made successfully.")
     return redirect("invoice-list")
+
+
+from django.db.models import Sum,Count
+# from functools import reduce
+# from queryset_sequence import QuerySetSequence
+
+def dashboard(request):
+
+    rs = Student.objects.all()
+    rs_count =rs.count()
+    rs_invoices_unfiltered = Invoice.objects.all().order_by('class_for')
+    rs_invoices = rs_invoices_unfiltered.values_list('id' ,flat =True)
+    rs_receipts = Receipt.objects.filter(invoice__in = rs_invoices)
+    rs_receipts_count = rs_receipts.distinct('invoice__student').count()
+    rs_inv_item_amt = InvoiceItem.objects.aggregate(Sum('amount'))['amount__sum']
+    rs_recipts_amt = Receipt.objects.aggregate(Sum('amount_paid'))['amount_paid__sum']
+    
+    rs_arrears = {}
+    rs_fully_paid ={}
+    cls_labels = Courses.objects.all().values_list('course_name', flat=True)
+    key = 0
+    for inv in rs_invoices_unfiltered:
+        key = str(inv.class_for.id)
+        bal =inv.balance()
+        if bal!=0:
+            rs_arrears.update({key:rs_arrears.get(key,0)+1})
+            #cls_labels.add(inv.class_for.course_name)
+        elif bal==0:
+            rs_fully_paid.update({key:rs_arrears.get(key,0)+1})
+            #cls_labels.add(inv.class_for.course_name)
+
+
+   
+      
+       
+    arrears_list =list(rs_arrears.values())
+    cls_list  = list(cls_labels)
+
+    print('Arrears: ',arrears_list,cls_list )
+    #rs_invoices_class = rs_invoices_unfiltered.values('student__course_id').annotate(cls_inv=Count('invoice_invoice_set.all()'))
+
+    context={"total_students":rs_count,
+             "paying_students" :rs_receipts_count,
+              "none_paying_students":rs_count-rs_receipts_count,
+              "total_arrears": rs_inv_item_amt-rs_recipts_amt,
+              "total_paid": rs_recipts_amt,
+              "cls_labels": cls_list,
+              "arrears":arrears_list,
+              "fully_paid":list(rs_fully_paid)}
+    return render(request,'student_account/dashboard.html',context)
