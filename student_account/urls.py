@@ -16,7 +16,7 @@ from .views import (
     ReceiptUpdateView,
     FeeTypeCreateView, FeeTypeUpdateView, FeeTypeDeleteView, FeeTypeListView,ClassInvoiceCreateView,
     bulk_invoice,
-    verify_online_payment,dashboard
+    verify_online_payment,dashboard,MonthlyBillsPayments
 )
 
 urlpatterns = [
@@ -35,6 +35,8 @@ urlpatterns = [
     path("create", FeeTypeCreateView.as_view(), name="feetype-create"),
     path("feetype/<int:pk>/update/", FeeTypeUpdateView.as_view(), name="feetype-update"),
     path("feetype/<int:pk>/delete/", FeeTypeDeleteView.as_view(),name="feetype-delete"),
+
+    path('monthlypayment/', MonthlyBillsPayments.as_view(),name='monthlypayment'),
 
     path("ajax/verify-online-payment/<ref>/<invoice>/<amount>/",verify_online_payment,name="verify-online-payment")
 ]

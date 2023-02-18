@@ -24,6 +24,7 @@ class FeeType(models.Model):
         
 class Invoice(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     session = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
     term = models.ForeignKey(AcademicTerm, on_delete=models.CASCADE)
     class_for = models.ForeignKey(StudentClass, on_delete=models.CASCADE)
@@ -38,7 +39,7 @@ class Invoice(models.Model):
     class Meta:
         ordering = ["student", "term"]
     def __str__(self):
-        return f"{self.student}"
+        return f"{self.id}_________________{self.student}____________{self.created_at.strftime('%d %b %Y')}"
 
     def balance(self):
         payable = self.total_amount_payable()
@@ -72,12 +73,15 @@ class InvoiceItem(models.Model):
     description = models.CharField(max_length=200)
     amount = models.IntegerField()
 
+    objects = models.Manager()
 
 class Receipt(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     amount_paid = models.IntegerField(verbose_name="Amount")
-    date_paid = models.DateField(default=timezone.now)
+    date_paid = models.DateField(default=timezone.now,verbose_name="Date Paid")
     comment = models.CharField(max_length=200, blank=True)
+
+    objects = models.Manager()
 
     def __str__(self):
         return f"Receipt on {self.date_paid}"

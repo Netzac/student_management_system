@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     "widget_tweaks",
     'crispy_forms',
+    'slick_reporting',
 
     'student_core',
     'student_account',

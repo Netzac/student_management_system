@@ -31,6 +31,8 @@
 
   <link rel="stylesheet" href="{% static 'plugins/Datatables/datatables.min.css' %}" />
 
+  <link rel="stylesheet" href="{% static 'select2/css/select2.min.css' %}" />
+
  
 
   <!-- <link rel="stylesheet" href="{% static 'admin/css/materialize.min.css' %}" /> -->
@@ -197,6 +199,11 @@
 
 <script src="{% static 'dist/js/jquery.formset.js' %}"> </script>
 <script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+<script src="{% static 'select2/js/select2.min.js' %}"> </script>
+
+<script>$(document).ready(function () {
+  $('select').select2();
+})</script>
 
 {% comment %} For Custom JS {% endcomment %}
 {% block custom_js %}

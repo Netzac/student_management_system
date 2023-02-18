@@ -128,7 +128,7 @@ class AcademicTermForm(ModelForm):
 class CurrentSessionForm(forms.Form):
     current_session = forms.ModelChoiceField(
         queryset=SessionYearModel.objects.all(),
-        help_text='Click <a href="/session/create/?next=current-session/">here</a> to add new session',
+        help_text='Click <a href="/add_session/">here</a> to add new session',
     )
     current_term = forms.ModelChoiceField(
         queryset=AcademicTerm.objects.all(),

@@ -1,3 +1,4 @@
+from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -278,3 +279,47 @@ def dashboard(request):
               "arrears":arrears_list,
               "fully_paid":list(rs_fully_paid)}
     return render(request,'student_account/dashboard.html',context)
+
+
+    '''Slick Reportingg starts here'''
+from slick_reporting.views import SlickReportView
+from slick_reporting.fields import SlickReportField   
+from django.utils.translation import gettext_lazy as _ 
+
+class MonthlyBillsPayments(SlickReportView):
+    # The model where you have the data
+    report_model = Receipt
+    template_name ='student_account/monthly_report.html'
+    
+    # the main date field used for the model.
+    date_field = 'date_paid' # or 'order__date_placed'
+    # this support traversing, like so
+    # date_field = 'order__date_placed'
+     # The columns you want to display
+    group_by = 'date_paid'
+
+    columns = ['date_paid',SlickReportField.create(method=Sum, field='amount_paid', name='amount_paid__sum', verbose_name=_('Total Paid '))]
+               # a Slick Report Field is responsible for carrying on the needed calculation(s).]
+     # Charts
+    charts_settings = [
+     {
+        'type': 'line',
+        'data_source': ['amount_paid__sum'],
+        'title_source': ['date_paid'],
+        'title':'A Bar Cbart Payments By Date '
+     }
+    ]
+    def format_row(self, row_obj):
+        """ A hook to format each row . This method gets called on each row in the results.
+        :param row_obj: a dict representing a single row in the results
+            :return: A dict representing a single row in the results
+            """
+        row_obj['date_paid'] = row_obj['date_paid'].strftime('%d %b %Y')#date(row_obj['date_paid'], 'd-m-y H:i')
+
+        return row_obj
+
+  
+
+    # A foreign key to group calculation on
+   
+   
