@@ -222,6 +222,7 @@ def ResultDetailView(request,student):
                  
             bulk[result.student.id] = {
                 "student": result.student,
+                "pic": result.student.profile_pic,
                 "subjects": subjects,
                 "test_total": test_total,
                 "exam_total": exam_total,
@@ -325,6 +326,7 @@ def ClassResultDetailView(request,clsid):
 
                 bulk[result.student.id] = {
                     "student": result.student,
+                    "pic": result.student.profile_pic,
                     "subjects": subjects,
                     "test_total": test_total,
                     "exam_total": exam_total,

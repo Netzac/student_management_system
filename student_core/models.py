@@ -128,7 +128,7 @@ class Students(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
     gender = models.ForeignKey(Gender, on_delete=models.DO_NOTHING)
-    profile_pic = models.FileField()
+    profile_pic = models.FileField(upload_to="students/",default="default.jpg",null=True,blank=True)
     address = models.TextField()
 
     delete_flag = models.IntegerField(default = 0)

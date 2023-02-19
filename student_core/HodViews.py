@@ -500,10 +500,12 @@ def add_student_save(request):
             if len(request.FILES) != 0:
                 profile_pic = request.FILES['profile_pic']
                 fs = FileSystemStorage()
-                filename = fs.save(profile_pic.name, profile_pic)
+                filename = fs.save(f"student/{profile_pic.name}", profile_pic)
                 profile_pic_url = fs.url(filename)
             else:
-                profile_pic_url = None
+                fs = FileSystemStorage()
+                filename ="default.jpg"
+                profile_pic_url = fs.url(filename)
 
 
             # try:
@@ -589,7 +591,7 @@ def edit_student_save(request):
             if len(request.FILES) != 0:
                 profile_pic = request.FILES['profile_pic']
                 fs = FileSystemStorage()
-                filename = fs.save(profile_pic.name, profile_pic)
+                filename = fs.save(f"student/{profile_pic.name}", profile_pic)
                 profile_pic_url = fs.url(filename)
             else:
                 profile_pic_url = None
