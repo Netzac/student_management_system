@@ -39,7 +39,7 @@
           {% for invoice in object_list %}
             <tr class='clickable-row' data-href="{% url 'invoice-detail' invoice.id %}">
               <td>{{ forloop.counter}}</td>
-              <td>{{ invoice}}</td>
+              <td>{{ invoice.get_owner}}</td>
               <td>{{ invoice.session}}-{{ invoice.term}}</td>
               <td>{{ invoice.total_amount_payable | intcomma }}</td>
               <td>{{ invoice.total_amount_paid | intcomma }}</td>

@@ -24,7 +24,7 @@ class FeeType(models.Model):
         
 class Invoice(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True, verbose_name='Invoice Date')
     session = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
     term = models.ForeignKey(AcademicTerm, on_delete=models.CASCADE)
     class_for = models.ForeignKey(StudentClass, on_delete=models.CASCADE)
@@ -39,7 +39,10 @@ class Invoice(models.Model):
     class Meta:
         ordering = ["student", "term"]
     def __str__(self):
-        return f"{self.id}_________________{self.student}____________{self.created_at.strftime('%d %b %Y')}"
+        return f"{self.id}________________{self.student}________________{self.created_at.strftime('%d %b %Y')} '                       '"
+    
+    def get_owner(self):
+        return f"{self.id} | {self.student}"
 
     def balance(self):
         payable = self.total_amount_payable()

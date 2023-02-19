@@ -2,7 +2,7 @@
 {% load crispy_forms_tags i18n slick_reporting_tags static %}
 
 {% block page_title %}
-  <small>Invoice Payments Report</small>
+  <small>Bills Payment Report</small>
 {% endblock page_title %}
 
 {% block main_content %}
@@ -23,7 +23,7 @@
             </div>
             <div class="col-sm-3">
 
-                <a type="button" value="Reset" class="btn btn-success btn-lg btn-block mt-2  " href="{% url 'monthlypayment' %}">Reset</a>
+                <a type="button" value="Reset" class="btn btn-success btn-lg btn-block mt-2  " href="{% url 'report-by-range' %}">Reset</a>
             </div>
 
         </div>

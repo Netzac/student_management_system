@@ -286,10 +286,10 @@ from slick_reporting.views import SlickReportView
 from slick_reporting.fields import SlickReportField   
 from django.utils.translation import gettext_lazy as _ 
 
-class MonthlyBillsPayments(SlickReportView):
+class BillsPaymentByRange(SlickReportView):
     # The model where you have the data
     report_model = Receipt
-    template_name ='student_account/monthly_report.html'
+    template_name ='student_account/rpt_by_date.html'
     
     # the main date field used for the model.
     date_field = 'date_paid' # or 'order__date_placed'
@@ -301,13 +301,15 @@ class MonthlyBillsPayments(SlickReportView):
     columns = ['date_paid',SlickReportField.create(method=Sum, field='amount_paid', name='amount_paid__sum', verbose_name=_('Total Paid '))]
                # a Slick Report Field is responsible for carrying on the needed calculation(s).]
      # Charts
-    charts_settings = [
+    chart_settings = [
      {
-        'type': 'line',
+        'type': 'bar',
+        'engine_name': 'chartsjs',
         'data_source': ['amount_paid__sum'],
         'title_source': ['date_paid'],
-        'title':'A Bar Cbart Payments By Date '
-     }
+        'title':'Cbart Of Payments By Date',
+        'plot_total': True
+     },
     ]
     def format_row(self, row_obj):
         """ A hook to format each row . This method gets called on each row in the results.
@@ -321,5 +323,42 @@ class MonthlyBillsPayments(SlickReportView):
   
 
     # A foreign key to group calculation on
-   
+class BillsPaymentByMonth(SlickReportView):
+    
+    report_model = Receipt
+    template_name ='student_account/rpt_by_month.html'
+    date_field = 'date_paid'
+    group_by = 'invoice__created_at'
+    columns = ['invoice__created_at',
+               '__time_series__',
+               # __time_series__ is special column name used to control the placing of the time series columns inside your columns.
+               # Default would be appended to the end of the columns.
+               SlickReportField.create(Sum, 'amount_paid', name='paid__sum', verbose_name=_('Grand Sum')),
+               ]
+
+    time_series_pattern = 'monthly'
+    time_series_columns = [
+        SlickReportField.create(Sum, 'amount_paid', name='paid__sum', verbose_name=_('Sum of'))
+    ]
+
+    def format_row(self, row_obj):
+        """ A hook to format each row . This method gets called on each row in the results.
+        :param row_obj: a dict representing a single row in the results
+            :return: A dict representing a single row in the results
+            """
+        row_obj['invoice__created_at'] = row_obj['invoice__created_at'].strftime('%d %b %Y')#date(row_obj['date_paid'], 'd-m-y H:i')
+
+        return row_obj
+
+  
+    chart_settings = [
+        {'type': 'bar',
+         'engine_name': 'chartsjs',
+         'data_source': ['paid__sum'],
+         'title_source': ['date_paid'],
+         'title': 'Total Payments per Month',
+         'plot_total': True  # Plot Totals !
+         }
+    ]
+
    
