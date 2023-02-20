@@ -1,5 +1,10 @@
+from datetime import datetime
+from email.policy import default
 from django import forms 
 from django.forms import Form,ModelForm, modelformset_factory
+from django.forms.widgets import NumberInput
+from pytz import timezone  
+from django.utils import timezone as timeZ
 from student_core.models import (
     ClassTeacher, Courses, SessionYearModel, 
     AcademicTerm,Gender, ConductInterestRemarks,)
@@ -12,13 +17,16 @@ class DateInput(forms.DateInput):
 
 
 class AddStudentForm(forms.Form):
-    email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
-    password = forms.CharField(label="Password", max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
+
     first_name = forms.CharField(label="First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     last_name = forms.CharField(label="Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-
+    dob = forms.DateField(label="Date of Birth",widget = NumberInput(attrs={'type':'date'}),initial=timeZ.now)
+    username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+   
+    email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
+    password = forms.CharField(label="Password", max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
+   
     #For Displaying Courses
     try:
         courses = Courses.objects.all()
@@ -63,15 +71,24 @@ class AddStudentForm(forms.Form):
     # session_end_year = forms.DateField(label="Session End", widget=DateInput(attrs={"class":"form-control"}))
     profile_pic = forms.FileField(label="Profile Picture", required=False, widget=forms.FileInput(attrs={"class":"form-control"}))
 
+    '''Parents data'''
+    parent_first_name = forms.CharField(label="Parent First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_last_name = forms.CharField(label="Parent Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_email = forms.CharField(label="Parent Email", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_contact_number = forms.CharField(label="Parent Contact Number", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_occupation = forms.CharField(label="Parent Occuation", max_length=255, widget=forms.TextInput(attrs={"class":"form-control"}))
+    
 
 
 class EditStudentForm(forms.Form):
-    email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
     first_name = forms.CharField(label="First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     last_name = forms.CharField(label="Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-
+    dob = forms.DateField(label="Date of Birth",widget = NumberInput(attrs={'type':'date'}),initial=timeZ.now)
+    email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
+    
+    username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+   
     #For Displaying Courses
     gender_list = []
     try:
@@ -113,7 +130,12 @@ class EditStudentForm(forms.Form):
     # session_end_year = forms.DateField(label="Session End", widget=DateInput(attrs={"class":"form-control"}))
     profile_pic = forms.FileField(label="Profile Pic", required=False, widget=forms.FileInput(attrs={"class":"form-control"}))
 
-
+    '''Parents data'''
+    parent_first_name = forms.CharField(label="Parent First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_last_name = forms.CharField(label="Parent Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_email = forms.CharField(label="Parent Email", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_contact_number = forms.CharField(label="Parent Contact Number", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_occupation = forms.CharField(label="Parent Occuation", max_length=255, widget=forms.TextInput(attrs={"class":"form-control"}))
 
 ''' Addition forms'''
 

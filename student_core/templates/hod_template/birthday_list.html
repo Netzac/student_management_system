@@ -1,0 +1,74 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% load static %}
+{% block title %}{% endblock title %}
+{% block page_title %}
+  <small>List of Persons Celebrating Birthday Today </small>
+{% endblock page_title %}
+
+
+
+
+{% block main_content %}
+
+{% include 'status_message.html' %}
+<section class="content">
+  <div class="container-fluid">
+  <div class="table-responsive bg-white">
+      <table id="birthdaytable" class="table table-bordered table-hover">
+        <thead class="thead-secondary bg-secondary">
+          <tr>
+            <th>S/N</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Class</th>
+        
+          </tr>
+        </thead>
+        <tbody>
+
+          {% for person in birthdays %}
+          {% ifchanged person.course_id %} 
+          <tr class="{% cycle 'bg-light' 'bg-primary' 'bg-success' 'bg-warning' 'bg-white' 'bg-danger' 'bg-info' 'bg-secondary' %}" > 
+             <td colspan="7"></td>
+          </tr>
+          <tr>
+           {% else %}
+         <tr>
+         {% endifchanged %}
+              <td>{{ forloop.counter}}</td>
+              <td>{{ person}}</td>
+              <td>{{ person.get_age}}</td>
+              <td> {{person.course_id}}</td>
+             
+            </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+<script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+
+<script>
+  (function ($) {
+    $('.clickable-row').css('cursor', 'pointer');
+    $(".clickable-row").click(function () {
+      window.location = $(this).data("href");
+    });
+  })(jQuery)
+
+   $('#birthdaytable').DataTable({
+    select: false
+    });
+
+</script>
+
+
+{% endblock custom_js %}

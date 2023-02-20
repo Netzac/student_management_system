@@ -37,7 +37,7 @@ urlpatterns = [
     path("feetype/<int:pk>/delete/", FeeTypeDeleteView.as_view(),name="feetype-delete"),
 
     path('report_by_date_range/', BillsPaymentByRange.as_view(),name='report-by-range'),
-    path('report_by_month/', BillsPaymentByMonth.as_view(),name='report-by-range'),
+    path('report_by_month/', BillsPaymentByMonth.as_view(),name='report-by-month'),
 
     path("ajax/verify-online-payment/<ref>/<invoice>/<amount>/",verify_online_payment,name="verify-online-payment")
 ]

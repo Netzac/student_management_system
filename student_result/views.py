@@ -760,7 +760,8 @@ def promote_students(request):
              return redirect('promote-students')
         
         highest_class = Courses.objects.values('id').last()
-
+        print("hight class",highest_class['id'])
+        completed_students = Student.objects.filter(course_id__in = [highest_class['id']])
         '''Promotion criterion has been set as overall grade cutoff'''
         if crit =="2":
            
@@ -771,6 +772,8 @@ def promote_students(request):
         print("To demote:", students_to_demote,highest_class['id'],grade)
         with transaction.atomic():
              Student.objects.exclude(id__in =students_to_demote).update(course_id=F("course_id")+1)
+             completed_students.update(status='3')
+
         res = Student.objects.exclude(id__in =students_to_demote)
         print("Promted ", res)
         messages.success(request,"Students successfully promoted ")

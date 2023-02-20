@@ -129,5 +129,8 @@ urlpatterns = [
     path('manage_class_teacher/', HodViews.ClassTeacherListView.as_view(), name="class_teacher_list"),
     path("ClassTeacher/<int:pk>/update/", HodViews.CTUpdateView.as_view(), name="ct-update"),
     path("ClassTeacher/<int:pk>/delete/", HodViews.CTDeleteView.as_view(), name="ct-delete"),
+
+    #URLs for miscellaneous
+    path('birthdays/', HodViews.get_birthdays, name="birthdays"),
     
 ]

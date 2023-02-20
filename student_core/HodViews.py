@@ -493,6 +493,13 @@ def add_student_save(request):
             session_year_id = form.cleaned_data['session_year_id']
             course_id = form.cleaned_data['course_id']
             gender_id = form.cleaned_data['gender_id']
+            dob = form.cleaned_data['dob']
+
+            parent_first_name = form.cleaned_data['parent_first_name']
+            parent_last_name = form.cleaned_data['parent_last_name']
+            parent_email = form.cleaned_data['parent_email']
+            parent_occupation = form.cleaned_data['parent_occupation']
+            parent_contact_number = form.cleaned_data['parent_contact_number']
 
             # Getting Profile Pic first
             # First Check whether the file is selected or not
@@ -522,7 +529,14 @@ def add_student_save(request):
             gender_obj = Gender.objects.get(id=gender_id)
            
             user.students.gender = gender_obj
+            user.students.dob = dob
             user.students.profile_pic = profile_pic_url
+
+            user.students.parent_first_name =parent_first_name
+            user.students.parent_last_name =parent_last_name
+            user.students.parent_email = parent_email
+            user.students.parent_occupation =parent_occupation
+            user.students.parent_contact_number = parent_contact_number
             
             user.save()
             messages.success(request, "Student Added Successfully!")
@@ -554,9 +568,15 @@ def edit_student(request, student_id):
     form.fields['first_name'].initial = student.admin.first_name
     form.fields['last_name'].initial = student.admin.last_name
     form.fields['address'].initial = student.address
+    form.fields['dob'].initial = student.dob
     form.fields['course_id'].initial = student.course_id.id
     form.fields['gender_id'].initial = student.gender
     form.fields['session_year_id'].initial = student.session_year_id.id
+    form.fields['parent_first_name'].initial =student.parent_first_name
+    form.fields['parent_last_name'].initial =student.parent_last_name
+    form.fields['parent_email'].initial = student.parent_email
+    form.fields['parent_occupation'].initial = student.parent_occupation
+    form.fields['parent_contact_number'].initial = student.parent_contact_number
 
     context = {
         "id": student_id,
@@ -581,9 +601,17 @@ def edit_student_save(request):
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
             address = form.cleaned_data['address']
+            dob = form.cleaned_data['dob']
             course_id = form.cleaned_data['course_id']
             gender_id = form.cleaned_data['gender_id']
             session_year_id = form.cleaned_data['session_year_id']
+
+            parent_first_name = form.cleaned_data['parent_first_name']
+            parent_last_name = form.cleaned_data['parent_last_name']
+            parent_email = form.cleaned_data['parent_email']
+            parent_occupation = form.cleaned_data['parent_occupation']
+            parent_contact_number = form.cleaned_data['parent_contact_number']
+
 
             # Getting Profile Pic first
             # First Check whether the file is selected or not
@@ -616,6 +644,14 @@ def edit_student_save(request):
             student_model.session_year_id = session_year_obj
             gender_obj = Gender.objects.get(id=gender_id)
             student_model.gender_id = gender_obj
+            student_model.dob = dob
+
+            student_model.parent_first_name =parent_first_name
+            student_model.parent_last_name =parent_last_name
+            student_model.parent_email = parent_email
+            student_model.parent_occupation =parent_occupation
+            student_model.parent_contact_number = parent_contact_number
+
             if profile_pic_url != None:
                 student_model.profile_pic = profile_pic_url
             student_model.save()
@@ -1138,3 +1174,8 @@ class ExerciseDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("exercises")
     template_name = "hod_template/core_confirm_delete.html"
     success_message = "The exercise {} has been deleted"
+
+import datetime
+def get_birthdays(request):
+    birthdays=Students.objects.filter(dob__day=datetime.date.today().day,dob__month=datetime.date.today().month).order_by('course_id') #.exclude(birthday__year=1)
+    return render(request, 'hod_template/birthday_list.html', {'birthdays': birthdays})

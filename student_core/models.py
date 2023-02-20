@@ -1,11 +1,16 @@
+from datetime import date
 from email.policy import default
 from faulthandler import disable
+from multiprocessing import parent_process
 #from typing_extensions import Required
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from django.forms import ChoiceField
+from pytz import timezone
+from django.utils import timezone as timeZ
+import datetime
 
 
 class SessionYearModel(models.Model):
@@ -123,22 +128,47 @@ class Subjects(models.Model):
     def __str__(self):
         return self.subject_name
 
+class ActiveStudents(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status='1')
+
+class CompletedStudents(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status='3')
 
 class Students(models.Model):
+    STATUS_CHOICES = [('1','Active'),('2','Inactive'),('3','Completed')]
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
     gender = models.ForeignKey(Gender, on_delete=models.DO_NOTHING)
+    dob = models.DateField(default= timeZ.now)
     profile_pic = models.FileField(upload_to="students/",default="default.jpg",null=True,blank=True)
     address = models.TextField()
 
     delete_flag = models.IntegerField(default = 0)
-    status = models.CharField(max_length=2, choices=(('1','Active'), ('2','Inactive')), default = 1)
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default = 1)
     
     course_id = models.ForeignKey(Courses, on_delete=models.DO_NOTHING, default=1)
     session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE,default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    objects = models.Manager()
+
+
+    ''''Fields for parents'''
+    parent_first_name =models.CharField(max_length=150)
+    parent_last_name= models.CharField(max_length=150)
+    parent_email = models.EmailField(default="",blank=True,null=True)
+    parent_contact_number = models.CharField(max_length=15,blank=True,null=True)
+    parent_occupation = models.CharField(max_length=255,blank=True,null=True)
+
+    objects = ActiveStudents()
+    completed = CompletedStudents()
+
+    def get_age(self):
+        dob = self.dob
+        today = datetime.date.today()
+        age =today.year - dob.year-((today.month,today.day) < (dob.month, dob.day))
+        return age
 
     def __str__(self):
         return f"{self.admin.last_name} {self.admin.first_name} "
