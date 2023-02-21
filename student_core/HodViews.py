@@ -545,7 +545,10 @@ def add_student_save(request):
             #     messages.error(request, "Failed to Add Student!")
             #     return redirect('add_student')
         else:
-            return redirect('add_student')
+            messages.error(request, "Invalid Inputs! Please, see error descriptions above!")
+            context = {"form": form}
+            return render(request, 'hod_template/add_student_template.html', context)
+            #return redirect('add_student')
 
 
 def manage_student(request):
@@ -664,7 +667,14 @@ def edit_student_save(request):
             #     messages.error(request, "Failed to Update Student.")
             #     return redirect('/edit_student/'+student_id)
         else:
-            return redirect('/edit_student/'+student_id)
+            #return redirect('/edit_student/'+student_id)
+            student = Students.objects.get(admin=student_id)
+            context = {
+            "id": student_id,
+            "username": student.admin.username,
+            "form": form
+            }
+            return render(request, "hod_template/edit_student_template.html", context)
 
 
 def delete_student(request, student_id):

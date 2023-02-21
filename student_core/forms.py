@@ -1,6 +1,7 @@
 from datetime import datetime
 from email.policy import default
 from django import forms 
+from django.core import validators
 from django.forms import Form,ModelForm, modelformset_factory
 from django.forms.widgets import NumberInput
 from pytz import timezone  
@@ -15,7 +16,10 @@ from student_exam.models import Exercise
 class DateInput(forms.DateInput):
     input_type = "date"
 
+mobile_num_regex = validators.RegexValidator(
+        regex="^[0-9]{10,15}$", message="Invalid Contact Number format! Must be between 10 and 15 digits")
 
+'''Parents data'''
 class AddStudentForm(forms.Form):
 
     first_name = forms.CharField(label="First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
@@ -24,7 +28,7 @@ class AddStudentForm(forms.Form):
     dob = forms.DateField(label="Date of Birth",widget = NumberInput(attrs={'type':'date'}),initial=timeZ.now)
     username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
    
-    email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
+    email = forms.EmailField(validators=[validators.EmailValidator(message='Invalid email format')],label="Email",  max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
     password = forms.CharField(label="Password", max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
    
     #For Displaying Courses
@@ -71,21 +75,21 @@ class AddStudentForm(forms.Form):
     # session_end_year = forms.DateField(label="Session End", widget=DateInput(attrs={"class":"form-control"}))
     profile_pic = forms.FileField(label="Profile Picture", required=False, widget=forms.FileInput(attrs={"class":"form-control"}))
 
-    '''Parents data'''
+  
     parent_first_name = forms.CharField(label="Parent First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     parent_last_name = forms.CharField(label="Parent Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    parent_email = forms.CharField(label="Parent Email", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    parent_contact_number = forms.CharField(label="Parent Contact Number", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    parent_occupation = forms.CharField(label="Parent Occuation", max_length=255, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_email = forms.CharField(validators=[validators.EmailValidator(message='Invalid email format')],label="Parent Email", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_contact_number = forms.CharField(validators=[mobile_num_regex],label="Parent Contact Number", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_occupation = forms.CharField(label="Parent Occupation", max_length=255, widget=forms.TextInput(attrs={"class":"form-control"}))
     
-
+    
 
 class EditStudentForm(forms.Form):
     first_name = forms.CharField(label="First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     last_name = forms.CharField(label="Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     dob = forms.DateField(label="Date of Birth",widget = NumberInput(attrs={'type':'date'}),initial=timeZ.now)
-    email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
+    email = forms.EmailField(validators=[validators.EmailValidator(message='Invalid email format')],label="Email", max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
     
     username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
    
@@ -133,10 +137,12 @@ class EditStudentForm(forms.Form):
     '''Parents data'''
     parent_first_name = forms.CharField(label="Parent First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     parent_last_name = forms.CharField(label="Parent Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    parent_email = forms.CharField(label="Parent Email", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    parent_contact_number = forms.CharField(label="Parent Contact Number", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    parent_occupation = forms.CharField(label="Parent Occuation", max_length=255, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_email = forms.CharField(validators=[validators.EmailValidator(message='Invalid email format')],label="Parent Email", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_contact_number = forms.CharField(validators=[mobile_num_regex],label="Parent Contact Number", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_occupation = forms.CharField(label="Parent Occupation", max_length=255, widget=forms.TextInput(attrs={"class":"form-control"}))
 
+
+    
 ''' Addition forms'''
 
 class AcademicTermForm(ModelForm):

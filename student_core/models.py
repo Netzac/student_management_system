@@ -10,6 +10,7 @@ from django.dispatch import receiver
 from django.forms import ChoiceField
 from pytz import timezone
 from django.utils import timezone as timeZ
+from django.core import validators
 import datetime
 
 
@@ -155,10 +156,13 @@ class Students(models.Model):
 
 
     ''''Fields for parents'''
+    mobile_num_regex = validators.RegexValidator(
+        regex="^[0-9]{10,15}$", message="Invalid Contact Number format! Must be between 10 and 15 digits"
+    )
     parent_first_name =models.CharField(max_length=150)
     parent_last_name= models.CharField(max_length=150)
-    parent_email = models.EmailField(default="",blank=True,null=True)
-    parent_contact_number = models.CharField(max_length=15,blank=True,null=True)
+    parent_email = models.EmailField(default="",blank=True,null=True, validators=[validators.EmailValidator(message='Invalid email format')])
+    parent_contact_number = models.CharField( validators=[mobile_num_regex],max_length=15,blank=True,null=True)
     parent_occupation = models.CharField(max_length=255,blank=True,null=True)
 
     objects = ActiveStudents()

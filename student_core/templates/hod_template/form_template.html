@@ -1,6 +1,6 @@
                     <form role="form" method="POST" action="{{ action_path }}" enctype="multipart/form-data">
                         {% csrf_token %}
-
+                       <div class="bg-info"> {{ form.errors }} </div>
                         
                                 {% comment %} Display Messages {% endcomment %}
                                 {% if messages %}
@@ -33,8 +33,11 @@
 
                             {% for field in form %}
                                 <div class="form-group">
-
-                                    {{ field.errors }}
+                                    <div class="row bg-danger">
+                                        {{ form.non_field_errors }}
+                                        {{ field.errors }}
+                                      
+                                    </div>
                                     {{ field.label_tag }}
                                     {{ field }}
 
