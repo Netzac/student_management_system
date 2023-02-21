@@ -260,7 +260,7 @@ def ClassResultDetailView(request,clsid):
         session =request.current_session
         term = request.current_term
         computeChart=True
-
+       
         try:
             school = School.objects.all().first()
         except:
@@ -273,6 +273,7 @@ def ClassResultDetailView(request,clsid):
         #studentClass = Courses.objects.get(id=studentClass).values('name')
         student_list =Student.objects.filter(course_id=clsid) 
         bulk = {}
+        
         for student in student_list:
             results = Result.objects.filter(session=session, term=term,student=student.id)
 
@@ -282,7 +283,8 @@ def ClassResultDetailView(request,clsid):
 
             '''Extra Context Variables'''
             report_dates ={"closing":'',"opening":''}
-         
+            total_total=0
+            total_attendance=0
             gradebook_with_ub=[]
             studentClass=''
             classSize=0
@@ -291,6 +293,7 @@ def ClassResultDetailView(request,clsid):
                 test_total = 0
                 exam_total = 0
                 subjects = []
+                
                 for subject in results:
                     if subject.student == result.student:
                         subjects.append(subject)
