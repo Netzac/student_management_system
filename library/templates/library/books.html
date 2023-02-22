@@ -80,7 +80,9 @@
 <script src="{% static '/extra/bootstrap.min.js' %}"></script>
 <script>
     $(function() {
+       
         $('#create_new').click(function() {
+            
             uni_modal("<i class='fa fa-plus'></i> Add New Book", "{% url 'lib:manage-book' %}", "modal-lg")
         })
         $('.edit-data').click(function() {

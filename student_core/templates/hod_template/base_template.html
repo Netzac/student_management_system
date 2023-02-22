@@ -33,6 +33,9 @@
 
   <link rel="stylesheet" href="{% static 'select2/css/select2.min.css' %}" />
 
+  <link rel="stylesheet" href="{% static 'extra/css/extra.css' %}" />
+
+
  
 
   <!-- <link rel="stylesheet" href="{% static 'admin/css/materialize.min.css' %}" /> -->
@@ -47,8 +50,9 @@
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed bg-white">
-  <div class="wrapper ">
-
+  
+  <div class="wrapper" >
+    <div id="color-overlay"></div>
   <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
       <!-- Left navbar links -->
@@ -100,7 +104,7 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper bg-white">
-
+      
     <!-- Content Header (Page header) -->
       <div class="content-header bg-secondary">
         <div class="container-fluid">
@@ -126,6 +130,7 @@
 
       <!-- Main content -->
       <section class="content">
+       
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
@@ -208,6 +213,10 @@
 <script>$(document).ready(function () {
   $('select').select2();
 })</script>
+
+<script>
+ document.getElementById("color-overlay").style.display="block"
+</script>
 
 {% comment %} For Custom JS {% endcomment %}
 {% block custom_js %}
