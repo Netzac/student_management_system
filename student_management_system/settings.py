@@ -16,7 +16,7 @@ PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY')
 SECRET_KEY = '(i#*06f#keydy_fh17bf=$0f6v)^wr^l7*u4gq42m*sztu#2_m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -29,11 +29,18 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django_comments_xtd',
+    'django_comments',
+
+     'rest_framework',
+
     "widget_tweaks",
     'crispy_forms',
     'slick_reporting',
+
 
     'student_core',
     'student_account',
@@ -46,6 +53,50 @@ INSTALLED_APPS = [
     'cart.apps.CartConfig',
     'school',
 ]
+
+SITE_ID = 1
+
+COMMENTS_XTD_SALT = (b"Timendi causa est nescire. "
+                     b"Aequam memento rebus in arduis servare mentem.")
+COMMENTS_APP = "django_comments_xtd"
+# Source mail address used for notifications.
+COMMENTS_XTD_FROM_EMAIL = "kingpo777@gmail.com"
+
+# Contact mail address to show in messages.
+COMMENTS_XTD_CONTACT_EMAIL = "kingpo777@gmail.com"
+
+#COMMENTS_XTD_API_GET_USER_AVATAR = "eyeson.utils.get_avatar_url"
+
+COMMENTS_XTD_APP_MODEL_OPTIONS = {
+    'student_exam.assignment': {
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
+        'who_can_post': 'users'  # Valid values: 'all', users'
+    }
+}
+
+
+# Email Sending 
+if not DEBUG:
+    SERVER_EMAIL = 'awopenana@gmail.com'
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST_USER = SERVER_EMAIL
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_PASSWORD = "Insearchof!@#"
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+else:
+    EMAIL_BACKEND = (
+    "django.core.mail.backends.console.EmailBackend"
+)
+
+COMMENTS_XTD_MAX_THREAD_LEVEL = 1
+COMMENTS_XTD_CONFIRM_EMAIL = False
+
+COMMENTS_XTD_LIST_ORDER = ('-thread_id', 'order')
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -146,7 +197,7 @@ USE_TZ = False
 
 
 
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CART_SESSION_ID = 'cart'
 
 

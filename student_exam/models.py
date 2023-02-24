@@ -7,7 +7,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from django.urls import reverse
 
 def unique_passcode():
     d = uuid.uuid4()
@@ -45,8 +45,13 @@ class Assignment(models.Model):
         related_name='assignments'
     )
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("assignment-detail", kwargs={"id": self.pk})
 
 class Submission(models.Model):
     matric_number = models.CharField(max_length=100,default= unique_passcode)
