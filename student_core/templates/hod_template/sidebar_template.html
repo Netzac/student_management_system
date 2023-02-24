@@ -473,7 +473,7 @@
                     </li>
                     <li class="nav-item">
                       {% url 'report-by-month' as report_by_month %}
-                        <a href="{{ report_by_range }}" class="nav-link {% if request.path == report_by_month %} active {% endif %}">
+                        <a href="{{ report_by_month }}" class="nav-link {% if request.path == report_by_month %} active {% endif %}">
                           <i class="nav-icon fas fa-th"></i>
                           <p>
                             By Month

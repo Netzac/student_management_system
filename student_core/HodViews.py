@@ -258,10 +258,10 @@ def add_course_save(request):
         try:
             course_model = Courses(course_name=course)
             course_model.save()
-            messages.success(request, "Course Added Successfully!")
+            messages.success(request, "Class Added Successfully!")
             return redirect('add_course')
         except:
-            messages.error(request, "Failed to Add Course!")
+            messages.error(request, "Failed to Add Class!")
             return redirect('add_course')
 
 
@@ -1114,23 +1114,28 @@ def take_attendance(request, cls_id):
     return HttpResponseRedirect(reverse('attendance'))
 
 
-class ClassTeacherAddView(TemplateView):
+class ClassTeacherAddView(SuccessMessageMixin,LoginRequiredMixin, CreateView):
+    model= ClassTeacher
+    #fields=['staff_id','cls_id']
+    form_class = ClassTeacherFormSet
     template_name="hod_template/class_teacher_form.html"
     error_message ="Class to Teacher combination not allowed"
-    success_message = "Item successfully added."
+    success_message = 'Item successfully added.'
 
     def get(self,*args,**kwargs):
-        formset=ClassTeacherFormSet(queryset=ClassTeacher.objects.none())
+        # staffs = Staffs.objects.all().values('id')
+        # classes = Courses.objects.all().values('id')
+        formset=ClassTeacherFormSet(queryset=ClassTeacher.objects.all())
         return self.render_to_response({"class_teacher_formset":formset})
 
     def post(self,*args,**kwargs):
         formset= ClassTeacherFormSet(data=self.request.POST)
-        #print('formset: ',formset)
+        #print('formset: ',self.request.POST)
         if formset.is_valid():
             formset.save()
             return redirect(reverse_lazy("class_teacher_list"))
         return self.render_to_response({"class_teacher_formset":formset})
-
+  
 class ClassTeacherListView(ListView):
     model=ClassTeacher
     template_name="hod_template/class_teacher_list.html"
@@ -1141,6 +1146,8 @@ class CTUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     form_class = ClassTeacherFormSet
     success_url = reverse_lazy("class_teacher_list")
     success_message = "Item successfully updated."
+
+    
    # template_name = "hod_template/mgt_form.html"
 
 
