@@ -2,8 +2,8 @@
 {% load static %}
 {% block main_content %}
 			<div class="cart_info">
-			    <table class="table table-hover">
-			        <thead class="text-center">
+			    <table class="table table-hover table-bordered table-striped">
+			        <thead class="text-center bg-secondary">
 			            <tr>
 			                <th scope="col">#</th>
 			                <th scope="col">Order ID</th>
@@ -18,7 +18,7 @@
 			            <tr>
 			                <td>{{ forloop.counter }}</td>
 			                <td><a href="{% url 'order:order_details' id=morder.id %}">#2021{{ morder.id }}</a></td>
-			                <td>₱{{ morder.payable }}</td>
+			                <td>{{ morder.payable }}</td>
 			                <td>{{ morder.totalbook }}</td>
 			                <td class="text-center">
 			                	{% if morder.paid == True %}
@@ -71,3 +71,9 @@
 			</div>
 
 		{% endblock %}
+
+{% block custom_js %}
+
+{% include 'table_format.html' %}
+
+{% endblock custom_js %}

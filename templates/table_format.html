@@ -1,0 +1,17 @@
+
+{% load static %}
+<script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+
+<script>
+  (function ($) {
+    $('.clickable-row').css('cursor', 'pointer');
+    $(".clickable-row").click(function () {
+      window.location = $(this).data("href");
+    });
+  })(jQuery)
+
+   $('#id_table').DataTable({
+    select: false
+    });
+
+</script>

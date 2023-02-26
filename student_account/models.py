@@ -79,7 +79,7 @@ class InvoiceItem(models.Model):
     objects = models.Manager()
 
 class Receipt(models.Model):
-    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
+    invoice = models.ForeignKey(Invoice, verbose_name="Bills" ,on_delete=models.CASCADE)
     amount_paid = models.IntegerField(verbose_name="Amount")
     date_paid = models.DateField(default=timezone.now,verbose_name="Date Paid")
     comment = models.CharField(max_length=200, blank=True)

@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
+
 from .models import  Author, Review, Slider
 from .models import Category,SubCategory,Book
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from .forms import  ReviewForm
+
+from student_core.models import CustomUser as User
 
 # Create your views here.
 def index(request):

@@ -20,21 +20,23 @@
 
 {% if assignments %}
   <div class="container-fluid">
-    <div class="row justify-content-center bg-dark">
+    <div class="row justify-content-center bg-white">
       <div class="col-sm-6 col-md-6">
+        {%comment%}
         <form method="GET">
           <div class="input-field input-search offset-s2">
             <i class="material-icons right">search</i>
             {{ search_form }}
           </div>
         </form>
+        {%endcomment%}
       </div>
       <div class="col-sm-6 col-md-6">
         <a id="addAss" type="button" class="btn btn-primary float-right" data-target= "#create_assignment" data-toggle="modal" href="{% url 'create-assignment' %}" ><i class="fas fa-plus">Add</i></a>
       </div>
       <div class="no-assignment">
-          <table class="striped responsive-table table">
-          <thead>
+          <table id="exams" class="striped responsive-table table-bordered table striped">
+          <thead class="bg-secondary">
             <tr>
                 <th>#</th>
                 <th>Title</th>
@@ -52,7 +54,8 @@
               <tr>
                 <td>{{ forloop.counter }}</td>
                 <td><a href="{% url 'assignment-detail' assignment.id %}">{{ assignment.title }}</a></td>
-                <td>{{ assignment.upload }}</td>
+                
+                <td> {% if assignment.upload.url %}<a href="{{ assignment.upload.url }}">{{ assignment.upload}}</a>{%endif%}</td>
                 <td>{{ assignment.created_at }}</td>
                 <td>{{ assignment.due_date }}</td>
                 <td>{{ assignment.course }}</td>
@@ -134,6 +137,26 @@
 {% block custom_js %}
 <script src="{% static 'students-exam/js/bootstrap-modalmanager.js' %}"></script>
 <script src="{% static 'students-exam/js/utils.js' %}"></script>
+
+
+
+<script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+
+<script>
+  (function ($) {
+    $('.clickable-row').css('cursor', 'pointer');
+    $(".clickable-row").click(function () {
+      window.location = $(this).data("href");
+    });
+  })(jQuery)
+
+   $('#exams').DataTable({
+    select: false
+    });
+
+</script>
+
+
 
 <!-- <script>
 $(function(){

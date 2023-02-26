@@ -14,46 +14,62 @@
 {% endif %}
 
 <div class="container-fluid">
-  <div class="row  bg-dark">
-    <div class="col-2">Title:</div>
-    <div class="col-6"> {{ single_assignment.title }} </div>
-  </div>
-    <div class="row bg-dark">
-        <div class="col-2"> Assignment Details:</div>
-       <div class="col-6>"> {{ single_assignment.content}} </div>
+  {% comment %}
+    <div class="row  bg-dark">
+      <div class="col-2">Title:</div>
+      <div class="col-6"> {{ single_assignment.title }} </div>
     </div>
-    <div class="row bg-dark">
-       <div class="col-2"> Attachment: </div>
-       <div class="col-6>">
-          <a href="{{ single_assignment.upload.url }}"> {{ single_assignment.upload }}  </a> 
+      <div class="row bg-dark">
+          <div class="col-2"> Assignment Details:</div>
+        <div class="col-6>"> {{ single_assignment.content}} </div>
+      </div>
+      <div class="row bg-dark">
+        <div class="col-2"> Attachment: </div>
+        <div class="col-6>">
+            <a href="{{ single_assignment.upload.url }}"> {{ single_assignment.upload }}  </a> 
+          </div>
+      </div>
+      <div class="row bg-dark">
+          <div class="col-2"> Due Date: </div>
+          <div class="col-6">{{single_assignment.due_date }}  </div>
         </div>
-    </div>
-    <div class="row bg-dark">
-      <div class="col-2"> Due Date: </div>
-      <div class="col-6">{{single_assignment.due_date }}  </div>
-    </div>
-    <div class="row bg-dark">
-      <div class="col-2"> Class: </div>
-      <div class="col-6">{{single_assignment.course }}</div>
-    </div>
-    <div class="row bg-dark">
-      <div class="col-2"> Subject: </div>
-      <div class="col-6"> {{single_assignment.subject }} </div>
-    </div>
-    <div class="row bg-dark">
-      <div class="col-2"> Assignment Code: </div>
-      <div class="col-6"> {{single_assignment.passcode }} </div> 
+        <div class="row bg-dark">
+          <div class="col-2"> Class: </div>
+          <div class="col-6">{{single_assignment.course }}</div>
+        </div>
+        <div class="row bg-dark">
+          <div class="col-2"> Subject: </div>
+          <div class="col-6"> {{single_assignment.subject }} </div>
+        </div>
+        <div class="row bg-dark">
+          <div class="col-2"> Assignment Code: </div>
+          <div class="col-6"> {{single_assignment.passcode }} </div> 
+        </div>  
+    {% endcomment %}
+    <div class="row justify-content-center">
+      <div class="col-sm-8">
+        <ul class="list-group">
+          
+          <li class="list-group-item d-flex justify-content-between align-items-center"><h4>Assignment Details</h4></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Title<span>{{ single_assignment.title }} </span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Due Date<span>{{ single_assignment.due_date }} </span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Content<span> {{ single_assignment.content }} </span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Class<span> {{ single_assignment.course }} </span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Attachment<span> <a href="{{ single_assignment.upload.url }}"> {{ single_assignment.upload }}  </a> </span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Subject<span> {{single_assignment.subject }}</span></li>
+        </ul>	
+      </div>
     </div>
   </div>
-  <div class="row ">
-  <div class="col-12 bg-gradient">
+  <div class="row justify-content-center">
+  <div class="sm-col-8 bg-gradient">
   <form method="POST" action={% url 'delete-assignment' assignment_id %}>
     {% csrf_token %}
-     <div class="form-group row mt-4">
-      <div class="col-2">
+     <div class="form-group row justify-content-center mt-4">
+      <div class="sm-col-4">
       <a type="buttion" class="btn btn-white" id="addAss" data-target="#edit_assignment" data-toggle="modal" href="{% url 'edit-assignment' assignment_id %}"><i class="fas fa-edit">Edit</i></a>
       </div>
-      <div class="col-2"><button class="btn btn-white" type="submit" name="delete-assignment"><i class="fas fa-trash"></i> Delete
+      <div class="sm-col-4"><button class="btn btn-white" type="submit" name="delete-assignment"><i class="fas fa-trash"></i> Delete
       </button>
       </div>
     </div>

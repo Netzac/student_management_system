@@ -58,8 +58,8 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
-                            <table class="table table-hover text-nowrap">
-                            <thead>
+                            <table id="staff_table" class="table table-hover text-nowrap table-bordered">
+                            <thead class="bg-secondary">
                                 <tr>
                                 <th>ID</th>
                                 <th>First Name</th>
@@ -104,3 +104,24 @@
       </section>
 
   {% endblock main_content %}
+
+  {% block custom_js %}
+
+  <script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+  
+  <script>
+    (function ($) {
+      $('.clickable-row').css('cursor', 'pointer');
+      $(".clickable-row").click(function () {
+        window.location = $(this).data("href");
+      });
+    })(jQuery)
+  
+     $('#staff_table').DataTable({
+      select: false
+      });
+  
+  </script>
+  
+  
+  {% endblock custom_js %}

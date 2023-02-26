@@ -40,8 +40,8 @@
       {% for item in class_teacher_formset %}
       <div class="form-group row items-group">
         {{ item.id}}
-        <div class="col">{{ item.staff_id | add_class:"form-control"}}</div>
-        <div class="col">{{ item.cls_id | add_class:"form-control"}}</div>
+        <div class="col" >{{ item.staff_id | add_class:"form-control"}}</div>
+        <div class="col" >{{ item.cls_id | add_class:"form-control"}}</div>
       </div>
       {% endfor %}
     </div>

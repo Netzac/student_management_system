@@ -41,23 +41,26 @@
                 <div class="col-md-12">
                     <!-- general form elements -->
                     <div class="card">
+                        {% comment %}
                         <div class="card-header">
                             <h3 class="card-title">Subject Details</h3>
-
+                          
                             <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
                                 <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
 
                                 <div class="input-group-append">
-                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                             </div>
+                         
                         </div>
+                        {% endcomment %}
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
-                            <table class="table table-hover text-nowrap">
-                            <thead>
+                            <table id="id_table" class="table table-hover table-striped table-bordered text-nowrap">
+                            <thead class="bg-secondary">
                                 <tr>
                                 <th>ID</th>
                                 <th>Subject Name</th>
@@ -98,3 +101,7 @@
       </section>
 
   {% endblock main_content %}
+
+  {% block custom_js %}
+      {% include 'table_format.html' %}
+  {%endblock custom_js %}

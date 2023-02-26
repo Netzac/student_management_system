@@ -19,8 +19,8 @@
 <section class="content">
     <div class="container-fluid">
         <div class="card-body table-responsive p-0">
-            <table class="table table-hover table-responsive ">
-            <thead>
+            <table id="id_table" class="table table-hover table-responsive table-bordered ">
+            <thead class="bg-secondary">
                 <tr>
                     <th>Name</th>
                     <th>Motto</th>
@@ -77,4 +77,8 @@
 </section>
 {% endblock main_content %}
 
+{% block custom_js %}
 
+{% include 'table_format.html' %}
+
+{% endblock custom_js %}

@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Manage Class/Course
+    Manage Class
 {% endblock page_title %}
 
 {% block main_content %}
@@ -43,7 +43,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Class Details</h3>
-
+                            {%comment%}
                             <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
                                 <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
@@ -53,11 +53,12 @@
                                 </div>
                             </div>
                             </div>
+                            {% endcomment %}
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
-                            <table class="table table-hover text-nowrap">
-                            <thead>
+                            <table id="id_table" class="table table-hover text-nowrap">
+                            <thead class="bg-secondary">
                                 <tr>
                                 <th>ID</th>
                                 <th>Class Name</th>
@@ -94,3 +95,24 @@
       </section>
 
   {% endblock main_content %}
+
+  {% block custom_js %}
+
+  <script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+  
+  <script>
+    (function ($) {
+      $('.clickable-row').css('cursor', 'pointer');
+      $(".clickable-row").click(function () {
+        window.location = $(this).data("href");
+      });
+    })(jQuery)
+  
+     $('#id_table').DataTable({
+      select: false
+      });
+  
+  </script>
+  
+  
+  {% endblock custom_js %}

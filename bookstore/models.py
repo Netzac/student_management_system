@@ -53,7 +53,7 @@ class Author(models.Model):
 
 
 class Book(models.Model):
-    sub_category = models.ForeignKey(Category, on_delete= models.CASCADE)
+    category = models.ForeignKey(Category, on_delete= models.CASCADE)
     isbn = models.CharField(max_length=250)
     title = models.CharField(max_length=250)
     description = models.TextField(blank=True, null= True)

@@ -21,10 +21,18 @@
   <div class="row">
     <div class="col-sm-12">
 
-        <table class="table table-bordered">
+        <table id="id_table" class="table table-bordered  table-striped">
+          <thead class="bg-secondary">
+            <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Action</th>
+            </tr>
+        </thead>
           <tbody>
             {% for object in object_list %}
             <tr>
+              <td>{{forloop.counter}}</td>
               <td>{{ object }}</td>
               <td><a href="{% url 'feetype-update' object.id %}"><i
                     class="fa fa-edit"></i></a> <a
@@ -73,3 +81,8 @@
 
 {% endblock main_content %}
 
+{% block custom_js %}
+
+{% include 'table_format.html' %}
+
+{% endblock custom_js %}

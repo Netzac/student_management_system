@@ -19,10 +19,12 @@ class SchoolCreateView(LoginRequiredMixin, CreateView):
     ]
 
     def get_context_data(self, **kwargs):
+        exists = School.objects.first()
         context = super(SchoolCreateView, self).get_context_data(**kwargs)
         context['main_page_title'] = 'School Creation'
         context['panel_name'] = 'School'
         context['panel_title'] = 'Create School'
+        context['exists'] = exists
         return context
 
 class SchoolListView(LoginRequiredMixin, ListView):

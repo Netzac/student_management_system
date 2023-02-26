@@ -65,16 +65,24 @@
      </div>
      <div class="col-sm-3 mt-1">
       <div class="">
+        {% if result.staff.signature %}
         <img src={{result.staff.signature.url}} style="width:7em; height: 3em;" class=" border-bottom border-dark text-left" >
-       </div>
+        {%else %}
+          <span class=" border-bottom border-dark text-left">{ {{user.first_name}}-{{user.last_name}} }</span>
+        {%endif%}
+      </div>
      </div>
      <div class="col-sm-auto  mt-1">
       <p class="text-left">Head Teacher Signature:</p> 
     </div> 
     <div class="col-sm-3 mt-1 pb-1">
       <div class="">
+        {% if result.school.adminSignature %}
         <img src={{result.school.adminSignature.url}} style="width:7em; height: 3em;" class=" border-bottom border-dark text-left" >
-       </div>
+       {% else %} 
+       <span class=" border-bottom border-dark text-left">{ {{user.first_name}}-{{user.last_name}}} </span>
+       {%  endif %}
+      </div>
      </div>
     </div>
 

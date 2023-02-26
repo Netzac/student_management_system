@@ -57,8 +57,8 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
-                            <table class="table-sm table-hover text-nowrap">
-                            <thead>
+                            <table id="student_table" class="table-sm table-hover table-bordered table-striped text-nowrap">
+                            <thead class="bg-secondary">
                                 <tr>
                                 <th>ID</th>
                                 <th>First Name</th>
@@ -86,7 +86,7 @@
                                 <td>{{ student.admin.email }}</td>
                                 <td>{{ student.address }}</td>
                                 <td>{{ student.gender }}</td>
-                                <td> <img src="{{ student.profile_pic }}" style="width: 100px;" /> </td>
+                                <td> <img src="{{ student.profile_pic }}" style="width: 60px; height: 50px;" /> </td>
                                 <td>{{ student.session_year_id.session_start_year }}</td>
                                 <td>{{ student.session_year_id.session_end_year }}</td>
                                 <td>{{ student.course_id.course_name }}</td>
@@ -113,3 +113,24 @@
       </section>
 
   {% endblock main_content %}
+
+  {% block custom_js %}
+
+<script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+
+<script>
+  (function ($) {
+    $('.clickable-row').css('cursor', 'pointer');
+    $(".clickable-row").click(function () {
+      window.location = $(this).data("href");
+    });
+  })(jQuery)
+
+   $('#student_table').DataTable({
+    select: false
+    });
+
+</script>
+
+
+{% endblock custom_js %}
