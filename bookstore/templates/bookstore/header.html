@@ -1,10 +1,10 @@
 {% load static %}
-<div class="header-top bg-danger">
+<div class="header-top bg-white">
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-sm-3">
 				<div class="pull-left">
-					<a href="{% url 'store:index' %}"><h4 style="font-family:Lucida Handwriting; color: rgb(252, 252, 252) ">School Book Store</h4></a>
+					<a href="{% url 'store:index' %}"><h4 style="font-family:Lucida Handwriting; color: rgba(83, 82, 82,0.5) ">Book Store Place</h4></a>
 				</div>
 			</div>
 			<div class="col-sm-5">
@@ -17,7 +17,7 @@
 			</div>
 			<div class="col-sm-4">
 				<div class="pull-right">
-					<ul class="navbar-nav">
+					<ul class="navbar-nav ">
 						{% if request.user.is_authenticated %}
 						
 					    <li class="dropdown profile"><a href="#">{{ request.user}}</a>

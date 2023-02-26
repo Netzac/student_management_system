@@ -1,4 +1,5 @@
 from django.shortcuts import HttpResponse, render, redirect, get_object_or_404
+from django.http import JsonResponse
 from student_core.models import CustomUser as  User
 from django.contrib import messages
 from django.views import View
@@ -8,17 +9,25 @@ from .models import Order, OrderItem
 from .forms import OrderCreateForm
 from .pdfcreator import renderPdf
 
+from django.views.decorators.csrf import csrf_exempt
+
 def order_create(request):
 	cart = Cart(request)
+
 	if request.user.is_authenticated:
+		
 		customer = get_object_or_404(User, id=request.user.id)
-		form = OrderCreateForm(request.POST or None, initial={"name": customer.first_name, "email": customer.email})
+		form = OrderCreateForm(request.POST or None, initial={"name": customer.first_name, "email": customer.email, "phone": customer.students.parent_contact_number,"address":customer.students.address})
+		
 		if request.method == 'POST':
+			
 			if form.is_valid():
 				order = form.save(commit=False)
 				order.customer = User.objects.get(id=request.user.id)
 				order.payable = cart.get_total_price()
 				order.totalbook = len(cart) # len(cart.cart) // number of individual book
+
+
 				order.save()
 
 				for item in cart:
@@ -35,6 +44,7 @@ def order_create(request):
 				messages.error(request, "Fill out your information correctly.")
 
 		if len(cart) > 0:
+			print('Generating order...')
 			return render(request, 'order/order.html', {"form": form})
 		else:
 			return redirect('store:books')
@@ -73,3 +83,43 @@ class pdf(View):
         }
         article_pdf = renderPdf('order/pdf.html',context)
         return HttpResponse(article_pdf,content_type='application/pdf')
+
+
+def confirm_order(request,pk):
+	order_obj = get_object_or_404(Order,id=pk)
+	return render(request, 'order/successfull.html', {'order': order_obj})
+    
+from paystackapi.transaction import Transaction
+import json
+@csrf_exempt
+def verify_online_payment(request,ref,amount):
+    #redirect_url = reverse('receipt-create')
+	response = Transaction.verify(reference=str(ref))
+	print("response: ",response,ref)
+	cart = Cart(request)
+	customer = get_object_or_404(User, id=request.user.id)
+	init_data = {"name": customer.first_name, "email": customer.email, "phone": customer.students.parent_contact_number,"address":customer.students.address}
+	form = Order(**init_data)
+	id = 1
+	if form:
+		order = form
+		order.customer = User.objects.get(id=request.user.id)
+		order.payable = amount
+		order.transaction_id = str(ref)
+		order.totalbook = len(cart) # len(cart.cart) // number of individual book
+		order.paid =True
+		order.save()
+		id = order.id
+		for item in cart:
+			OrderItem.objects.create(
+				order=order, 
+				book=item['book'], 
+				price=item['price'], 
+				quantity=item['quantity']
+			)
+	list_data ={"id": id}
+	cart.clear()
+	print('jsaon data', json.dumps(list_data),list_data)
+	return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+	#return render(request, 'order/successfull.html', {'order': order})
+    #return redirect('order:order_create')

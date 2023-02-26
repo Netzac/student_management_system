@@ -1,5 +1,10 @@
 {% extends 'hod_template/base_template.html' %}
 {% load customfunction %}
+{% load static %}
+{% block custom_css %}
+ <link rel="stylesheet" href="{% static 'extra/css/store.css' %}">
+ {% endblock custom_css %}
+
 {% block main_content %}
 			<div class="row">
 				{% for item in book %}
@@ -12,16 +17,16 @@
 								<div><h6> {{ item.title }} </h6></div>
 							{% endif %}
 						</div>
-						<a href="{% url 'store:book' id=item.id %}">{{ item.name }}</a>
-						<a href="{% url 'store:author'  id=item.author.id %}">{{ item.author }}</a>
-						<div class="rating">
+						<a href="{% url 'store:book' id=item.id %}">{{ item.title }}</a>
+						<a href="#">{{ item.author }}</a>
+						{% comment %}<div class="rating">
 							{{ item.totalrating|averagerating:item.totalreview }}
 							<span class="totalrating">{{ item.totalreview|add:-1 }}</span>
-						</div>
-						<p> ₱{{ item.price }}</p>
-						<button class="btn btn-danger" id="addTocart" data-book-id="{{ item.id }}">
+						</div> {% endcomment %}
+						<p> {{ item.price }}</p>
+					{% comment %}	<button class="btn btn-danger" id="addTocart" data-book-id="{{ item.id }}">
 								<i class="fa fa-shopping-cart""></i>Add to cart
-						</button>
+						</button> {%endcomment%}
 					</div>
 				</div>
 				{% endfor %}
@@ -68,3 +73,10 @@
 			{% endif %}	
 
 {% endblock main_content %}
+
+{% block custom_js %}
+	<script src="{% static 'extra/skdslider.min.js' %}"></script>
+	<script src="{% static '/extra/bootstrap.min.js' %}"></script>
+	<script src="{% static '/jquery-touchspin/js/jquery.bootstrap-touchspin.min.js' %}"></script>
+	<script src="{% static '/extra/book-store.js' %}"></script>
+{% endblock custom_js %}

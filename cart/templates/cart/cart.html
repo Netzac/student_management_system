@@ -39,8 +39,8 @@
 					                
 					                <td>{{ book.title }}</td>
 					                <td class="cart_quantity"><input type="text" name="qty" value="{{ item.quantity }}" onchange ="updateCartItem(this,{{ book.id }})" style="width: 30px"></td>
-					                <td id="{{ book.id }}">₱{{ item.total_price }}</td>
-					                <td><a href="{% url 'cart:cart_remove' bookid=book.id %}" class="btn btn-danger"><i class="fa fa-trash-o"></i></a></td>
+					                <td id="{{ book.id }}">{{ item.total_price }}</td>
+					                <td><a href="{% url 'cart:cart_remove' bookid=book.id %}" class="btn btn-danger"><i class="fas fa-trash"></i></a></td>
 					            </tr>
 					            {% endwith %}
 					        {% endfor %}

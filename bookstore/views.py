@@ -31,7 +31,7 @@ def payment(request):
 def get_book(request, id):
     form = ReviewForm(request.POST or None)
     book = get_object_or_404(Book, id=id)
-    rbooks = Book.objects.filter(category_id=book.category.id)
+    rbooks = Book.objects.filter(id=book.category.id)
     r_review = Review.objects.filter(book_id=id).order_by('-created')
 
     paginator = Paginator(r_review, 4)
@@ -64,14 +64,14 @@ def get_book(request, id):
 
 
 def get_books(request):
-    books_ = Book.objects.all().order_by('-created')
+    books_ = Book.objects.all().order_by('-date_created')
     paginator = Paginator(books_, 10)
     page = request.GET.get('page')
     books = paginator.get_page(page)
     return render(request, "bookstore/category.html", {"book":books})
 
 def get_book_category(request, id):
-    book_ = Book.objects.filter(category_id=id)
+    book_ = Book.objects.filter(id=id)
     paginator = Paginator(book_, 10)
     page = request.GET.get('page')
     book = paginator.get_page(page)

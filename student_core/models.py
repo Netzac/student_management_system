@@ -45,6 +45,8 @@ class CustomUser(AbstractUser):
     user_type_data = ((1, "HOD"), (2, "Staff"), (3, "Student"))
     user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
 
+    objects = models.Manager()
+
     class Meta:
         ordering = ["last_name"]
     def __str__(self):
@@ -140,7 +142,7 @@ class CompletedStudents(models.Manager):
 class Students(models.Model):
     STATUS_CHOICES = [('1','Active'),('2','Inactive'),('3','Completed')]
     id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
+    admin = models.OneToOneField(CustomUser,related_name='students', on_delete = models.CASCADE)
     gender = models.ForeignKey(Gender, on_delete=models.DO_NOTHING)
     dob = models.DateField(default= timeZ.now)
     profile_pic = models.FileField(upload_to="students/",default="default.jpg",null=True,blank=True)

@@ -80,10 +80,10 @@ a:focus {
   }
 }
 .cart, .profile{
-	background: #14243a;
+	background: #721c24;
 	padding: 10px;
 	border-radius: 5px;
-
+ 
 }
 .totalcart{
   color: #fac10a;

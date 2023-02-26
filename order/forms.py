@@ -22,10 +22,10 @@ class OrderCreateForm(forms.ModelForm):
         ('Mobile Money','Mobile Money')
 	)
 
-	division = forms.ChoiceField(choices=DIVISION_CHOICES)
-	district =  forms.ChoiceField(choices=DISCRICT_CHOICES)
-	payment_method = forms.ChoiceField(choices=PAYMENT_METHOD_CHOICES, widget=forms.RadioSelect())
+	#division = forms.ChoiceField(choices=DIVISION_CHOICES)
+	#district =  forms.ChoiceField(choices=DISCRICT_CHOICES)
+	# payment_method = forms.ChoiceField(choices=PAYMENT_METHOD_CHOICES, widget=forms.RadioSelect())
 
 	class Meta:
 		model = Order
-		fields = ['name', 'email', 'phone', 'address', 'division', 'district', 'zip_code', 'payment_method', 'account_no', 'transaction_id']
+		fields = ['name', 'email', 'phone', 'address']

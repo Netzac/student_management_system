@@ -16,7 +16,7 @@ PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY')
 SECRET_KEY = '(i#*06f#keydy_fh17bf=$0f6v)^wr^l7*u4gq42m*sztu#2_m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -49,8 +49,8 @@ INSTALLED_APPS = [
     'library',
     'bookstore',
     'search.apps.SearchConfig',
-    'order.apps.OrderConfig',
-    'cart.apps.CartConfig',
+    'order',
+    'cart',
     'school',
 ]
 

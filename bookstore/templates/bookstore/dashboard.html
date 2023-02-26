@@ -40,13 +40,13 @@
 								<div><h6> {{ item.title }} </h6></div>
 								{% endif %}
 							</div>
-							<a href="{% url 'store:book' id=item.id %}">{{ item.name|text_short }}</a>
+							<a href="{% url 'store:book' id=item.id %}">{{ item.title|text_short }}</a>
 							<a href="{% url 'store:author' id=item.author.id %}">{{ item.author }}</a>
 							<div class="rating">
 								{{ item.totalrating|averagerating:item.totalreview }}
 								<span class="totalrating">{{ item.totalreview|add:-1 }}</span>
 							</div>
-							<p> ₱{{ item.price }}</p>
+							<p> {{ item.price }}</p>
 							<button class="btn btn-danger" id="addTocart" data-book-id="{{ item.id }}">
 									<i class="fa fa-shopping-cart"></i>Add to cart
 								</button>
@@ -67,13 +67,13 @@
 								<img src="{{ p.coverpage.url }}" />
 								{% endif %}
 							</div>
-							<a href="{% url 'store:book' id=p.id %}">{{ p.name|text_short }}</a>
+							<a href="{% url 'store:book' id=p.id %}">{{ p.title|text_short }}</a>
 							<a href="{% url 'store:author' id=p.author.id %}">{{ p.author }}</a>
 							<div class="rating">
 								{{ p.totalrating|averagerating:p.totalreview }}
 								<span class="totalrating">{{ p.totalreview|add:-1 }}</span>
 							</div>
-							<p> ₱{{ p.price }}</p>
+							<p> {{ p.price }}</p>
 							<button class="btn btn-danger" id="addTocart" data-book-id="{{ p.id }}">
 									<i class="fa fa-shopping-cart""></i>Add to cart
 								</button>
