@@ -16,6 +16,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from .forms import  ReviewForm, StationeryForm, RequiredItemFormset
 
 from student_core.models import CustomUser as User
+from school.models import School
 
 # Create your views here.
 def index(request):
@@ -168,7 +169,7 @@ class RICreateView(SuccessMessageMixin,LoginRequiredMixin, CreateView):
     template_name="bookstore/requireditem_form.html"
     error_message ="Item format not allowed"
     success_message = 'Item successfully added.'
-
+   
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["clsid"] = self.kwargs['clsid']
@@ -177,23 +178,30 @@ class RICreateView(SuccessMessageMixin,LoginRequiredMixin, CreateView):
     def get(self,*args,**kwargs):
         # staffs = Staffs.objects.all().values('id')
         # classes = Courses.objects.all().values('id'),initial={"item":"","cls": clsid,"session":self.request.current_session_id,"qty":1}
-        clsid = self.kwargs['clsid']
+        clsid=self.kwargs['clsid']
+        cls = get_object_or_404(Courses,id=clsid)
         formset=RequiredItemFormset(queryset=RequiredItem.objects.filter(cls = clsid))
-        print("clsid", self.kwargs['clsid'])
-        return self.render_to_response({"requireditem_formset":formset})
+        print("clsid", cls.id)
+        return self.render_to_response({"requireditem_formset":formset,"cls": cls})
 
     def post(self,*args,**kwargs):
-        print("data:",self.request.POST)
+        clsid=self.kwargs['clsid']
+        cls = get_object_or_404(Courses,id=clsid)
         formset=RequiredItemFormset(data=self.request.POST)
         if formset.is_valid():
             formset.save()
             return redirect(reverse_lazy("store:requireditem-list"))
-        return self.render_to_response({"requireditem_formset":formset})
+        return self.render_to_response({"requireditem_formset":formset,"cls": cls})
   
 class RIListView(ListView):
     model=RequiredItem
     template_name="bookstore/requireditem_list.html"
 
+    def get_context_data(self, **kwargs):
+        sch = School.objects.first()
+        context = super().get_context_data(**kwargs)
+        context["school"] = sch
+        return context
 
 class RIUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = RequiredItem
@@ -209,7 +217,7 @@ class RIUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
 class RIDeleteView(LoginRequiredMixin, DeleteView):
     model = RequiredItem
-    success_url = reverse_lazy("store:equireditem-list")
+    success_url = reverse_lazy("store:requireditem-list")
     template_name = "hod_template/core_confirm_delete.html"
     success_message = "The term {} has been deleted with all its attached content"
 

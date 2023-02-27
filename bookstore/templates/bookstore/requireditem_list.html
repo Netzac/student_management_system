@@ -3,25 +3,18 @@
 
 
 {% block page_title %}
-   class Required Items
+   Class Required Items
 {% endblock page_title %}
 
-
-
-
-{% block breadcrumb %}
-  <a class="btn btn-success" href="{% url 'store:requireditem-create' 1 %}">
-    <i class="fa fa-plus"></i>
-   New Class Item
-  </a>
-{% endblock breadcrumb %}
   
 
 {% block main_content %}
+{% include 'status_message.html' %}
+{% include 'school_header_short.html' with title="Class Requirement List" %}
   <div class="row">
     <div class="col-sm-12">
 
-        <table id="id_table" class="table table-bordered">
+        <table id="id_table" class="table table-bordered table-striped">
           <thead class="bg-secondary">
             <tr>
               <th>Item</th>
@@ -29,7 +22,7 @@
               <th>Quantity</th>
             
               <th>Class</th>
-              <th>Action</th>
+             {# <th>Action</th> #}
             </tr>
           </thead>
           <tbody>
@@ -37,7 +30,7 @@
             <tr>
               <td>{{ object.item }}</td>
               <td>
-                {{object.desc}}
+                {{object.item.desc}}
               </td>
               <td>
                 {{object.qty}}
@@ -45,10 +38,11 @@
               <td>
                 {{object.cls}}
               </td>
-              <td>
+              {%comment%}  
+               <td>
                 <a href="{% url 'store:requireditem-delete' object.id %}"><i class="fa fa-trash-alt"></i></a>
-               
               </td>
+              {%endcomment%}
             </tr>
             {% endfor %}
           </tbody>

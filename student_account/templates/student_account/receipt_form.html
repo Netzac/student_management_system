@@ -14,7 +14,7 @@
       {% include 'form_snippet.html' %}
       <input type="hidden" value={{request.user.email}} id="email-address">
       <input type="hidden" value={{invoice.id}} id="invoice-id">
-      <input type="submit" class="btn btn-primary" value="Add Payment">
+      <input type="submit" class="btn btn-success" value="Add Payment">
       <input type="button"  id="payOnlineBtn" class="btn btn-secondary" onclick="payOnline()" data-url="{% url 'invoice-list' %}" value="PayOnline">
 
     </form>

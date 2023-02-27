@@ -109,6 +109,7 @@ class Stationery(models.Model):
     
     class Meta:
         verbose_name = "Stationery Items"
+        
 
 
 class RequiredItem(models.Model):
@@ -124,3 +125,4 @@ class RequiredItem(models.Model):
 
     class Meta:
         verbose_name = "stationery"
+        ordering =['item']

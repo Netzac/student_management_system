@@ -8,15 +8,15 @@
   {% if object %}
     Update  {{ object }}
   {% else %}
-    Add New
+    Add New Item
   {% endif %}
 {% endblock page_title %}
 
 
 {% block breadcrumb %}
-{%comment%} <a class="btn btn-success" href="{% url 'store:requireditem-create' clsid %}"><i
-    class="fas fa-plus"></i> New Item</a>
-{%endcomment%}
+ <a class="btn btn-success" href="{% url 'store:requireditem-create' cls.id %}"><i
+    class="fas fa-plus"></i> Add  New Item</a>
+
 
 {% endblock breadcrumb %}
 
@@ -29,11 +29,11 @@
 <form method="POST">
   {% csrf_token %}
 
-  <div class="row">
+  <div class="row justify-content-center">
     
-    <div class="col-sm-12 callout callout-info">
+    <div class="col-sm-10 callout callout-info ">
       {{ requireditem_formset.management_form }}
-      <div class="text-center"><strong>CLASS REQUIRED ITEMS</strong> </div>
+      <div class="text-center"><strong>{{cls.course_name| upper}} REQUIRED ITEMS</strong> </div>
       <hr>
       <div class="row">
         <div class="col"><strong>Item</strong></div>
@@ -46,6 +46,7 @@
         <div class="col" >{{ item.item | add_class:"form-control"}}</div>
         <div class="col" >{{ item.qty| add_class:"form-control"}}</div>
         <div class="col" >{{ item.cls| add_class:"form-control"}}</div>
+       
       </div>
       {% endfor %}
     </div>
