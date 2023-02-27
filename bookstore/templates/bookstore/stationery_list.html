@@ -3,19 +3,20 @@
 
 
 {% block title %}
-  Fee |Types
+  Stationery Items
 {% endblock title %}
 
 
 {% block breadcrumb %}
   <a class="btn btn-success" href="#" data-toggle="modal" data-target="#modal1">
     <i class="fa fa-plus"></i>
-    Add new Fee Type
+    Add New Item
   </a>
 {% endblock breadcrumb %}
   
 
 {% block main_content %}
+{% include 'status_message.html' %}
 <section class="content">
   <div class="container-fluid">
   <div class="row">
@@ -25,7 +26,8 @@
           <thead class="bg-secondary">
             <tr>
             <th>ID</th>
-            <th>Type</th>
+            <th>Item</th>
+            <th>Description</th>
             <th>Action</th>
             </tr>
         </thead>
@@ -34,9 +36,10 @@
             <tr>
               <td>{{forloop.counter}}</td>
               <td>{{ object }}</td>
-              <td><a href="{% url 'feetype-update' object.id %}"><i
+              <td>{{ object.desc }}</td>
+              <td><a href="{% url 'store:stationery-update' object.id %}"><i
                     class="fa fa-edit"></i></a> <a
-                  href="{% url 'feetype-delete' object.id %}"><i
+                  href="{% url 'store:stationery-delete' object.id %}"><i
                     class="fa fa-trash-alt"></i></a></td>
             </tr>
             {% endfor %}
@@ -50,9 +53,9 @@
   <div class="modal fade" id="modal1"  tabindex="-1" data-backdrop="false" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form action="{% url 'feetype-create' %}" method="POST">
+        <form action="{% url 'store:stationery-create' %}" method="POST">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add new Fee type</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Add New Item</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>

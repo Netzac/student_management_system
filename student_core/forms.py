@@ -171,7 +171,7 @@ class ExerciseForm(ModelForm):
         fields = ["name"]
         
 ClassTeacherFormSet = modelformset_factory(
-    ClassTeacher,fields=('staff_id','cls_id'),can_delete=True,extra=0
+    ClassTeacher,fields=('staff_id','cls_id'),can_delete=True,extra=1
 )
 
 

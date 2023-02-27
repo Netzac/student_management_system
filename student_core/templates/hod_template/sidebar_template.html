@@ -64,7 +64,7 @@
                     <a href="{{ staff_feedback_message }}" class="nav-link {% if request.path == staff_feedback_message %} active {% endif %}">
                       <i class="nav-icon fas fa-th"></i>
                       <p>
-                        Stafff Feedback
+                        Staff Inbox
                       </p>
                     </a>
                   </li>
@@ -103,7 +103,7 @@
                     <a href="{{ student_feedback_message }}" class="nav-link {% if request.path == student_feedback_message %} active {% endif %}">
                       <i class="nav-icon fas fa-th"></i>
                       <p>
-                       Message Inbox
+                       Student Inbox
                       </p>
                     </a>
                   </li>
@@ -131,7 +131,7 @@
                     <a href="{{ ex_result_class }}" class="nav-link {% if request.path == ex_result_class %} active {% endif %}">
                       <i class="nav-icon fas fa-running"></i>
                       <p>
-                       Class Exercises Entry
+                       Class Exercise Entry
                       </p>
                     </a>
                   </li>
@@ -424,6 +424,15 @@
                         </p>
                       </a>
                     </li>
+                    <li class="nav-item">
+                      <a href="{% url 'store:stationery-list' %}" class="nav-link">
+                        <i class="nav-icon fas fa-bars"></i>
+                        <p>
+                          Stationery
+                          <i class="right"></i>
+                        </p>
+                      </a>
+                    </li>
                   </ul>
               </li>
             
@@ -522,6 +531,24 @@
                     <i class="nav-icon fas fa-bars"></i>
                     <p>
                       Store Place
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  {% url 'store:requireditem-class' as requiredclass %}
+                  <a href="{{ requiredclass }}" class="nav-link {% if request.path == requiredclass %} active {% endif %}">
+                    <i class="nav-icon fas fa-bars"></i>
+                    <p>
+                     Class Requirements
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  {% url 'store:requireditem-list' as requirements %}
+                  <a href="{{ requirements }}" class="nav-link {% if request.path == requirements %} active {% endif %}">
+                    <i class="nav-icon fas fa-bars"></i>
+                    <p>
+                     Manage Class Requirements 
                     </p>
                   </a>
                 </li>

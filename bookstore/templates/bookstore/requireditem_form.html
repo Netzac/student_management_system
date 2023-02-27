@@ -1,5 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 {% load widget_tweaks %}
+{% load static %}
+
 
 {% block title %}{% endblock title %}
 {% block page_title %}
@@ -12,13 +14,13 @@
 
 
 {% block breadcrumb %}
-<a class="btn btn-success" href="{% url 'add_class_teacher' %}"><i
-    class="fas fa-plus"></i> New CT Mapping</a>
+{%comment%} <a class="btn btn-success" href="{% url 'store:requireditem-create' clsid %}"><i
+    class="fas fa-plus"></i> New Item</a>
+{%endcomment%}
 
 {% endblock breadcrumb %}
 
 {% block main_content %}
-{% load static %}
 
 
 <section class="content">
@@ -30,18 +32,20 @@
   <div class="row">
     
     <div class="col-sm-12 callout callout-info">
-      {{ class_teacher_formset.management_form }}
-      <div class="text-center"><strong>CLASS TEACHER MAPPING</strong> </div>
+      {{ requireditem_formset.management_form }}
+      <div class="text-center"><strong>CLASS REQUIRED ITEMS</strong> </div>
       <hr>
       <div class="row">
-        <div class="col"><strong>Teacher</strong></div>
+        <div class="col"><strong>Item</strong></div>
+        <div class="col"><strong>Quantity</strong></div>
         <div class="col"><strong>Class</strong></div>
       </div>
-      {% for item in class_teacher_formset %}
+      {% for item in requireditem_formset %}
       <div class="form-group row items-group">
         {{ item.id}}
-        <div class="col" >{{ item.staff_id | add_class:"form-control"}}</div>
-        <div class="col" >{{ item.cls_id | add_class:"form-control"}}</div>
+        <div class="col" >{{ item.item | add_class:"form-control"}}</div>
+        <div class="col" >{{ item.qty| add_class:"form-control"}}</div>
+        <div class="col" >{{ item.cls| add_class:"form-control"}}</div>
       </div>
       {% endfor %}
     </div>
@@ -63,7 +67,7 @@
 <script>
   $(".items-group").formset(
     {
-      prefix: '{{ class_teacher_formset.prefix }}',
+      prefix: '{{ requireditem_formset.prefix }}',
       deleteText: "<div class='btn btn-danger btn-circle'><i class='fas fa-trash'></i></div>",
       addText: "<div class='btn btn-success btn-circle'><i class='fas fa-plus'></i></div>"
     }

@@ -1,8 +1,9 @@
 
 from email.policy import default
+from tabnanny import verbose
 from django.db import models
 #from django.contrib.auth.models import User
-from student_core.models import CustomUser as User
+from student_core.models import SessionYearModel, Courses, CustomUser as User
 from django.utils import timezone
 
 
@@ -96,3 +97,30 @@ class Slider(models.Model):
 
 	def __str__(self):
 		return self.title
+
+
+class Stationery(models.Model):
+    item = models.CharField(max_length=50,verbose_name='Stationery Item')
+    desc = models.CharField(max_length=255,verbose_name='Description')
+
+    objects =models.Manager()
+    def __str__(self):
+         return self.item
+    
+    class Meta:
+        verbose_name = "Stationery Items"
+
+
+class RequiredItem(models.Model):
+    item = models.ForeignKey(Stationery,on_delete=models.CASCADE)
+    qty =models.IntegerField(default=1)
+    cls = models.ForeignKey(Courses,on_delete=models.CASCADE)
+   
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.item} {self.qty}"
+
+
+    class Meta:
+        verbose_name = "stationery"
