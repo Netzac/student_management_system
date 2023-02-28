@@ -45,7 +45,7 @@ class CustomUser(AbstractUser):
     user_type_data = ((1, "HOD"), (2, "Staff"), (3, "Student"))
     user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
 
-    objects = models.Manager()
+  
 
     class Meta:
         ordering = ["last_name"]
@@ -59,7 +59,7 @@ class AdminHOD(models.Model):
     admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    objects = models.Manager()
+   
 
 
 class Staffs(models.Model):

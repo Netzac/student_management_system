@@ -15,6 +15,10 @@
 
  .bg-overlay{
     background-image: url(../css/image/bg.jpg);  
+    box-shadow:
+        3em 3em 3em rgba(0, 132, 255, 0.8),
+             0 0  0 5px rgba(240, 239, 237, 0.8),
+             3em 3em 3em rgba(20, 14, 2, 0.8);
     width: 100%;
     height: 100%;
     opacity: 0.4;

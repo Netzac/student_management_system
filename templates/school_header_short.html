@@ -1,0 +1,39 @@
+<div class="row justify-content-center  mr-5">
+    <div class="col-sm-2 ">
+      <div class="">
+          <div class="card w-75 h-50 mt-5 ml-5">
+          <img src={{school.logo.url}} class="img-fluid img-thumbnail" >
+         </div>
+      </div>
+   </div>
+  <div class="col-sm-6">
+  <div class="card-body">
+        <table class="table ">
+            <thead class="thead-white">
+              <tr>
+                  <th class="text-center text-uppercase" colspan="2">
+                      <h2>{{school.name}} </h2>
+                  </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                  <td colspan="2"><h4 class="text-center">{{school.address}}</h4></td>
+              </tr>
+              <tr>
+                  <td>Phone: {{school.phone}}</td>
+                  <td class="text-right">Email: {{school.email}}</td>
+              </tr>
+              <tr>
+                  <td colspan="2" class="text-capitalize"> Branch: {{school.branch}}</td>
+              </tr>
+            </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2"><h4 class="text-center border-bottom border-dark text-uppercase">{{title}}</h4></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div> <!--cardbody end-->
+  </div>
+  </div>

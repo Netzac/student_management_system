@@ -1,0 +1,127 @@
+{% load static %}
+
+<script type="text/css">
+
+  .signature{
+    width:12em;
+    height:7em;
+  }
+
+</script>
+
+<section class="content">
+    
+    <div class="row text-align-left mt-1 mb-0">
+      <div class="col-sm-auto mt-1 ">
+        <p class="text-left">Attendance:</p>
+     </div>
+     <div class="col-sm-2 mt-1">
+      <p class="border-bottom border-dark text-left">{{result.student_attendance}}</p>
+     </div>
+     <div class="col-sm-1 mt-1">
+      <p>Out Of:</p>
+   </div>
+   <div class="col-sm-3 mt-1">
+    <p class="border-bottom border-dark text-left">{{result.total_attendance}}</p>
+   </div>
+   <div class="col-sm-auto mt-1">
+    <p>Promoted To:</p>
+  </div>
+  <div class="col-sm-2 mt-1">
+    <p class="border-bottom border-dark text-left">{{result.PromotedTo|default:"N/A"}}</p>
+   </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-sm-1 mt-1">
+        <p class="text-left">Conduct:</p> 
+     </div>
+     <div class="col-sm-5 mt-1">
+      <p class="border-bottom border-dark text-left">{{result.cir.conduct}}</p>
+     </div>
+     <div class="col-sm-1  mt-1">
+      <p class="text-left">Interest:</p> 
+    </div> 
+    <div class="col-sm-5 mt-1 ">
+      <p class="text-left border-bottom border-dark">{{result.cir.interest}}</p>
+    </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-sm-auto col-lg-auto  mt-1 mr-0" >
+        <p class="text-left mr-0" >Class Teacher Remarks:</p>
+     </div>
+     <div class="col-sm-9 col-lg-9 mt-1 mr-0">
+      <p class="border-bottom border-dark text-left">{{result.cir.remarks}}</p>
+    </div> 
+    </div>
+
+
+
+    <div class="row text-align-left">
+      <div class="col-sm-auto mt-1">
+        <p class="text-left">Class Teacher Signature:</p> 
+     </div>
+     <div class="col-sm-3 mt-1">
+      <div class="">
+        {% if result.staff.signature %}
+        <img src={{result.staff.signature.url}} style="width:7em; height: 3em;" class=" border-bottom border-dark text-left" >
+        {%else %}
+          <span class=" border-bottom border-dark text-left">{ {{user.first_name}}-{{user.last_name}} }</span>
+        {%endif%}
+      </div>
+     </div>
+     <div class="col-sm-auto  mt-1">
+      <p class="text-left">Head Teacher Signature:</p> 
+    </div> 
+    <div class="col-sm-3 mt-1 pb-1">
+      <div class="">
+        {% if result.school.adminSignature %}
+        <img src={{result.school.adminSignature.url}} style="width:7em; height: 3em;" class=" border-bottom border-dark text-left" >
+       {% else %} 
+       <span class=" border-bottom border-dark text-left">{ {{user.first_name}}-{{user.last_name}}} </span>
+       {%  endif %}
+      </div>
+     </div>
+    </div>
+
+
+
+    <div class="row text-align-left mt-0 mb-0">
+      <div class="col-sm-auto mt-0">
+        <p class="text-left">School Seal:</p> 
+     </div>
+     <div class="col-sm-4 mt-0">
+      <div class="">
+        <img src={{result.school.seal.url}} style="width:7em; height: 3em;" class=" border-bottom border-dark text-left" >
+       </div>
+     </div>
+     <div class="col-sm-auto  mt-0">
+      <p class="text-left">Grade Scale:</p> 
+    </div> 
+    <div class="col-sm-3 mt-0 ">
+      
+        <table class="table table-bordered border-dark table-sm">
+          <thead class="thead-light text-center">
+            <tr>
+              <th>#</th>
+              <th>Marks</th>
+              <th>Grade</th>
+              <th>Remark</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item,ub in gradeBook %}
+              <tr class="text-center" style="font-size: x-small;">
+                <td>{{forloop.counter}}</td>
+                <td>{{ item.lb }}-{{ub}}</td>
+                <td>{{ item.grade }}</td>
+                <td>{{ item.remark }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+          </table>
+    </div>
+     
+  </section>
