@@ -4,7 +4,7 @@
     <option value="">Select Student</option>
     <option value="All">All Students</option>
     {% for student in students %}
-        <option value=" {{student.id}}">{{student}}</option>
+        <option value=" {{student.id}}">{{student|title}}</option>
     {% endfor %}
 {% else %}
     <option value="">No Students </option>

@@ -55,7 +55,7 @@
                 <td>{{ forloop.counter }}</td>
                 <td><a href="{% url 'assignment-detail' assignment.id %}">{{ assignment.title }}</a></td>
                 
-                <td> {% if assignment.upload.url %}<a href="{{ assignment.upload.url }}">{{ assignment.upload}}</a>{%endif%}</td>
+                <td> {% if assignment.upload %}<a href="{{ assignment.upload.url }}">{{ assignment.upload}}</a>{%endif%}</td>
                 <td>{{ assignment.created_at }}</td>
                 <td>{{ assignment.due_date }}</td>
                 <td>{{ assignment.course }}</td>

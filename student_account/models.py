@@ -42,7 +42,7 @@ class Invoice(models.Model):
         return f"{self.id}________________{self.student}________________{self.created_at.strftime('%d %b %Y')} '                       '"
     
     def get_owner(self):
-        return f"{self.id} | {self.student}"
+        return f"{self.student}"
 
     def balance(self):
         payable = self.total_amount_payable()

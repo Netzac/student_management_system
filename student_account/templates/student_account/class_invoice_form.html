@@ -4,16 +4,16 @@
 {% block title %}{% endblock title %}
 {% block page_title %}
   {% if object %}
-    Update invoice {{ object }}
+    Update Bill {{ object }}
   {% else %}
-    Add new Invoice
+    Add New Bill
   {% endif %}
 {% endblock page_title %}
 
 
 {% block breadcrumb %}
-<a class="btn btn-primary" href="{% url 'class-invoice-create' %}"><i
-    class="fas fa-plus"></i> New Class Invoice</a>
+<a class="btn btn-success" href="{% url 'class-invoice-create' %}"><i
+    class="fas fa-plus"></i> New Class Bill</a>
 <!-- <a class="btn btn-primary" href="{% url 'bulk-invoice' %}"><i
     class="fas fa-upload"></i> Bulk Invoice</a> -->
 {% endblock breadcrumb %}
@@ -95,9 +95,9 @@
   {% endif %}
 
   {% if object %}
-  <input type="submit" class="btn btn-primary" value="Update Record">
+  <input type="submit" class="btn btn-success" value="Update Record">
   {% else %}
-  <input type="submit" class="btn btn-primary" value="Save Invoice">
+  <input type="submit" class="btn btn-secondary" value="Save Invoice">
   {% endif %}
 </form>
 

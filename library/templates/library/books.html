@@ -26,7 +26,7 @@
                             <tr>
                                 <th class="text-center">#</th>
                                 <th class="text-center">Date Added</th>
-                                <th class="text-center">Category/Sub Category</th>
+                                <th class="text-center">Category</th>
                                 <th class="text-center">ISBN</th>
                                 <th class="text-center">Title</th>
                                 <th class="text-center">Status</th>
@@ -40,8 +40,8 @@
                                 <td>{{ book.date_added|date:"Y-m-d h:i A"}}</td>
                                 <td>
                                     <div class="lh-1">
-                                        <div>{{ book.sub_category.category.name}}</div>
-                                        <div>{{ book.sub_category.name}}</div>
+                                        <div>{{ book.category.name}}</div>
+                                        <div>{{ book.category.name}}</div>
                                     </div>
                                 </td>
                                 <td>{{ book.isbn}}</td>

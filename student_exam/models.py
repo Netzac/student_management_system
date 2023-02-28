@@ -33,11 +33,11 @@ class Assignment(models.Model):
     title = models.CharField(max_length=255)
     passcode = models.CharField(max_length=100, default= unique_passcode)
     content = models.TextField()
-    upload = models.FileField(upload_to='assignments/', default="No file uploaded")
+    upload = models.FileField(upload_to='assignments/', default="")
     due_date = models.DateField()
     created_at = models.DateField(auto_now_add=True)
     last_updated = models.DateField(auto_now=True)
-    course = models.ForeignKey(Courses, on_delete=models.DO_NOTHING)
+    course = models.ForeignKey(Courses, verbose_name="Class",on_delete=models.DO_NOTHING)
     subject = models.ForeignKey(Subjects,on_delete=models.DO_NOTHING)
     user = models.ForeignKey(
         User,

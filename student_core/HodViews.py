@@ -1110,7 +1110,7 @@ def take_attendance(request, cls_id):
         date = request.POST['date']
         a = Attendance(course_id=cls, student_id=s, status=status, attendance_date=date, session_year_id=session_year_id)
         a.save()
-        messages.success(request,"Attendance successfully taken")
+    messages.success(request,"Attendance successfully taken")
     return HttpResponseRedirect(reverse('attendance'))
 
 

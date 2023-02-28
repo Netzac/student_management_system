@@ -8,7 +8,7 @@ def search(request):
 	books = Book.objects.all()
 	if search:
 		books = books.filter(
-			Q(title__icontains=search)|Q(sub_category__name__icontains=search)|Q(author__name__icontains=search)
+			Q(title__icontains=search)|Q(category__name__icontains=search)|Q(author__name__icontains=search)
 
 		)
 

@@ -23,14 +23,14 @@
 	<div class="container">
 		
 		<div class="container-fluid">
-			<div class="row">
+			<div class="row justify-content-center">
 				
-				<div class="col-sm-12 col-md-12 col-lg-6 col-xl-12">
+				<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
 					<div class="titleheader">
 						<h3 class="h2header text-center">New Published Books</h3>
 						<a href="#">See All</a>
 					</div>
-					<div class="regulara sliderzx">
+					<div class="regulara sliderzx col-sm-12 col-md-12 col-lg-12 col-xl-12 ">
 						{% for item in newbooks %}
 						<div class="book-wrapper text-center">
 							<div class="coverpage">
@@ -47,7 +47,7 @@
 								<span class="totalrating">{{ item.totalreview|add:-1 }}</span>
 							</div>
 							<p> {{ item.price }}</p>
-							<button class="btn btn-danger" id="addTocart" data-book-id="{{ item.id }}">
+							<button class="btn btn-secondary" id="addTocart" data-book-id="{{ item.id }}">
 									<i class="fa fa-shopping-cart"></i>Add to cart
 								</button>
 						</div>
@@ -55,7 +55,7 @@
 					</div>
 				</div>
 
-				<div class="col-sm-12 col-md-12 col-lg-6 col-xl-12">
+				<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
 					<div class="titleheader">
 						<h3 class="h2header text-center">Top Selling Books</h3>
 					</div>
@@ -74,7 +74,7 @@
 								<span class="totalrating">{{ p.totalreview|add:-1 }}</span>
 							</div>
 							<p> {{ p.price }}</p>
-							<button class="btn btn-danger" id="addTocart" data-book-id="{{ p.id }}">
+							<button class="btn btn-secondary" id="addTocart" data-book-id="{{ p.id }}">
 									<i class="fa fa-shopping-cart""></i>Add to cart
 								</button>
 						</div>

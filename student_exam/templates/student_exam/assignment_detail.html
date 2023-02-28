@@ -51,12 +51,12 @@
         <ul class="list-group">
           
           <li class="list-group-item d-flex justify-content-between align-items-center"><h4>Assignment Details</h4></li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">Title<span>{{ single_assignment.title }} </span></li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">Due Date<span>{{ single_assignment.due_date }} </span></li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">Content<span> {{ single_assignment.content }} </span></li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">Class<span> {{ single_assignment.course }} </span></li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">Attachment<span> <a href="{{ single_assignment.upload.url }}"> {{ single_assignment.upload }}  </a> </span></li>
-          <li class="list-group-item d-flex justify-content-between align-items-center">Subject<span> {{single_assignment.subject }}</span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Title:<span>{{ single_assignment.title }} </span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Due Date:<span>{{ single_assignment.due_date }} </span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center"><span> {{ single_assignment.content }} </span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Class:<span> {{ single_assignment.course }} </span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Attachment:<span> {%if single_assignment.upload %} <a href="{{ single_assignment.upload.url }}"> {{ single_assignment.upload }}  </a> {%else%}No Attachment{%endif%} </span></li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">Subject:<span> {{single_assignment.subject }}</span></li>
         </ul>	
       </div>
     </div>

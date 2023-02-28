@@ -319,7 +319,7 @@ def view_borrow(request, pk = None):
     else:
         context['borrow'] = models.Borrow.objects.get(id=pk)
     
-    return render(request, 'lib/view_borrow.html', context)
+    return render(request, 'library/view_borrow.html', context)
 
 @login_required
 def manage_borrow(request, pk = None):
