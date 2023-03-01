@@ -14,7 +14,7 @@
     <div class="col-sm-9 mr-0">
 
       <div class="row text-align-left mt-1 mb-0">
-        <div class="col-sm-2 mr-0 mt-1 ">
+        <div class="col-sm-auto mr-0 mt-1 ">
               <span class="text-left mr-0"> Attendance:</span>
         </div>
         <div class="col-sm-1 ml-0 mt-1">
@@ -35,37 +35,37 @@
           <p class="border-bottom border-dark text-left">{{result.PromotedTo|default:"N/A"}}</p>
         </div>
       </div>
-
+      <!-- end of Attendance-->
       <div class="row  text-align-left">
         <div class="col-sm-2  mt-1">
           <p class="text-left">Conduct:</p> 
         </div>
-        <div class="col-sm-3 mt-1">
+        <div class="col-sm-4 mt-1">
         <p class="border-bottom border-dark text-left">{{result.cir.conduct}}</p>
         </div>
-        <div class="col-sm-2 mr-0 px-1 mt-1">
+        <div class="col-sm-auto mr-1 pr-0 mr-0 mt-1">
         <p class="text-left">Interest:</p> 
         </div> 
-        <div class="col-sm-2 ml-0 px-0 mt-1 ">
+        <div class="col-sm-4 ml-0 px-0 mt-1 ">
         <p class="text-left border-bottom border-dark">{{result.cir.interest}}</p>
         </div>
       </div>
+      <!-- End of condunct-->
 
-
-      <div class="row text-align-left mx-0">
-          <div class="col-sm-3   mt-1 mr-0" >
+      <div class="row text-align-left mr-0">
+          <div class="col-sm-auto   mt-1 mr-0" >
             <p class="text-left mr-0" >Class Teacher Remarks:</p>
           </div>
-          <div class="col-sm-6 mt-1 mr-0">
+          <div class="col-sm-9 mt-1 mr-0">
             <p class="border-bottom border-dark text-left">{{result.cir.remarks}}</p>
           </div> 
       </div>
 
 
-            <!--Signature zone-->
+      <!--Signature zone-->
       <div class="row text-align-left">
 
-          <div class="col-sm-2 ml-0 mt-1">
+          <div class="col-sm-3 ml-0 mt-1">
             <p class="text-left px-0">Class Teacher Signature:</p> 
           </div>
           <div class="col-sm-2 mt-1">
@@ -76,12 +76,12 @@
             {%endif%}
           </div>
 
-          <div class="col-sm-2  mt-1">
+          <div class="col-sm-3  mt-1 mr-1">
           <p class="text-left">Head Teacher Signature:</p> 
           </div> 
           <div class="col-sm-1 mt-1 pb-0">
             {% if result.school.adminSignature %}
-              <img src={{result.school.adminSignature.url}} style="width:6em; height: 3em;" class=" border-bottom border-dark text-left" >
+              <img src={{result.school.adminSignature.url}} style="width:6em; height: 1.5em;" class=" border-bottom border-dark text-left" >
             {% else %} 
               <span class=" border-bottom border-dark text-left">{ {{user.first_name}}-{{user.last_name}}} </span>
             {%  endif %}
@@ -93,14 +93,14 @@
           </div>
           
           <div class="col-sm-1 px-0 mt-0">
-              <img src={{result.school.seal.url}} style="width: 5em; height: 3em;" class=" border-bottom border-dark text-left image-thumbnail" >
+              <img src={{result.school.seal.url}} style="width: 5em; height: 1.5em;" class=" border-bottom border-dark text-left image-thumbnail" >
           </div>
       </div>
 
     </div> <!--end of col-sm-9-->
 
-    <div class="col-sm-3 mt-0 ">
-      <small class="text-left">Grade Scale:</small> 
+    <div class="col-sm-auto mb-0 mt-0 py-0">
+      {# <small class="text-left">Grade Scale:</small>  #}
         <table class="table table-bordered border-dark table-sm">
           <thead class="thead-light text-center">
             <tr>

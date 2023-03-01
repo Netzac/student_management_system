@@ -2,6 +2,10 @@
 {% load humanize %}
 {% load static %}
 
+{% block page_title %}
+  Bill Payment Form
+{% endblock page_title %}
+
 {% block main_content %}
 {% include 'status_message.html' %}
 <section class="content">
@@ -21,8 +25,8 @@
   </div>
 
   <div class="col-4">
-    <div class="alert alert-info" role="alert">
-      <h3>INVOICE</h3>
+    <div class="alert  alert-success" role="alert">
+      <h3>BILL</h3>
       <p>{{invoice.get_owner | upper}}</p>
       <hr>
       <ul>

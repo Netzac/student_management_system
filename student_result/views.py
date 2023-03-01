@@ -200,7 +200,7 @@ def ResultDetailView(request,student):
             term_attendance_res = Attendance.objects.filter(student_id=student,session_year_id=request.current_session_id)
             total_attendance= term_attendance_res.count()
             student_attendance= term_attendance_res.aggregate(stu_attendance=Count(Case(When(status=True,then=1))))['stu_attendance']
-
+            conductInterestRemarks =get_object_or_404(ConductInterestRemarks,student=student)
             studentClass= result.student.course_id
             classSize = Student.objects.filter(course_id=studentClass).count()
             overall_grade = score_overall_grade(total_total)
@@ -236,6 +236,7 @@ def ResultDetailView(request,student):
                 "report_dates":report_dates,
                 "total_attendance":total_attendance,
                 "student_attendance":student_attendance,
+                "cir":conductInterestRemarks,
                 "graph":graph_data          
                  }
             get_result_summary(student,session,term,total=total_total,grade=overall_grade,attendance=total_attendance)
@@ -306,7 +307,7 @@ def ClassResultDetailView(request,clsid):
                 term_attendance_res = Attendance.objects.filter(student_id=student,session_year_id=request.current_session_id)
                 total_attendance= term_attendance_res.count()
                 student_attendance= term_attendance_res.aggregate(stu_attendance=Count(Case(When(status=True,then=1))))['stu_attendance']
-                conductInterestRemarks =ConductInterestRemarks.objects.get(student=student)
+                conductInterestRemarks =get_object_or_404(ConductInterestRemarks,student=student)
                 #print("Student_attendance:", student_attendance['stu_attendance'])
                 studentClass= result.student.course_id
                 classSize = Student.objects.filter(course_id=studentClass).count()
@@ -691,7 +692,7 @@ def create_conduct_interest_remarks(request,clsid):
         id_list = request.POST.getlist("students")
         student_list = ",".join(id_list)
         if not id_list:
-            messages.warning(request, "You didnt select any student.")
+            messages.warning(request, "You did not select any student.")
             return redirect('create-conduct-interest-remarks', clsid=clsid)
         print("I am valid:",id_list)
         results = []

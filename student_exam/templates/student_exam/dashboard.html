@@ -10,6 +10,13 @@
       background: transparent url(/static/students-exam/images/spinner.gif) no-repeat scroll center center;
   }
 </style>
+{% block page_title %}
+  <div class="justify-content-left">Assignments</div>
+{% endblock page_title %}
+{% block breadcrumb %}
+   
+  <a id="addAss" type="button" class="btn btn-success float-right" data-target= "#create_assignment" data-toggle="modal" href="{% url 'create-assignment' %}" ><i class="fas fa-plus">Add New Assignment</i></a>
+{% endblock breadcrumb %}
 {% block main_content%}
 
 {% if messages %}
@@ -31,9 +38,7 @@
         </form>
         {%endcomment%}
       </div>
-      <div class="col-sm-6 col-md-6">
-        <a id="addAss" type="button" class="btn btn-primary float-right" data-target= "#create_assignment" data-toggle="modal" href="{% url 'create-assignment' %}" ><i class="fas fa-plus">Add</i></a>
-      </div>
+      
       <div class="no-assignment">
           <table id="exams" class="striped responsive-table table-bordered table striped">
           <thead class="bg-secondary">

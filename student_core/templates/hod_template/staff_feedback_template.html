@@ -16,7 +16,7 @@
                     <!-- general form elements -->
                     <div class="card card-secondary">
                         <div class="card-header">
-                            <h3 class="card-title">Staff Message</h3>
+                            <h3 class="card-title">Messages</h3>
                         </div>
                         <!-- /.card-header -->
 
@@ -38,7 +38,7 @@
                                 <tr>
                                     <td>{{ feedback.id }}</td>
                                     <td>{{ feedback.staff_id.admin.id }}</td>
-                                    <td>{{ feedback.staff_id.admin.first_name }} {{ feedback.staff_id.admin.last_name }}</td> 
+                                    <td>{{ feedback.staff_id.admin.first_name | title}} {{ feedback.staff_id.admin.last_name | title}}</td> 
                                     <td>{{ feedback.feedback }}</td>
                                     <td>{{ feedback.created_at }}</td>
                                     <td>
