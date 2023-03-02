@@ -3,7 +3,7 @@
 
 
 {% block page_title %}
-  Select subject(s) to generate marks sheet
+  <small>Select subject(s) to generate sheet</small>
 {% endblock page_title %}
 
 
@@ -43,6 +43,7 @@
     <input type="hidden" name="students" value="{{ students }}">
 
     <input type="submit" class="btn btn-success" value="Create">
+    {% include 'back_button.html' %}
   </form>
 </div>
 </div>

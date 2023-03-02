@@ -4,7 +4,7 @@ import datetime
 from re import template
 from uuid import uuid4
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -661,3 +661,14 @@ def delete_overall_gradebook(request, pk = None):
             resp['msg'] = "Deleting Failed"
 
     return HttpResponse(json.dumps(resp), content_type="application/json")
+
+
+@login_required
+def view_answer(request,pk):
+    context = context_data(request)
+    if pk is None:
+        context['answer'] = {}
+    else:
+        context['answer'] = get_object_or_404(Submission, id=pk).answer
+    
+    return render(request, 'student_exam/view_answer.html', context)

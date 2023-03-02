@@ -2,7 +2,7 @@
 
 
 {% block page_title %}
-  Please select student(s) <span class="small">to proceed</span> 
+<small>Select student(s) to continue</small>
 {% endblock page_title %}
 
 
@@ -10,12 +10,9 @@
   <form method="POST">
     {% csrf_token %}
   <div class="card-header">
-    <h3 class="card-title">
-      <input type="submit" class="btn btn-success" value="Proceed >">
-    </h3>
-
+   {#  <h3 class="card-title"><input type="submit" class="btn btn-success" value="Proceed >"></h3> #}
     <div class="card-tools">
-      <p class="small btn btn-tool">You can also search by name/class </p>
+      <p class="small btn btn-tool">You could search by name </p>
     </div>
   </div>
 {% endblock content-header %}
@@ -42,7 +39,7 @@
   </table>
 
   <input type="submit" class="btn btn-success mt-2" value="Proceed >">
-
+  {% include 'cancel_button.html' %}
 
 </form>
 {% endblock main_content %}

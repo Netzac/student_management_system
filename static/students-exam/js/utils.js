@@ -5,6 +5,7 @@ $(function(){
            
             console.log('LInked clicked');
             openCreateAssignmentModal(event);
+           
   });
         
 
@@ -28,7 +29,7 @@ $(function(){
   function formAjaxSubmit(modal, action) {
         var form = modal.find('.modal-body form');
         console.log(form)
-        var formData = new FormData(form);
+        var formData = new FormData(document.getElementById('id_form'));
         var footer = $(modal).find('.modal-footer');
 
         // bind to the form’s submit event

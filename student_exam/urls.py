@@ -7,13 +7,14 @@ from student_exam.views import (
      edit_assignment, delete_submission, edit_submission, submit_assignment,
      gradebook,manage_gradebook,save_gradebook,delete_gradebook,view_gradebook,
      overall_gradebook,manage_overall_gradebook,delete_overall_gradebook,save_overall_gradebook,
-     view_overall_gradebook,
+     view_overall_gradebook, view_answer
 )
 
 urlpatterns = [
     path('assignments/',create_assignment, name="create-assignment"),
     path('dashboard/', dashboard, name="dashboard"),
     path('assignments/<id>/submissions',assignment_submissions, name='submissions'),
+    path('submissions/view-answer/<pk>/',view_answer, name='view-answer'),
     path('assignments/<id>/detail/',assignment_detail,name='assignment-detail'),
     path('assignments/<id>/delete/',delete_assignment,name='delete-assignment'),
     path('assignments/<id>/submission',submit_assignment,name='assignment-submission'),
