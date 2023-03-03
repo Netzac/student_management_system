@@ -79,14 +79,15 @@ COMMENTS_XTD_APP_MODEL_OPTIONS = {
 
 # Email Sending 
 if not DEBUG:
-    SERVER_EMAIL = 'awopenana@gmail.com'
+    SERVER_EMAIL = 'kingpo777@gmail.com'
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST_USER = SERVER_EMAIL
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = "Insearchof!@#"
+    EMAIL_HOST_PASSWORD = "fkcxonqkrlkkhqoh"
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+    ACCOUNT_EMAIL_VERIFICATION = 'none'
 else:
     EMAIL_BACKEND = (
     "django.core.mail.backends.console.EmailBackend"

@@ -2,6 +2,7 @@
 from django.urls import path, include
 from . import views
 from .import HodViews, StaffViews, StudentViews
+from django.contrib.auth import views as auth_views
 
 from student_account.views import FeeTypeCreateView, InvoiceListView
 
@@ -10,6 +11,12 @@ from student_account.views import FeeTypeCreateView, InvoiceListView
 urlpatterns = [
     path('', views.loginPage, name="login"),
     path('tet/', HodViews.add_course, name="tet"),
+     # for passwords reset
+    path("password_reset", views.password_reset_request, name="password_reset"),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password/password_reset_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="password/password_reset_confirm.html"), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password/password_reset_complete.html'), name='password_reset_complete'),    
+    
     # path('accounts/', include('django.contrib.auth.urls')),
     path('doLogin/', views.doLogin, name="doLogin"),
     path('get_user_details/', views.get_user_details, name="get_user_details"),
