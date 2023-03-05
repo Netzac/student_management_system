@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>School Management System | Staff Dashboard</title>
+  <title>Student Management System | Dashboard</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -29,6 +29,19 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
+  <link rel="stylesheet" href="{% static 'plugins/Datatables/datatables.min.css' %}" />
+
+  <link rel="stylesheet" href="{% static 'select2/css/select2.min.css' %}" />
+
+  <link rel="stylesheet" href="{% static 'extra/css/extra.css' %}" />
+
+
+ 
+
+  <!-- <link rel="stylesheet" href="{% static 'admin/css/materialize.min.css' %}" /> -->
+
+
+
     {% comment %} For Custom CSS {% endcomment %}
 
     {% block custom_css %}
@@ -36,9 +49,10 @@
 
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
-  <div class="wrapper">
-
+<body class="hold-transition sidebar-mini layout-fixed bg-white">
+  
+  <div class="wrapper" >
+    <div id="color-overlay"></div>
   <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
       <!-- Left navbar links -->
@@ -46,9 +60,15 @@
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
+        <li class="nav-item d-none d-sm-inline-block">
+          <a href="{% url 'current-session' %}" class="nav-link">Session: {{ current_session }}</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+          <a href="{% url 'current-session' %}" class="nav-link">Term: {{ current_term }}</a>
+        </li>
       </ul>
 
-      <h4 style="margin-left: 10px; margin-top: 5px;">School Management System | Staff Dashboard</h4>
+     <!-- <h4 style="margin-left: 10px; margin-top: 5px;">School Management System</h4> -->
 
       <ul class="navbar-nav ml-auto">
       
@@ -59,10 +79,14 @@
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
           
-          <a href="{% url 'staff_profile' %}" class="dropdown-item">
+          <a href="{% url 'admin_profile' %}" class="dropdown-item">
             <i class="fas fa-user-edit mr-2"></i> Update Profile
           </a>
-          
+
+          <div class="dropdown-divider"></div>
+          <a href="{% url 'birthdays' %}" class="dropdown-item">
+            <i class="fas fa-birthday-cake mr-2"></i> Birthdays
+          </a>
           <div class="dropdown-divider"></div>
           <a href="{% url 'logout_user' %}" class="dropdown-item">
             <i class="fas fa-power-off mr-2"></i> Logout
@@ -79,31 +103,62 @@
     {% include 'staff_template/sidebar_template.html' with user=user id=id %}
 
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-
+    <div class="content-wrapper bg-white">
+      
     <!-- Content Header (Page header) -->
-      <div class="content-header">
+      <div class="content-header ">
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0 text-dark">
+              <h3 class="m-0 text-white">
                 {% block page_title %}
                 {% endblock page_title %}
-              </h1>
+              </h3>
             </div><!-- /.col -->
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Home</a></li>
+                <li class="breadcrumb-item">
+                  {% block breadcrumb %}
+                  <div class="col col-sm-12 text-align-right" ><a href="#" onclick="window.print()" style="text-align:right; float:right;color:white"><strong>Get PDF Copy</strong></a></div>
+                  {% endblock breadcrumb %}</li>
               </ol>
-            </div><!-- /.col -->
+            </div>
           </div><!-- /.row -->
         </div><!-- /.container-fluid -->
       </div>
       <!-- /.content-header -->
 
       <!-- Main content -->
-      {% block main_content %}
-      {% endblock main_content %}
+      <section class="content">
+       
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              {% block fullcard %}
+              <div class="card">
+                {% block content-header %}{% endblock content-header %}
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      {% block main_content %}
+
+                      {% endblock main_content %}
+                    </div>
+                  </div>
+                  <!-- /.row -->
+                </div>
+                <!-- ./card-body -->
+
+              </div>
+              {% endblock fullcard %}
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!--/. container-fluid -->
+      </section>
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
@@ -122,6 +177,8 @@
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
+<script src="{% static '/extra/popper.min.js' %}"></script>
+<script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
 <!-- Bootstrap 4 -->
 <script src="{% static "bootstrap/js/bootstrap.bundle.min.js"  %}"></script>
 <!-- ChartJS -->
@@ -149,9 +206,20 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'dist/js/demo.js'  %}"></script>
 
+<script src="{% static 'dist/js/jquery.formset.js' %}"> </script>
+<script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+<script src="{% static 'select2/js/select2.min.js' %}"> </script>
+
+<script>$(document).ready(function () {
+  $('select').select2();
+})</script>
+
+<script>
+ document.getElementById("color-overlay").style.display="block"
+</script>
+
 {% comment %} For Custom JS {% endcomment %}
 {% block custom_js %}
 {% endblock custom_js %}
-
 </body>
 </html>

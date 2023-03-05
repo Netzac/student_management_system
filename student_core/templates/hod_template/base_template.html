@@ -100,7 +100,14 @@
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
-    {% include 'hod_template/sidebar_template.html' with user=user id=id %}
+    {% if user.user_type == '1' %}
+      {% include 'hod_template/sidebar_template.html' with user=user id=id %}
+    {% elif user.user_type == '2' %}
+      {% include 'staff_template/sidebar_template.html' with user=user id=id %}
+    {% elif user.user_type == '3' %}
+      {% include 'student_template/sidebar_template.html' with user=user id=id %}
+    {% endif %}
+    
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper bg-white">
@@ -162,8 +169,11 @@
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    {% include 'hod_template/footer.html' %}
-
+    {% if user.user_type == '1' %}
+      {% include 'hod_template/footer.html' %}
+    {% elif user.user_type == '2' %}
+     {% include 'staff_template/footer.html' %}
+    {% endif %}
     
   </div>
   <!-- ./wrapper -->

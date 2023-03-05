@@ -1,7 +1,7 @@
 {% extends 'staff_template/base_template.html' %}
 
 {% block page_title %}
-    Feedback Message
+     Messages
 {% endblock page_title %}
 
 {% block main_content %}
@@ -11,12 +11,12 @@
 <section class="content">
         <div class="container-fluid">
 
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row justify-content-center">
+                <div class="col-sm-10">
                     <!-- general form elements -->
-                    <div class="card card-primary">
+                    <div class="card card-secondary">
                     <div class="card-header">
-                        <h3 class="card-title">Leave a Feedback Message</h3>
+                        <h3 class="card-title">Send Message</h3>
                     </div>
                     <!-- /.card-header -->
 
@@ -50,8 +50,8 @@
                         <div class="card-body">
                            
                             <div class="form-group">
-                                <label>Feedback Message </label>
-                                <textarea name="feedback_message" class="form-control" rows="6" placeholder="Feedback Message"></textarea>
+                                <label>Out Going Message </label>
+                                <textarea name="feedback_message" class="form-control" rows="6" placeholder="Type Message Here"></textarea>
                             </div>
 
 
@@ -59,7 +59,8 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Leave a Feedback</button>
+                            <button type="submit" class="btn btn-success">Send Message</button>
+                            {% include 'back_button.html' %}
                         </div>
 
                     </form>
@@ -72,11 +73,11 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row justify-content-center">
+                <div class="col-sm-10">
                     <div class="card card-success">
                         <div class="card-header">
-                            <h3 class="card-title">Feedback History</h3>
+                            <h3 class="card-title">Message History</h3>
                         </div>
 
                         <div class="card-body">
@@ -85,8 +86,8 @@
                                     <thead class="thead-light">
                                     <tr>
                                         <th>#ID</th>
-                                        <th>Feedback Message</th>
-                                        <th>Feedback Reply</th>
+                                        <th>Sent Messages</th>
+                                        <th>Reply</th>
                                     </tr>
                                     </thead>
                                     

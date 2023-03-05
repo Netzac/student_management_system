@@ -11,6 +11,7 @@ from student_exam.views import (
 )
 
 urlpatterns = [
+    # URLs for HOD
     path('assignments/',create_assignment, name="create-assignment"),
     path('dashboard/', dashboard, name="dashboard"),
     path('assignments/<id>/submissions',assignment_submissions, name='submissions'),
@@ -38,5 +39,7 @@ urlpatterns = [
     path('view_overall_gradebook/<int:pk>',view_overall_gradebook,name='view-overall-gradebook-pk'),
     path('save_overall_gradebook',save_overall_gradebook,name='save-overall-gradebook'),
     path('delete_overall_gradebook/<int:pk>',delete_overall_gradebook,name='delete-overall-gradebook'),
+
+    #URLs For Staffs
     
 ]

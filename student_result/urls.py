@@ -10,6 +10,8 @@ from .views import (
 )
 
 urlpatterns = [
+    
+    #URLs for HOD
     path("create/<clsid>", create_result, name="create-result"),
     path("edit-results/<clsid>/<students>", edit_results, name="edit-results"),
     # re_path(r'^edit-results/(?P<student>\d+,*\d*)', edit_results, name="edit-results"),
@@ -32,4 +34,8 @@ urlpatterns = [
     path("ajax/load-students",load_students , name="load-students"),
     path("ajax/load-grades",load_grades , name="load-grades"),
     path('pdf/', pdf.as_view(), name='results-pdf'),
+
+
+    #URLs for Staffs
+    
 ]

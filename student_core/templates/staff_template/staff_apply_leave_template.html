@@ -1,7 +1,7 @@
 {% extends 'staff_template/base_template.html' %}
 
 {% block page_title %}
-    Leave Report and Apply for Leave
+    Leave Application and History
 {% endblock page_title %}
 
 {% block main_content %}
@@ -11,12 +11,12 @@
 <section class="content">
         <div class="container-fluid">
 
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row justify-content-center">
+                <div class="col-sm-10">
                     <!-- general form elements -->
-                    <div class="card card-primary">
+                    <div class="card card-success">
                     <div class="card-header">
-                        <h3 class="card-title">Apply For Leave</h3>
+                        <h3 class="card-title">Leave Application</h3>
                     </div>
                     <!-- /.card-header -->
 
@@ -64,7 +64,8 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Apply for Leave</button>
+                            <button type="submit" class="btn btn-success">Apply</button>
+                            {% include 'back_button.html' %}
                         </div>
 
                     </form>
@@ -77,11 +78,11 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row justify-content-center">
+                <div class="col-md-10">
                     <div class="card card-success">
                         <div class="card-header">
-                            <h3 class="card-title">Leave Apply History</h3>
+                            <h3 class="card-title">Leave History</h3>
                         </div>
 
                         <div class="card-body">

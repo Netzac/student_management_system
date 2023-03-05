@@ -22,7 +22,7 @@ from django.http import HttpResponse, Http404
 from io import BytesIO
 
 from student_core.models import Attendance, ClassTeacher, ConductInterestRemarks, Courses, Students as Student, Subjects
-from student_result.utils import score_overall_grade,renderPdf
+from student_result.utils import get_teacher_cls_id, score_overall_grade,renderPdf
 from student_core.forms import ConductInterestRemarksFormset
 from .forms import CreateResults, EditResults,EditExResults
 from .models import ClassExercise, Result,ResultSummary
@@ -413,7 +413,16 @@ def select_result_class(request):
 
 @login_required
 def select_ex_class(request):
+    user_type = request.user.user_type
+    template_name = 'student_result/select_class.html'
+
     classes = Courses.objects.all()
+    ''' Teacher zone'''
+    if user_type=='2':
+        template_name = 'student_result/staff_select_class.html'
+
+        cls_id = get_teacher_cls_id(request)
+        classes = classes.filter(id=cls_id)
     students=None
     if request.method == "POST":
         data = request.POST
@@ -429,7 +438,7 @@ def select_ex_class(request):
             cls_id=0
         return redirect('create-ex-result', clsid=clsid)
 
-    return render(request, 'student_result/select_class.html', {'class':classes})
+    return render(request,template_name, {'class':classes})
 
 
 

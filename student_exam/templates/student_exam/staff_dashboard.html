@@ -1,0 +1,243 @@
+{% extends 'staff_template/base_template.html' %}
+{% load static  %}
+{% load i18n %}
+
+{% block custom_css %}
+
+{%endblock custom_css %}
+<style type="text/css">
+  .loading {
+      background: transparent url(/static/students-exam/images/spinner.gif) no-repeat scroll center center;
+  }
+</style>
+{% block page_title %}
+  <div class="justify-content-left">Assignments</div>
+{% endblock page_title %}
+{% block breadcrumb %}
+   
+  <a id="addAss" type="button" class="btn btn-success float-right" data-target= "#create_assignment" data-toggle="modal" href="{% url 'create-assignment' %}" ><i class="fas fa-plus">Add New Assignment</i></a>
+{% endblock breadcrumb %}
+{% block main_content%}
+
+{% if messages %}
+{% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
+{% if assignments %}
+  <div class="container-fluid">
+    <div class="row justify-content-center bg-white">
+      <div class="col-sm-6 col-md-6">
+        {%comment%}
+        <form method="GET">
+          <div class="input-field input-search offset-s2">
+            <i class="material-icons right">search</i>
+            {{ search_form }}
+          </div>
+        </form>
+        {%endcomment%}
+      </div>
+      
+      <div class="no-assignment">
+          <table id="exams" class="striped responsive-table table-bordered table striped">
+          <thead class="bg-secondary">
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Upload</th>
+                <th>Date Created</th>
+                <th>Due date</th>
+                <th>Class</th>
+                <th>Subject</th>
+                <th>Submissions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for assignment in assignments %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><a href="{% url 'assignment-detail' assignment.id %}">{{ assignment.title }}</a></td>
+                
+                <td> {% if assignment.upload %}<a href="{{ assignment.upload.url }}">{{ assignment.upload}}</a>{%endif%}</td>
+                <td>{{ assignment.created_at }}</td>
+                <td>{{ assignment.due_date }}</td>
+                <td>{{ assignment.course }}</td>
+                <td>{{ assignment.subject }}</td>
+                <td><a href="{% url 'submissions' assignment.id %}">{{ assignment.submissions.count }}</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-div">
+        {% if assignments.has_other_pages %}
+          <ul class="pagination">
+            {% if assignments.has_previous %}
+              <li class="waves-effect"><a href="?page={{ assignments.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+            {% else %}
+              <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
+            {% endif %}
+            {% for i in assignments.paginator.page_range %}
+              {% if assignments.number == i %}
+                <li class=" waves-effect active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+              {% else %}
+                <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if assignments.has_next %}
+              <li class="waves-effect"><a href="?page={{ assignments.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+            {% else %}
+              <li class="disabled"><span><i class="material-icons">chevron_right</i></span></li>
+            {% endif %}
+          </ul>
+        {% endif %}
+      </div>
+      <!-- <div class="col sm-6">
+        <a id="addAss" data-target= "#create_assignment" data-toggle="modal" href="{% url 'create-assignment' %}" ><i class="fas fa-plus">Add</i></a>
+      </div> -->
+    </div>
+  </div>
+  <div>
+
+{% else %}
+  <div class="body">
+    <div class="">
+      <div class="row">
+        <div class="col sm-6">
+          {# <a id="addAss" data-target= "#genericModel" data-toggle="modal" href="{% url 'create-assignment' %}" ><i class="fas fa-plus">Add</i></a> #}
+        </div>
+       
+      <div class="no-assignment">
+        <p> No assignment created yet </p>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<!-- Modal Structure -->
+<div class="modal" id="genericModel" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+  <div class="modal-content animated bounceInRight">
+          <div class="modal-header">
+             
+              <h4 class="modal-title"> {% trans 'Create Assignment' %}</h4>
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                <span class="sr-only">&times;</span>
+            </button>
+              <!-- <small class="font-bold">{% trans 'Insert new values to modify as required' %}</small> -->
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+              <!-- <button type="button" class="btn btn-white" data-dismiss="modal">{% trans 'Close' %}</button>
+              <button id="btn-save" type="button" class="btn btn-primary">{% trans 'Save changes' %}</button> -->
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script src="{% static 'students-exam/js/bootstrap-modalmanager.js' %}"></script>
+<script src="{% static 'students-exam/js/utils.js' %}"></script>
+
+
+
+<script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+
+<script>
+  (function ($) {
+    $('.clickable-row').css('cursor', 'pointer');
+    $(".clickable-row").click(function () {
+      window.location = $(this).data("href");
+    });
+  })(jQuery)
+
+   $('#exams').DataTable({
+    select: false
+    });
+
+</script>
+
+
+
+<!-- <script>
+$(function(){
+  $('#addAss').click(function (event) {
+            event.preventDefault();
+           
+            console.log('LInked clicked');
+            openCreateAssignmentModal(event);
+  });
+        
+
+  function openCreateAssignmentModal(event) {
+      var modal = $('#create_assignment')
+      var url = $(event.target).closest('a').attr('href');
+      $.ajax({
+          type: "GET",
+          url: url
+      }).done(function(data, textStatus, jqXHR) {
+          modal.find('.modal-body').html(data);
+          console.log(url);
+          modal.modal('show');
+          formAjaxSubmit(modal, url);
+      }).fail(function(jqXHR, textStatus, errorThrown) {
+          alert(errorThrown);
+      });
+  }
+
+
+  function formAjaxSubmit(modal, action) {
+        var form = modal.find('.modal-body form');
+        var formData = new FormData(form);
+        var footer = $(modal).find('.modal-footer');
+
+        // bind to the form’s submit event
+        $(form).on('submit', function(event) {
+
+            // prevent the form from performing its default submit action
+            event.preventDefault();
+            footer.addClass('loading');
+
+            // either use the action supplied by the form, or the original rendering url
+            var url = $(this).attr('action') || action;
+
+            // serialize the form’s content and sent via an AJAX call
+            // using the form’s defined method
+            $.ajax({
+                type: $(this).attr('method'),
+                url: url,
+                data: formData.serialize(), //$(this).serialize(),
+                enctype: 'multipart/form-data',
+                success: function(xhr, ajaxOptions, thrownError) {
+
+                    // If the server sends back a successful response,
+                    // we need to further check the HTML received
+
+                    // If xhr contains any field errors, the form did not
+                    // validate successfully, so we update the modal body
+                    // with the new form and its error
+                    if ($(xhr).find('.has-error').length > 0) {
+                        $(modal).find('.modal-body').html(xhr);
+                        formAjaxSubmit(modal, url);
+                    } else {
+                        // otherwise, we've done and can close the modal
+                        $(modal).modal('hide');
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                },
+                complete: function() {
+                    footer.removeClass('loading');
+                }
+            });
+        });
+    }
+
+ 
+});
+</script> -->
+{% endblock custom_js %}

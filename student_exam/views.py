@@ -32,7 +32,53 @@ def dashboard(request):
     
     assignments_list = assignments
     if user.user_type == '1':
+        assignments_list = Assignment.objects.all()
         template_name ='student_exam/dashboard.html'
+        paginator = Paginator(assignments_list, 10)
+        page = request.GET.get('page')
+        try:
+            assignments_list = paginator.page(page)
+        except PageNotAnInteger:
+            assignments_list = paginator.page(1)
+        except EmptyPage:
+            assignments_list = paginator.page(paginator.num_pages)
+
+       
+        if request.method == 'GET':
+            if search_form.is_valid():
+                q = request.GET['q']
+                assignments = assignments.annotate(
+                    search=SearchVector('title', 'course', 'title'),
+                    ).filter(search=SearchQuery(q))
+
+                paginator = Paginator(assignments, 10)
+                page = request.GET.get('page')
+                try:
+                    assignments = paginator.page(page)
+                except PageNotAnInteger:
+                    assignments = paginator.page(1)
+                except EmptyPage:
+                    assignments = paginator.page(paginator.num_pages)
+            else:
+                for error in search_form.errors.values():
+                    messages(request, error)
+                   
+                context = {
+                    "assignments": assignments,
+                    "search_form": search_form,
+                    "assignment": assignment_form
+                }
+                return render(request, template_name, context=context)
+               
+        context = {
+            "assignments": assignments,
+            "assignment": assignment_form,
+            "search_form": search_form
+        }
+        return render(request, template_name, context=context)
+    
+    elif user.user_type == '2':
+        template_name ='student_exam/staff_dashboard.html'
         paginator = Paginator(assignments_list, 10)
         page = request.GET.get('page')
         try:
@@ -165,7 +211,7 @@ def create_assignment(request):
 
 @login_required
 def assignment_submissions(request, id):
-    
+    user_type =  request.user.user_type
     if is_ajax(request=request) and request.method == 'GET':
         template_name =  "student_exam/submissions_inner.html"
         grade_form = forms.GradeForm()
@@ -175,7 +221,9 @@ def assignment_submissions(request, id):
         assignment_id = id
         template_name =  "student_exam/assignment_submissions.html"
         # assignment = Submission.objects.select_related('assignment').get(id=id)
-    if request.user.user_type == '1':
+    if user_type== '1' or user_type == '2' :
+        if user_type=='2':
+            template_name =  "student_exam/staff_assignment_submissions.html"
         search_form = forms.SubmissionSearchForm(request.GET or None)
         feedback_form = forms.FeedbackForm(request.POST or None)
         grade_form = forms.GradeForm(request.POST or None)
@@ -246,7 +294,7 @@ def assignment_submissions(request, id):
                 "assignment_id": assignment_id
             }
         return render(request,template_name, context=context)
-
+    
 
 
 @login_required

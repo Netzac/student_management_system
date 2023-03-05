@@ -1,7 +1,7 @@
 {% extends 'staff_template/base_template.html' %}
 
 {% block page_title %}
-   Staff Applications
+    Students Applications
 {% endblock page_title %}
 
 {% block main_content %}
@@ -25,8 +25,8 @@
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Staff ID</th>
-                                    <th>Staff Name</th>
+                                    <th>Student ID</th>
+                                    <th>Student Name</th>
                                     <th>Leave Date</th>
                                     <th>Leave Message</th>
                                     <th>Applied On</th>
@@ -38,15 +38,15 @@
                                 <tbody>
                                 <tr>
                                     <td>{{ leave.id }}</td>
-                                    <td>{{ leave.staff_id.admin.id }}</td>
-                                    <td>{{ leave.staff_id.admin| title }} {{ feedback.staff_id.admin.last_name }}</td> 
+                                    <td>{{ leave.student_id.admin.id }}</td>
+                                    <td>{{ leave.student_id.admin| title }} {{ feedback.student_id.admin.last_name|title }}</td> 
                                     <td>{{ leave.leave_date }}</td>
                                     <td>{{ leave.leave_message }}</td>
                                     <td>{{ leave.created_at }}</td>
                                     <td>
                                         {% if leave.leave_status == 0 %}
-                                            <a href="{% url 'staff_leave_approve' leave_id=leave.id %}" class="btn btn-success">Approve</a>
-                                            <a href="{% url 'staff_leave_reject' leave_id=leave.id %}" class="btn btn-danger">Reject</a>
+                                            <a href="{% url 'student_leave_approve' leave_id=leave.id %}" class="btn btn-success">Approve</a>
+                                            <a href="{% url 'student_leave_reject' leave_id=leave.id %}" class="btn btn-danger">Reject</a>
                                         {% elif leave.leave_status == 1 %}
                                             <button class="btn btn-warning" disabled="disabled">Approved</button>
                                         {% else %}
@@ -70,7 +70,7 @@
         </div><!-- /.container-fluid -->
       </section>
 
-
+      
 
   {% endblock main_content %}
 

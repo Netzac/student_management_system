@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage #To upload Profile Picture
@@ -8,29 +8,33 @@ from django.core import serializers
 import json
 
 
-from student_core.models import CustomUser, Staffs, Courses, Subjects, Students, SessionYearModel, Attendance, AttendanceReport, LeaveReportStaff, FeedBackStaffs, StudentResult
+from student_core.models import (ClassTeacher, CustomUser, Staffs, Courses, Subjects, 
+Students, SessionYearModel, Attendance,
+     AttendanceReport, LeaveReportStaff, FeedBackStaffs, StudentResult, LeaveReportStudent,
+)
 
 
 def staff_home(request):
     # Fetching All Students under Staff
 
-    subjects = Subjects.objects.filter(staff_id=request.user.id)
+    subjects = Subjects.objects.all()
     course_id_list = []
-    for subject in subjects:
-        course = Courses.objects.get(id=subject.course_id.id)
-        course_id_list.append(course.id)
+    # for subject in subjects:
+    #     course = Courses.objects.get(id=subject.course_id.id)
+    #     course_id_list.append(course.id)
     
-    final_course = []
+    #final_course = []
     # Removing Duplicate Course Id
-    for course_id in course_id_list:
-        if course_id not in final_course:
-            final_course.append(course_id)
+    # for course_id in course_id_list:
+    #     if course_id not in final_course:
+    #         final_course.append(course_id)
+    staff_cls = get_staff_cls(request)
     
-    students_count = Students.objects.filter(course_id__in=final_course).count()
+    students_count = Students.objects.filter(course_id=staff_cls.id).count()
     subject_count = subjects.count()
 
     # Fetch All Attendance Count
-    attendance_count = Attendance.objects.filter(subject_id__in=subjects).count()
+    attendance_count = Attendance.objects.filter(student_id__in=staff_cls.students_set.all()).count()
     # Fetch All Approve Leave
     staff = Staffs.objects.get(admin=request.user.id)
     leave_count = LeaveReportStaff.objects.filter(staff_id=staff.id, leave_status=1).count()
@@ -39,11 +43,11 @@ def staff_home(request):
     subject_list = []
     attendance_list = []
     for subject in subjects:
-        attendance_count1 = Attendance.objects.filter(subject_id=subject.id).count()
+       # attendance_count1 = Attendance.objects.filter(subject_id=subject.id).count()
         subject_list.append(subject.subject_name)
-        attendance_list.append(attendance_count1)
+       # attendance_list.append(attendance_count1)
 
-    students_attendance = Students.objects.filter(course_id__in=final_course)
+    students_attendance = Students.objects.filter(course_id=staff_cls.id)
     student_list = []
     student_list_attendance_present = []
     student_list_attendance_absent = []
@@ -353,3 +357,21 @@ def staff_add_result_save(request):
         except:
             messages.error(request, "Failed to Add Result!")
             return redirect('staff_add_result')
+
+
+def get_staff_cls(request):
+    cls_id = get_object_or_404(ClassTeacher,staff_id= request.user.staffs.id)
+    return cls_id.cls_id
+
+def get_staff_students(request):
+    staff_cls =get_staff_cls(request)
+    students = Students.objects.values('id').filter(course_id=staff_cls.id)
+    return students
+def staff_student_leave_view(request):
+   
+    students = get_staff_students(request)
+    leaves = LeaveReportStudent.objects.filter(student_id__in = students)
+    context = {
+        "leaves": leaves
+    }
+    return render(request, 'staff_template/student_leave_view.html', context)

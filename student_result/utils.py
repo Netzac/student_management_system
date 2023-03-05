@@ -52,3 +52,10 @@ def renderPdf(template, content={}):
         return HttpResponse(result.getvalue(), content_type='application/pdf')
     else:
         return None
+    
+
+def get_teacher_cls_id(request):
+    return request.user.staffs.classteacher.cls_id.id
+
+def get_student_cls_id(request):
+    return request.user.students.course_id.id

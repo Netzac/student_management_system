@@ -1,4 +1,5 @@
 import profile
+from re import template
 from urllib.request import Request
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -891,13 +892,25 @@ def staff_leave_reject(request, leave_id):
 
 
 def admin_view_attendance(request):
-    classes = Courses.objects.all()
-    session_years = SessionYearModel.objects.all()
-    context = {
-        "classes": classes,
-        "session_years": session_years
-    }
-    return render(request, "hod_template/admin_view_attendance.html", context)
+    user_type = request.user.user_type
+    template_name = "hod_template/admin_view_attendance.html"
+    if user_type=='1':
+        classes = Courses.objects.all()
+        session_years = SessionYearModel.objects.all()
+        context = {
+            "classes": classes,
+            "session_years": session_years
+        }
+    elif user_type=='2':
+        template_name = "staff_template/staff_view_attendance.html"
+        clsid = request.user.staffs.classteacher.cls_id.id
+        classes = Courses.objects.filter(id=clsid)
+        session_years = SessionYearModel.objects.all()
+        context = {
+            "classes": classes,
+            "session_years": session_years
+        }
+        return render(request, template_name, context)
 
 
 @csrf_exempt
@@ -1081,17 +1094,31 @@ class CurrentSessionAndTermView(LoginRequiredMixin, View):
 
 @login_required
 def attendance(request):
-    classes = Courses.objects.all() #get_object_or_404(Courses)
-    return render(request, 'hod_template/attendance.html', {'classes': classes})
+    user_type =request.user.user_type
+    template_name = 'hod_template/attendance.html'
+    if user_type=='1':
+        classes = Courses.objects.all() #get_object_or_404(Courses)
+        return render(request,template_name, {'classes': classes})
+    elif user_type=='2':
+        cls_id = request.user.staffs.classteacher.cls_id.id
+        template_name = 'staff_template/attendance.html'
+        classes =get_object_or_404(Courses,id=cls_id) #get_object_or_404(Courses)
+        return render(request,template_name, {'classes': classes})
 
 @login_required()
 def attendance_class(request, cls_id):
+    user_type =request.user.user_type
     cls = get_object_or_404(Courses, id=cls_id)
+    template_name =  'hod_template/attendance_class.html'
+
+    if user_type=='2':
+        template_name =  'staff_template/attendance_class.html'
+
     context = {
         'cls': cls
         
     }
-    return render(request, 'hod_template/attendance_class.html', context)
+    return render(request,template_name, context)
 
 
 @login_required()
