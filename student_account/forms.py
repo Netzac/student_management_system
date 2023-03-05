@@ -7,7 +7,7 @@ from django.forms import (
 from .models import FeeType, Invoice, InvoiceItem, Receipt
 
 InvoiceItemFormset = inlineformset_factory(
-    Invoice, InvoiceItem, fields=["feetype", "amount",'description'], extra=1, can_delete=True
+    Invoice, InvoiceItem, fields=["feetype", "amount"], extra=1, can_delete=True
 )
 
 InvoiceReceiptFormSet = inlineformset_factory(

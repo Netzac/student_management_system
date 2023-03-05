@@ -16,10 +16,16 @@ from student_core.models import AcademicTerm, Courses, SessionYearModel, Student
 from .forms import InvoiceItemFormset, InvoiceReceiptFormSet, Invoices,FeeTypeForm
 from .models import Invoice, InvoiceItem, Receipt,FeeType
 
+from .utils import get_prev_term_bills
 
 class InvoiceListView(LoginRequiredMixin,ListView):
-    model = Invoice
     template_name = 'student_account/invoice_list.html'
+
+    def get_queryset(self):
+        self.queryset = Invoice.objects.filter(session=self.request.current_session,term =self.request.current_term)
+        return self.queryset
+    
+   
 
 class InvoiceCreateView(LoginRequiredMixin, CreateView):
     model = Invoice
@@ -38,13 +44,23 @@ class InvoiceCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         id= self.request.POST.get('student')
-        print('Student:',id)
+        
+        prev_term_bills = get_prev_term_bills(self.request.current_session_id)
+        #print('previous',prev_term_bills)
+        
         student=Student.objects.select_related("course_id").get(id=id)
         context = self.get_context_data()
         formset = context["items"]
         form.instance.class_for=student.course_id
+
+        if prev_term_bills:
+            try:
+                form.instance.balance_from_previous_term= prev_term_bills.get(student=student).balance()
+            except:
+                form.instance.balance_from_previous_term= 0
+
         self.object = form.save()
-        print('object:', self.object)
+        #print('object:', self.object)
         if self.object.id != None:
             if form.is_valid() and formset.is_valid():
                 formset.instance = self.object
@@ -70,16 +86,28 @@ class ClassInvoiceCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         cls_id=Courses.objects.get(id= self.request.POST.get('class_for'))
         session=SessionYearModel.objects.get(id=self.request.POST.get('session'))
-        term=AcademicTerm.objects.get(id=self.request.POST.get('session'))
+        term=AcademicTerm.objects.get(id=self.request.POST.get('term'))
         students = Student.objects.filter(course_id=cls_id)
+       
+        prev_term_bills = get_prev_term_bills(self.request.current_session_id)
+
+        #print('previous',prev_term_bills)
         bulk =[]
+        prev_amount=0
         for student in students:
             #invoice =Invoice(student=student,session=session,term=term,class_for=cls_id)
             #bulk.append(Invoice(student=student,session=session,term=term,class_for=cls_id))
-            print("Class:", student.id,session,term,cls_id)
-        
-            saved = Invoice.objects.create(student=student,session=session,term=term,class_for=cls_id)
+            #print("Class:", student.id,session,term,cls_id)
+            if prev_term_bills:
+                try:
+                    prev_amount = prev_term_bills.get(student=student).balance()
+                except:
+                   prev_amount= 0
+           
+            saved = Invoice.objects.create(student=student,session=session,term=term,class_for=cls_id,balance_from_previous_term=prev_amount)
             form.instance.student=saved.student
+
+           
             print("Saved",saved)
             context = self.get_context_data()
             formset = context["items"]
@@ -121,6 +149,7 @@ class InvoiceUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
+      
         context = self.get_context_data()
         formset = context["receipts"]
         itemsformset = context["items"]

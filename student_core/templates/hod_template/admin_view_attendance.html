@@ -236,7 +236,7 @@
                 //console.log(json_data)
                 //Displaying Attendance Date Input and Students Attendance
                 var div_data= '<div class="row"><div class="col-sm-12">'
-                div_data += '<table class="table table-bordered border-dark table-sm"><thead class="thead-light text-center"><tr>'
+                div_data += '<table id ="id_table" class="table table-bordered bg-light "><thead class="thead-light text-center"><tr>'
                 div_data += '<th>Student</th><th>Present</th></tr></thead>'
                 div_data +="<tbody>"
 
@@ -260,4 +260,5 @@
 
     })
 </script>
+    {% include 'table_format.html' %}
 {% endblock custom_js %}

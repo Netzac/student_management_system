@@ -73,7 +73,6 @@ class Invoice(models.Model):
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     feetype= models.ForeignKey(FeeType,on_delete=models.DO_NOTHING)
-    description = models.CharField(max_length=200)
     amount = models.IntegerField()
 
     objects = models.Manager()

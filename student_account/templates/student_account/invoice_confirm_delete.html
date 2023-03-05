@@ -14,7 +14,7 @@
   {% csrf_token %}
 
   <div class="alert">
-    <p>Are you sure you want to delete invoice "{{ object }}"?</p>
+    <p>Are you sure you want to delete invoice "{{ object.get_owner }}"?</p>
     <p>All receipts to this invoice will be deleted as well</p>
   </div>
 
