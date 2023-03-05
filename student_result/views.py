@@ -365,8 +365,14 @@ def ClassResultDetailView(request,clsid):
 
 @login_required
 def find_result(request):
-    
     classes = Courses.objects.all()
+
+    user_type = request.user.user_type
+    classes = Courses.objects.all()
+
+    if user_type=='2':
+        classes= classes.filter(id=get_teacher_cls_id(request))
+        
     if request.method == "POST":
         data = request.POST
         pk=0
@@ -393,7 +399,12 @@ def find_result(request):
 
 @login_required
 def select_result_class(request):
+    user_type = request.user.user_type
     classes = Courses.objects.all()
+
+    if user_type=='2':
+
+        classes= classes.filter(id=get_teacher_cls_id(request))
     students=None
     if request.method == "POST":
         data = request.POST
@@ -676,6 +687,13 @@ def get_chart_labels():
 def select_cir_class(request):
     classes = Courses.objects.all()
     students=None
+
+    user_type = request.user.user_type
+    classes = Courses.objects.all()
+
+    if user_type=='2':
+
+        classes= classes.filter(id=get_teacher_cls_id(request))
     if request.method == "POST":
         data = request.POST
         #clsid=0

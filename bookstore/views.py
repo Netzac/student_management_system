@@ -18,6 +18,8 @@ from .forms import  ReviewForm, StationeryForm, RequiredItemFormset
 from student_core.models import CustomUser as User
 from school.models import School
 
+from.utils import get_teacher_cls_id
+
 # Create your views here.
 def index(request):
     try:
@@ -145,6 +147,12 @@ from student_core.models import Courses
 def select_item_class(request):
     classes = Courses.objects.all()
     students=None
+    
+    user_type = request.user.user_type
+    classes = Courses.objects.all()
+
+    if user_type=='2':
+        classes= classes.filter(id=get_teacher_cls_id(request))
     if request.method == "POST":
         data = request.POST
         #clsid=0
@@ -194,6 +202,7 @@ class RICreateView(SuccessMessageMixin,LoginRequiredMixin, CreateView):
         return self.render_to_response({"requireditem_formset":formset,"cls": cls})
   
 class RIListView(ListView):
+
     model=RequiredItem
     template_name="bookstore/requireditem_list.html"
 
@@ -202,6 +211,13 @@ class RIListView(ListView):
         context = super().get_context_data(**kwargs)
         context["school"] = sch
         return context
+    
+    def get_queryset(self):
+        user_type = self.request.user.user_type
+        if user_type=='1':
+            return RequiredItem.objects.all()
+        elif user_type=='2' or user_type=='3':
+            return RequiredItem.objects.filter(cls=get_teacher_cls_id(self.request))
 
 class RIUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = RequiredItem

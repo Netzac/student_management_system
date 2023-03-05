@@ -33,6 +33,8 @@ from student_account.models import FeeType
 
 from student_exam.models import Exercise
 
+from student_result.utils import get_teacher_cls_id
+
 
 def admin_home(request):
     all_student_count = Students.objects.all().count()
@@ -553,7 +555,12 @@ def add_student_save(request):
 
 
 def manage_student(request):
+    user_type = request.user.user_type
+   
     students = Students.objects.all()
+
+    if user_type=='2':
+        students= students.filter(course_id = get_teacher_cls_id(request))
     context = {
         "students": students
     }
