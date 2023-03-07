@@ -372,6 +372,8 @@ def find_result(request):
 
     if user_type=='2':
         classes= classes.filter(id=get_teacher_cls_id(request))
+    
+
         
     if request.method == "POST":
         data = request.POST

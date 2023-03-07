@@ -15,7 +15,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from .forms import  ReviewForm, StationeryForm, RequiredItemFormset
 
-from student_core.models import CustomUser as User
+from student_core.models import CustomUser as User, Students
 from school.models import School
 
 from.utils import get_teacher_cls_id
@@ -216,8 +216,11 @@ class RIListView(ListView):
         user_type = self.request.user.user_type
         if user_type=='1':
             return RequiredItem.objects.all()
-        elif user_type=='2' or user_type=='3':
+        elif user_type=='2':
             return RequiredItem.objects.filter(cls=get_teacher_cls_id(self.request))
+        elif user_type=='3':
+            return RequiredItem.objects.filter(cls=self.request.user.students.course_id)
+            
 
 class RIUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = RequiredItem
