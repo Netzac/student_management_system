@@ -379,7 +379,7 @@ def find_result(request):
         data = request.POST
         pk=0
 
-        print('data: ',data)
+        #print('data: ',data)
         # data = json.loads(form)
         try:
             id = data['studentid']
@@ -387,7 +387,7 @@ def find_result(request):
         except:
             pass
         try:
-            pk= id if (id and id.strip()) else id2
+            pk= int(id)-10000000 if (id and id.strip()) else id2
             #print('pk :', id)
         except:
             redirect('find-result')

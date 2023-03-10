@@ -1,4 +1,5 @@
 {% extends 'hod_template/base_template.html' %}
+{% load customfunction %}
 
 {% block page_title %}
     Students Applications
@@ -24,7 +25,7 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>#</th>
                                     <th>Student ID</th>
                                     <th>Student Name</th>
                                     <th>Leave Date</th>
@@ -37,8 +38,8 @@
                                 {% for leave in leaves %}
                                 <tbody>
                                 <tr>
-                                    <td>{{ leave.id }}</td>
-                                    <td>{{ leave.student_id.admin.id }}</td>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ leave.student_id.id | idify}}</td>
                                     <td>{{ leave.student_id.admin| title }} {{ feedback.student_id.admin.last_name|title }}</td> 
                                     <td>{{ leave.leave_date }}</td>
                                     <td>{{ leave.leave_message }}</td>

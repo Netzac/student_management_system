@@ -24,7 +24,7 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>#</th>
                                     <th>Staff ID</th>
                                     <th>Staff Name</th>
                                     <th>Message</th>
@@ -36,7 +36,7 @@
                                 {% for feedback in feedbacks %}
                                 <tbody>
                                 <tr>
-                                    <td>{{ feedback.id }}</td>
+                                    <td>{{ forloop.counter}}</td>
                                     <td>{{ feedback.staff_id.admin.id }}</td>
                                     <td>{{ feedback.staff_id.admin.first_name | title}} {{ feedback.staff_id.admin.last_name | title}}</td> 
                                     <td>{{ feedback.feedback }}</td>

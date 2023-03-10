@@ -55,3 +55,9 @@ def subtotal(value, args):
 @register.filter(name='multiply')
 def multiply(value, args):
 	return math.ceil(value*args)
+
+id_prefix = 10_000_000
+
+@register.filter(name='idify')
+def idify(value):
+	return id_prefix + value

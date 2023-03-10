@@ -44,7 +44,16 @@
                   <p>Person Registry  <i class="fas fa-angle-left right"></i></p>
                 </a>
                 <ul class="nav nav-treeview">           
-                 
+                  <li class="nav-item">
+                    {% url 'student_detail_view' pk=user.students.id as student_detail_view %}
+                    <a href="{{ student_detail_view }}" class="nav-link {% if request.path == student_detail_view %} active {% endif %}">
+                      <i class="nav-icon fas fa-envelope-open-text"></i>
+                      <p>
+                         Personal Details
+                        {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                      </p>
+                    </a>
+                  </li>
                   <li class="nav-item">
                     {% url 'student_apply_leave' as student_apply_leave %}
                     <a href="{{ student_apply_leave }}" class="nav-link {% if request.path == student_apply_leave %} active {% endif %}">
@@ -128,11 +137,28 @@
             </ul>
         </li>
 
-          
-
-
 
             <li class="nav-header">Other Departments</li>
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-copy"></i>
+                <p>
+                  Accounts
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  {% url 'invoice-list' as invoice_list %}
+                  <a href="{{ invoice_list }}" class="nav-link {% if request.path == invoice_list %} active {% endif %}">
+                    <i class="nav-icon fas fa-bars"></i>
+                    <p>
+                      Student Bills
+                    </p>
+                  </a>
+                </li>
+              </ul>
+            </li>
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-copy"></i>

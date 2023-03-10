@@ -1,23 +1,25 @@
 {% extends 'hod_template/base_template.html' %}
 {% load humanize %}
 {% block page_title %}
-    School Details
+   <i class="fas fa-school"></i> School Details
 {% endblock page_title %}
 {% block main_content %}
 {% include 'status_message.html' %}
 <section class="content">
 <div class="container-fluid">
-<div class="row justify-content-center">
-  <div class="col-8">
+<div class="row justify-content-center bg-dark pt-3 rounded-lg col-sm-12" style="opacity: 0.8;">
+  <div class="col-sm-8">
     {% if not exists %}
     <form action="" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
 
       {% include 'form_snippet.html' %}
-
-      <input type="submit" class="btn btn-primary" value="Save">
-      {% include 'cancel_button.html'%}
-
+      <div class="row justify-content-center col-sm-12 my-3">
+        <div class="col col-sm-6">
+        <input type="submit" class="btn btn-success" value="Save Details">
+        {% include 'cancel_button.html'%}
+      </div>
+    </div>
     </form>
     {%else%}
         <div class="row justify-content-center"><div class="sm-12">School Details Already Added!  <a href="{% url 'school-update' exists.id %}" class="link"><i class="fa fa-edit" title="Edit Record"></i>

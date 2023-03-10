@@ -1230,3 +1230,15 @@ import datetime
 def get_birthdays(request):
     birthdays=Students.objects.filter(dob__day=datetime.date.today().day,dob__month=datetime.date.today().month).order_by('course_id') #.exclude(birthday__year=1)
     return render(request, 'hod_template/birthday_list.html', {'birthdays': birthdays})
+
+
+
+from django.views.generic import DetailView
+class StudentDetailView(LoginRequiredMixin, DetailView):
+    template_name = 'hod_template/student_detail.html'
+    model = Students
+    fields = "__all__"
+
+    def get_context_data(self, **kwargs):
+        context = super(StudentDetailView, self).get_context_data(**kwargs)
+        return context

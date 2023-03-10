@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Find Result
+   <i class="fas fa-file"></i> Find Result
 {% endblock page_title %}
 
 {% block main_content %}
@@ -36,7 +36,7 @@
                                     <div class="form-group">
                                         <label for="default" class="col-sm-2 control-label">Class</label>
                                         <select name="classes" class="form-control" id="classes" required="required">
-                                            <option value="">Select Class</option>
+                                            <option value="">Or Select Class</option>
                                             
                                             {% for cls in class %}
                                                 <option value="{{ cls.id }}">{{ cls }}</option>

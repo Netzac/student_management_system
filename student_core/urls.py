@@ -62,6 +62,9 @@ urlpatterns = [
     path('staff_feedback_message/', HodViews.staff_feedback_message, name="staff_feedback_message"),
     path('staff_feedback_message_reply/', HodViews.staff_feedback_message_reply, name="staff_feedback_message_reply"),
     path('student_leave_view/', HodViews.student_leave_view, name="student_leave_view"),
+
+    path('student/<int:pk>/detail/', HodViews.StudentDetailView.as_view(), name="student_detail_view"),
+    
     path('student_leave_approve/<leave_id>/', HodViews.student_leave_approve, name="student_leave_approve"),
     path('student_leave_reject/<leave_id>/', HodViews.student_leave_reject, name="student_leave_reject"),
     path('staff_leave_view/', HodViews.staff_leave_view, name="staff_leave_view"),

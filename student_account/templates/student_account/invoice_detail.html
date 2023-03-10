@@ -9,9 +9,11 @@
 <!-- <div class="card-header"> -->
   <div class="card-tools bg-dark">
    <button class="bg-success"> <a href="#" onclick="window.print()" class="btn btn-tool"><i class="fas fa-print"></i>Print</a></button>
+   {% if user.user_type == '1' %}
   <button class="bg-secondary"><a href="{% url 'invoice-update' object.id %}" class="btn btn-tool"><i class="fas fa-edit"></i>Edit</a></button>
   <button class="bg-danger"> <a href="{% url 'invoice-delete' object.id %}" class="btn btn-tool">
       <i class="fas fa-times"></i>Delete</a></button>
+  {% endif %}
   </div>
 <!--</div> -->
 {% endblock breadcrumb %}
@@ -23,7 +25,7 @@
 <div class="container-fluid bg-white">
 <div class="row">
   <div class="col-sm-4">
-    <h3>{{ object.get_owner }} </h3>
+    <h3>{{ object.get_owner|title }} </h3>
     <h5>{{ object.session }} </h5>
     <h5>{{ object.term }} </h5>
     <h5>{{ object.class_for }} </h5>

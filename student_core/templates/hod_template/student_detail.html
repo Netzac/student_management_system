@@ -1,0 +1,89 @@
+{% extends 'hod_template/base_template.html' %}
+{% load customfunction %}
+
+{% block page_title %}
+  <i class="fas fa-graduation-cap"></i> Student Details
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+            <div class="row justify-content-center col-sm-12">
+                <div class="col-sm-2 bg-info">
+                    <div class="card w-75 h-45 mt-2 ml-3">
+                        <img src={{object.profile_pic}} class=" rounded-circle img-fluid img-thumbnail" >
+                    </div>
+                    <div class="row mt-3 bg-secondary rounded-lg mx-1"><h5 class="mx-auto text-center">{{object|title}}</h5></div>
+                    <div class="row mt-0 bg-secondary rounded-lg mx-1"><p class="mx-auto">Student</p></div>
+                </div>
+                <div class="col col-sm-8">
+                    <div class="row">
+                        <div class="col col-sm-6 bg-info">
+                            <ul class="list-group list-unstyled">
+                                <li class="list-item-group mt-3 justify-content-left bg-info" >
+                                    <h6>Student ID</h6>
+                                </li>
+                                <li class="list-item-group">
+                                    <h2>{{object.id|idify}}</h2> 
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col col-sm-6 bg-secondary">
+                            <ul class="list-group list-unstyled">
+                                <li class="list-item-group mt-3 justify-content-left bg-secondary" >
+                                    <h6>Class</h6>
+                                </li>
+                                <li class="list-item-group">
+                                    <h2>{{object.course_id}}</h2> 
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item ">
+                            <a class="nav-link active" data-toggle="tab" href="#sinfo"> Student's Information</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#ginfo">Guardian's Information</a>
+                        </li>
+                    </ul>
+                     <!-- Tab panes -->
+                    <div class="tab-content">
+                        
+                        <div id="sinfo" class="container tab-pane active"><br>
+                            <ul class="list-group">
+          
+                                <li class="list-group-item d-flex justify-content-between align-items-center"><h4>Details</h4></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Status:<span>{% if object.status == '1' %} Active {% else %} Inactive {% endif %}</span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Date of Birth:<span>{{ object.dob }} </span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center"> Gender: <span> {{ object.gender }} </span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Address:<span> {{ object.address }} </span></li>
+                               
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Class:<span> {{object.course_id }}</span></li>
+                              </ul>	
+                        </div>
+                        <div id="ginfo" class="container tab-pane fade"><br>
+                            <ul class="list-group">
+          
+                                <li class="list-group-item d-flex justify-content-between align-items-center"><h4>Guardian Details</h4></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Full Name:<span>{{object.parent_first_name}} {{object.parent_last_name}}</span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Email :<span>{{ object.parent_email }} </span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center"> Contact Number: <span> {{ object.parent_contact_number }} </span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Occupation:<span> {{ object.parent_occupation }} </span></li>
+                               
+                                
+                              </ul>	
+                        </div>
+                    </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

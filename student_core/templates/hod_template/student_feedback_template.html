@@ -1,5 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
+{% load customfunction %}
+
 {% block page_title %}
     Student Messages
 {% endblock page_title %}
@@ -38,7 +40,7 @@
                                 <tbody>
                                 <tr>
                                     <td>{{ feedback.id }}</td>
-                                    <td>{{ feedback.student_id.admin.id }}</td>
+                                    <td>{{ feedback.student_id.id|idify }}</td>
                                     <td>{{ feedback.student_id.admin.first_name }} {{ feedback.student_id.admin.last_name }}</td>
                                     <td>{{ feedback.student_id.session_year_id.session_start_year }} - {{ feedback.student_id.session_year_id.session_end_year }}</td>
                                     <td>{{ feedback.feedback }}</td>

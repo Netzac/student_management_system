@@ -2,7 +2,9 @@
 {% load static  %}
 {% load i18n %}
 
-{% block  page_title %}Assignment Submission{% endblock page_title %}
+{% load customfunction %}
+
+{% block  page_title %} <i class="fas fa-tasks"></i>  Assignment Submission{% endblock page_title %}
 
 {% block main_content%}
 
@@ -23,7 +25,7 @@
             <thead>
               <tr>
                   <th>#</th>
-                  <th>Admission #</th>
+                  <th>Student ID</th>
                   <th>Content</th>
                   <th>Attachment</th>
                   <th>Date submitted</th>
@@ -37,7 +39,7 @@
                 {% for submission in submissions %}
                 <tr>
                   <td>{{ forloop.counter }}</td>
-                  <td>{{ submission.matric_number }}</td>
+                  <td>{{ submission.user.students.id|idify }}</td>
                  <td> <a type="button" class="view-answer" href="javascript:void(0)" data-url="{% url 'view-answer' submission.id %}">{{ submission.answer| truncatewords:3 }}</a></td> 
                   <td>{{ submission.upload }}</td>
                   <td>{{ submission.submitted_at }}</td>

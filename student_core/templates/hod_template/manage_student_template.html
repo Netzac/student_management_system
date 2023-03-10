@@ -1,41 +1,23 @@
 {% extends 'hod_template/base_template.html' %}
+{% load static %}
+{% load customfunction %}
 
 {% block page_title %}
-    Manage Student
+    Manage Students
 {% endblock page_title %}
 
 {% block main_content %}
 
-{% load static %}
+
+
+{% include 'status_message.html' %}
 
 <section class="content">
         <div class="container-fluid">
 
-            <a class="btn btn-primary" href="{% url 'add_student' %}" role="button">+ Add Student</a> <br/>&nbsp;
+            <a class="btn btn-success" href="{% url 'add_student' %}" role="button">+ Add Student</a> <br/>&nbsp;
             
-            {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-                                {% endif %}
+         
 
             <div class="row justify-content-center bg-light">
 
@@ -79,8 +61,8 @@
                             </thead>
                             <tbody>
                                 {% for student in students %}
-                                <tr>
-                                <td>{{ student.admin.id }}</td>
+                                <tr class='clickable-row' data-href="{% url 'student_detail_view' pk=student.id %}">
+                                <td>{{ student.id| idify}}</td>
                                 <td>{{ student.admin.first_name }}</td>
                                 <td>{{ student.admin.last_name }}</td>
                                 <td>{{ student.admin.username }}</td>

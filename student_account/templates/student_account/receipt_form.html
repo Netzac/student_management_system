@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block page_title %}
-  Bill Payment Form
+ <i class="fas fa-hand-holding-usd"></i> Bill Payment Form
 {% endblock page_title %}
 
 {% block main_content %}
@@ -18,9 +18,11 @@
       {% include 'form_snippet.html' %}
       <input type="hidden" value={{request.user.email}} id="email-address">
       <input type="hidden" value={{invoice.id}} id="invoice-id">
+      {% if user.user_type == '1' %}
       <input type="submit" class="btn btn-success" value="Add Payment">
-      <input type="button"  id="payOnlineBtn" class="btn btn-secondary" onclick="payOnline()" data-url="{% url 'invoice-list' %}" value="PayOnline">
-
+      {% endif %}
+      <input type="button"  id="payOnlineBtn" class="btn btn-success" onclick="payOnline()" data-url="{% url 'invoice-list' %}" value="PayOnline">
+      {% include 'back_button.html' %}
     </form>
   </div>
 

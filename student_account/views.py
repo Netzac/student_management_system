@@ -22,7 +22,12 @@ class InvoiceListView(LoginRequiredMixin,ListView):
     template_name = 'student_account/invoice_list.html'
 
     def get_queryset(self):
-        self.queryset = Invoice.objects.filter(session=self.request.current_session,term =self.request.current_term)
+        user =self.request.user
+        user_type =user.user_type
+        if user_type=='1':
+            self.queryset = Invoice.objects.filter(session=self.request.current_session,term =self.request.current_term)
+        elif user_type=='3':
+            self.queryset = Invoice.objects.filter(session=self.request.current_session,term =self.request.current_term,student=user.students)
         return self.queryset
     
    
