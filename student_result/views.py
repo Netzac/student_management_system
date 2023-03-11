@@ -21,7 +21,8 @@ from django.template.loader import get_template
 from django.http import HttpResponse, Http404
 from io import BytesIO
 
-from student_core.models import Attendance, ClassTeacher, ConductInterestRemarks, Courses, Students as Student, Subjects
+from student_core.models import AcademicTerm, Attendance, ClassTeacher, ConductInterestRemarks, Courses, Students as Student, Subjects
+from student_result.utils import get_next_class, is_last_term
 from student_result.utils import get_teacher_cls_id, score_overall_grade,renderPdf
 from student_core.forms import ConductInterestRemarksFormset
 from .forms import CreateResults, EditResults,EditExResults
@@ -160,9 +161,10 @@ class ResultListView(LoginRequiredMixin, View):
 def ResultDetailView(request,student):
     # def get_context_data(self, request,**kwargs):
     #     context= super().get_context_data(**kwargs)
+        promoted_to = "N/A"
         session =request.current_session
         term = request.current_term
-
+       
         try:
             school = School.objects.all().first()
         except:
@@ -207,7 +209,7 @@ def ResultDetailView(request,student):
             #studentClass = Courses.objects.get(id=studentClass).values('name')
             report_dates['closing']= str(request.current_session).split('to',1)[1]
             report_dates['opening']=request.current_session.re_opening_date
-            teacher = ClassTeacher.objects.get(cls_id=studentClass)
+            teacher = ClassTeacher.objects.get(cls_id=studentClass.id)
             print("Teacher:", teacher.staff_id.signature,)
             grade_lb_list = list(gradeBook)
             grade_ub_list =[100]
@@ -219,6 +221,9 @@ def ResultDetailView(request,student):
             if computeChart:
                  graph_data = get_chart_data(result.student,session,term)
                  computeChart=True
+
+            if is_last_term(term):
+                promoted_to = get_next_class(studentClass.id)
                  
             bulk[result.student.id] = {
                 "student": result.student,
@@ -237,6 +242,7 @@ def ResultDetailView(request,student):
                 "total_attendance":total_attendance,
                 "student_attendance":student_attendance,
                 "cir":conductInterestRemarks,
+                "promoted_to": promoted_to,
                 "graph":graph_data          
                  }
             get_result_summary(student,session,term,total=total_total,grade=overall_grade,attendance=total_attendance)
@@ -261,7 +267,12 @@ def ClassResultDetailView(request,clsid):
         session =request.current_session
         term = request.current_term
         computeChart=True
+        promoted_to = None
+      
        
+        if is_last_term(term):
+           promoted_to = get_next_class(clsid)
+           #print("Promoted to", promoted_to)
         try:
             school = School.objects.all().first()
         except:
@@ -312,7 +323,7 @@ def ClassResultDetailView(request,clsid):
                 studentClass= result.student.course_id
                 classSize = Student.objects.filter(course_id=studentClass).count()
                 overall_grade = score_overall_grade(total_total)
-             
+                teacher = ClassTeacher.objects.get(cls_id=studentClass.id)
                 report_dates['closing']= str(request.current_session).split('to',1)[1]
                 report_dates['opening']=request.current_session.re_opening_date
                 
@@ -339,11 +350,13 @@ def ClassResultDetailView(request,clsid):
                     "school":school,
                     'gradeBook':gradebook_with_ub,
                     "Class":studentClass,
+                    "staff": teacher.staff_id,
                     "ClassSize":classSize,
                     "report_dates":report_dates,
                     "total_attendance":total_attendance,
                     "student_attendance":student_attendance,
                     "cir":conductInterestRemarks,
+                    "promoted_to":promoted_to,
                     "graph":graph_data,
                    
                 }

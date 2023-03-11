@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from io import BytesIO
 
 from student_exam.models import Gradebook, OverallGradebook
+from  student_core.models import AcademicTerm as Term, Courses as Class
 
 def score_grade2(score):
     if score >= 70:
@@ -59,3 +60,21 @@ def get_teacher_cls_id(request):
 
 def get_student_cls_id(request):
     return request.user.students.course_id.id
+
+
+def is_last_term(term):
+    last_term = Term.objects.order_by('id').last().name
+    print('is_last',last_term)
+    return str(last_term) == str(term)
+    
+def get_next_class(cls_id):
+    next_cls = None
+    try:
+        next_cls = Class.objects.filter(id__gt = cls_id).order_by('id').first()
+    except:
+        pass 
+    
+    if next_cls:
+        return next_cls.course_name
+    else:
+        return "N/A"

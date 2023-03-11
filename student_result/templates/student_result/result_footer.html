@@ -32,7 +32,7 @@
           <p>Promoted To:</p>
         </div>
         <div class="col-sm-2 mt-1">
-          <p class="border-bottom border-dark text-left">{{result.PromotedTo|default:"N/A"}}</p>
+          <p class="border-bottom border-dark text-left">{{result.promoted_to|default:"N/A"}}</p>
         </div>
       </div>
       <!-- end of Attendance-->
@@ -70,7 +70,7 @@
           </div>
           <div class="col-sm-2 mt-1">
             {% if result.staff.signature %}
-            <img src={{result.staff.signature.url}} style="width:7em; height: 3em;" class=" border-bottom border-dark text-left" >
+            <img src={{result.staff.signature.url}} style="width:6em; height: 1.5em;" class=" border-bottom border-dark text-left" >
             {%else %}
               <span class=" border-bottom border-dark text-left">{ {{user.first_name}}-{{user.last_name}} }</span>
             {%endif%}
