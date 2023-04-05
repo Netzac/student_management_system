@@ -34,9 +34,13 @@
     <div class="form-group row ">
       {{ form.subjects.errors }}
       <label class="col-2" for="{{ form.subjects.id_for_label }}">{{ form.subjects.label_tag}}</label>
-      <div class="card">
-      <div class=" card-body">{{ form.subjects}}</div>
-    </div>
+        
+        {% for sub in form.subjects %}
+          <div class="card border-primary bg-white mb-3 mx-1">
+          <div class=" card-body">{{ sub}}</div>
+          </div>
+        {% endfor %}
+      
     </div>
 
     <input type="hidden" name="finish" value="True">

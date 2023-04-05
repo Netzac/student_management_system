@@ -80,7 +80,7 @@ class InvoiceItem(models.Model):
 class Receipt(models.Model):
     invoice = models.ForeignKey(Invoice, verbose_name="Bills" ,on_delete=models.CASCADE)
     amount_paid = models.IntegerField(verbose_name="Amount")
-    date_paid = models.DateField(default=timezone.now,verbose_name="Date Paid")
+    date_paid = models.DateField(default=timezone.now,verbose_name="Payment Date")
     comment = models.CharField(max_length=200, blank=True)
 
     objects = models.Manager()

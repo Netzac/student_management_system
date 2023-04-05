@@ -79,6 +79,11 @@ COMMENTS_XTD_APP_MODEL_OPTIONS = {
 
 # Email Sending 
 if not DEBUG:
+
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT =True
+    SESSION_COOKIE_SECURE=True
+
     SERVER_EMAIL = 'kingpo777@gmail.com'
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST_USER = SERVER_EMAIL
@@ -90,8 +95,8 @@ if not DEBUG:
     ACCOUNT_EMAIL_VERIFICATION = 'none'
 else:
     EMAIL_BACKEND = (
-    "django.core.mail.backends.console.EmailBackend"
-)
+    "django.core.mail.backends.console.EmailBackend")
+    SECURE_SSL_REDIRECT = False
 
 COMMENTS_XTD_MAX_THREAD_LEVEL = 1
 COMMENTS_XTD_CONFIRM_EMAIL = False
@@ -112,6 +117,7 @@ MIDDLEWARE = [
 
     # 'student_core.LoginCheckMiddleWare.LoginCheckMiddleWare',
 ]
+
 
 ROOT_URLCONF = 'student_management_system.urls'
 

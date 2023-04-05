@@ -16,11 +16,11 @@ import datetime
 
 class SessionYearModel(models.Model):
     id = models.AutoField(primary_key=True)
-    session_start_year = models.DateField()
-    session_end_year = models.DateField()
-    re_opening_date = models.DateField(null=True,blank=True)
+    session_start_year = models.DateField( default= timeZ.now())
+    session_end_year = models.DateField( default=timeZ.now() + datetime.timedelta(days=100))
+    re_opening_date = models.DateField(null=True,blank=True,default=timeZ.now() + datetime.timedelta(days=120))
 
-    name = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200, unique=True,default= "Demo Session")
     current = models.BooleanField(default=True)
 
     class Meta:
@@ -33,7 +33,7 @@ class SessionYearModel(models.Model):
 
 class AcademicTerm(models.Model):
     """Academic Term"""
-    name = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=20, unique=True,default="Demo Term")
     current = models.BooleanField(default=True)
     class Meta:
         ordering = ["name"]
@@ -186,7 +186,7 @@ class Attendance(models.Model):
     id = models.AutoField(primary_key=True)
     student_id = models.ForeignKey(Students, on_delete=models.CASCADE)
     course_id = models.ForeignKey(Courses, on_delete=models.DO_NOTHING)
-    attendance_date = models.DateField()
+    attendance_date = models.DateField(timeZ.now())
     session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
     status = models.BooleanField(default='True')
     created_at = models.DateTimeField(auto_now_add=True)

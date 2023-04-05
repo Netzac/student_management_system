@@ -279,6 +279,9 @@ def dashboard(request):
     rs_receipts_count = rs_receipts.distinct('invoice__student').count()
     rs_inv_item_amt = InvoiceItem.objects.aggregate(Sum('amount'))['amount__sum']
     rs_recipts_amt = Receipt.objects.aggregate(Sum('amount_paid'))['amount_paid__sum']
+
+    rs_inv_item_amt = rs_inv_item_amt if rs_inv_item_amt else 0
+    rs_recipts_amt = rs_recipts_amt if rs_recipts_amt else 0
     
     rs_arrears = {}
     rs_fully_paid ={}

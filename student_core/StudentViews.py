@@ -44,7 +44,7 @@ def student_view_attendance(request):
     student = Students.objects.get(admin=request.user.id) # Getting Logged in Student Data
     course = student.course_id # Getting Course Enrolled of LoggedIn Student
     # course = Courses.objects.get(id=student.course_id.id) # Getting Course Enrolled of LoggedIn Student
-    subjects = Subjects.objects.filter(course_id=course) # Getting the Subjects of Course Enrolled
+    subjects = Subjects.objects.all() #filter(course_id=course) # Getting the Subjects of Course Enrolled
     context = {
         "subjects": subjects
     }
@@ -57,7 +57,7 @@ def student_view_attendance_post(request):
         return redirect('student_view_attendance')
     else:
         # Getting all the Input Data
-        subject_id = request.POST.get('subject')
+        #subject_id = request.POST.get('subject')
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
 
@@ -66,16 +66,16 @@ def student_view_attendance_post(request):
         end_date_parse = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
 
         # Getting all the Subject Data based on Selected Subject
-        subject_obj = Subjects.objects.get(id=subject_id)
+            #subject_obj = Subjects.objects.get(id=subject_id)
         # Getting Logged In User Data
         user_obj = CustomUser.objects.get(id=request.user.id)
         # Getting Student Data Based on Logged in Data
         stud_obj = Students.objects.get(admin=user_obj)
 
         # Now Accessing Attendance Data based on the Range of Date Selected and Subject Selected
-        attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse), subject_id=subject_obj)
+        attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),student_id=stud_obj)
         # Getting Attendance Report based on the attendance details obtained above
-        attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj)
+        #attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj)
 
         # for attendance_report in attendance_reports:
         #     print("Date: "+ str(attendance_report.attendance_id.attendance_date), "Status: "+ str(attendance_report.status))
@@ -83,8 +83,8 @@ def student_view_attendance_post(request):
         # messages.success(request, "Attendacne View Success")
 
         context = {
-            "subject_obj": subject_obj,
-            "attendance_reports": attendance_reports
+            "student":stud_obj,
+            "attendance_reports": attendance
         }
 
         return render(request, 'student_template/student_attendance_data.html', context)

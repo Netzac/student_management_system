@@ -134,7 +134,9 @@ def admin_home(request):
 
 
 def add_staff(request):
-    return render(request, "hod_template/add_staff_template.html")
+    gender = Gender.objects.all()
+    context ={'genders': gender}
+    return render(request, "hod_template/add_staff_template.html",context)
 
 
 def add_staff_save(request):
@@ -917,7 +919,7 @@ def admin_view_attendance(request):
             "classes": classes,
             "session_years": session_years
         }
-        return render(request, template_name, context)
+    return render(request, template_name, context)
 
 
 @csrf_exempt
