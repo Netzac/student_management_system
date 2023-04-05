@@ -1,6 +1,7 @@
 
 import os
 from dotenv import load_dotenv
+from numpy import False_
 
 
 load_dotenv()
@@ -13,10 +14,10 @@ PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY')
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '(i#*06f#keydy_fh17bf=$0f6v)^wr^l7*u4gq42m*sztu#2_m'
+SECRET_KEY =os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -63,7 +64,7 @@ COMMENTS_APP = "django_comments_xtd"
 COMMENTS_XTD_FROM_EMAIL = "kingpo777@gmail.com"
 
 # Contact mail address to show in messages.
-COMMENTS_XTD_CONTACT_EMAIL = "kingpo777@gmail.com"
+COMMENTS_XTD_CONTACT_EMAIL =  os.environ.get('ADMIN_EMAIL')
 
 #COMMENTS_XTD_API_GET_USER_AVATAR = "eyeson.utils.get_avatar_url"
 
@@ -81,10 +82,10 @@ COMMENTS_XTD_APP_MODEL_OPTIONS = {
 if not DEBUG:
 
     CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT =True
+    SECURE_SSL_REDIRECT =False
     SESSION_COOKIE_SECURE=True
 
-    SERVER_EMAIL = 'kingpo777@gmail.com'
+    SERVER_EMAIL =  os.environ.get('ADMIN_EMAIL')
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST_USER = SERVER_EMAIL
     EMAIL_HOST = 'smtp.gmail.com'
@@ -153,9 +154,9 @@ DATABASES = {
     # }
       'default' : {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'school',
-        'USER': 'eureka',
-        'PASSWORD': 'eureka',
+        'NAME':  os.environ.get('DB_NAME'),
+        'USER':  os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSCODE'),
         'HOST': 'localhost',
         'PORT': '',
     }
