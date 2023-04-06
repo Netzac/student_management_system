@@ -16,7 +16,7 @@
         </div>
         <div class="mb-3">
             <label for="sub_category" class="control-label">Category</label>
-            <select type="text" id="sub_category" name="sub_category" class="form-select form-select-sm rounded-0" required>
+            <select type="text" id="sub_category" name="category" class="form-select form-select-sm rounded-0" required>
                 {% if not book.category %}
                     <option  disabled selected></option>
                 {% else %}
@@ -73,7 +73,7 @@
         $('#uni_modal').on('shown.bs.modal', function() {
             $('#sub_category').select2({
                 width: "100%",
-                placeholder: "Please Select Category Here",
+                placeholder: "Select Category Here",
                 dropdownParent: $('#uni_modal'),
                 selectionCssClass: "form-control form-control-sm rounded-0"
             })

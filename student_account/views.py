@@ -276,7 +276,11 @@ def dashboard(request):
     rs_invoices_unfiltered = Invoice.objects.all().order_by('class_for')
     rs_invoices = rs_invoices_unfiltered.values_list('id' ,flat =True)
     rs_receipts = Receipt.objects.filter(invoice__in = rs_invoices)
-    rs_receipts_count = rs_receipts.distinct('invoice__student').count()
+
+    rs_receipts_count=rs_receipts.values_list('invoice__student',flat=True).distinct().count()
+    #rs_receipts_count = rs_receipts.distinct('invoice__student').count()
+
+
     rs_inv_item_amt = InvoiceItem.objects.aggregate(Sum('amount'))['amount__sum']
     rs_recipts_amt = Receipt.objects.aggregate(Sum('amount_paid'))['amount_paid__sum']
 

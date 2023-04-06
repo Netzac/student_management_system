@@ -33,7 +33,7 @@ def home(request):
     context['page'] = 'home'
     context['page_title'] = 'Home'
     context['categories'] = Category.objects.filter(delete_flag = 0, status = 1).all().count()
-    context['sub_categories'] = SubCategory.objects.filter(delete_flag = 0, status = 1).all().count()
+    context['sub_categories'] = Category.objects.filter(delete_flag = 0, status = 1).all().count()
    # context['students'] = models.Students.objects.filter(delete_flag = 0, status = 1).all().count()
     context['books'] = Book.objects.filter(delete_flag = 0, status = 1).all().count()
     context['pending'] = models.Borrow.objects.filter(status = 1).all().count()
@@ -50,7 +50,7 @@ def category(request):
     context['page'] = 'category'
     context['page_title'] = "Category List"
     context['category'] = Category.objects.filter(delete_flag = 0).all()
-    return render(request, 'library\category.html', context)
+    return render(request, 'library/category.html', context)
 
 @login_required
 def save_category(request):
@@ -254,7 +254,7 @@ def manage_book(request, pk = None):
         context['book'] = {}
     else:
         context['book'] = models.Books.objects.get(id=pk)
-    context['sub_categories'] = SubCategory.objects.filter(delete_flag = 0, status = 1).all()
+    context['sub_categories'] = Category.objects.filter(delete_flag = 0, status = 1).all()
     return render(request, 'library/manage_book.html', context)
 
 @login_required

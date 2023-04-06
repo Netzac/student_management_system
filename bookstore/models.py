@@ -58,7 +58,7 @@ class Book(models.Model):
     isbn = models.CharField(max_length=250)
     title = models.CharField(max_length=250)
     description = models.TextField(blank=True, null= True)
-    author =models.ForeignKey(Author, on_delete = models.DO_NOTHING)
+    author = models.CharField(max_length=250) #models.ForeignKey(Author, on_delete = models.DO_NOTHING)
     publisher = models.CharField(max_length=250)
     date_published = models.DateTimeField()
     status = models.CharField(max_length=2, choices=(('1','Active'), ('2','Inactive')), default = 1)
@@ -66,8 +66,8 @@ class Book(models.Model):
     date_added = models.DateTimeField(default = timezone.now)
     date_created = models.DateTimeField(auto_now = True)
 
-    price = models.IntegerField()
-    stock = models.IntegerField()
+    price = models.IntegerField(default=0)
+    stock = models.IntegerField(default=0)
     coverpage = models.FileField(upload_to = "Coverpage/" , null=True,blank=True)
     bookpage = models.FileField(upload_to = "Bookpage/", null=True,blank=True)
 

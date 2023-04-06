@@ -73,12 +73,15 @@ class SaveBook(forms.ModelForm):
     author = forms.Textarea()
     publisher = forms.Textarea()
     date_published = forms.DateField()
+    #price = forms.DecimalField()
+    #stock = forms.DecimalField()
+    
     status = forms.CharField(max_length=2)
 
     #For Displaying Subcategory
    
     try:
-        categories =  SubCategory.objects.all()
+        categories =  Category.objects.all()
         cat_list =[]
         for cat in categories:
             single_cat = (cat.id, cat.name)
@@ -87,19 +90,19 @@ class SaveBook(forms.ModelForm):
         cat_list = []
 
 
-    sub_category = forms.ChoiceField(label="Category", choices=cat_list, widget=forms.Select(attrs={"class":"form-control"}))
+    category = forms.ChoiceField(label="Category", choices=cat_list, widget=forms.Select(attrs={"class":"form-control"}))
 
     class Meta:
         model = models.Books
-        fields = ('isbn', 'sub_category', 'title', 'description', 'author', 'publisher', 'date_published', 'status', )
+        fields = ('isbn', 'category', 'title', 'description', 'author', 'publisher', 'date_published','status' )
 
-    def clean_sub_category(self):
-        scid = int(self.data['sub_category']) if (self.data['sub_category']).isnumeric() else 0
+    def clean_category(self):
+        scid = int(self.data['category']) if (self.data['category']).isnumeric() else 0
         try:
-            sub_category = SubCategory.objects.get(id = scid)
-            return sub_category
+            category = Category.objects.get(id = scid)
+            return category
         except:
-            raise forms.ValidationError("Invalid Sub Category.")
+            raise forms.ValidationError("Invalid Category.")
 
     def clean_isbn(self):
         id = int(self.data['id']) if (self.data['id']).isnumeric() else 0
