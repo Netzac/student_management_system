@@ -1,4 +1,5 @@
-                    <form role="form" method="POST" action="{{ action_path }}" enctype="multipart/form-data">
+{% load widget_tweaks %}
+            <form role="form" method="POST" action="{{ action_path }}" enctype="multipart/form-data">
                         {% csrf_token %}
                        <div class="bg-info"> {{ form.errors }} </div>
                         
@@ -27,7 +28,7 @@
                                 </div>
                                 {% endif %}
 
-                        <div class="card-body">
+                        <div class="card border-success pl-3 bg-white pt-3">
                             
                             {% comment %} Adding Form with All inputs Here {% endcomment %}
 
@@ -38,8 +39,15 @@
                                         {{ field.errors }}
                                       
                                     </div>
-                                    {{ field.label_tag }}
-                                    {{ field }}
+                                    <div class="row justify-content-center col-sm-12">
+                                        <div class="col-sm-10 mb-0 mt-0">
+                                            {%if field.label != "" %}
+                                            {{ field.label_tag}} 
+                                            {% endif %}
+                                            {{ field}} 
+                                        </div>
+                                       
+                                    </div>
 
                                 </div>
                             {% endfor %%}

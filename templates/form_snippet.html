@@ -1,7 +1,10 @@
 {% load widget_tweaks %}
 
+<div class="card border-success pl-3 bg-white pt-3">
 {% for field in form %}
+
 <div class="form-group row">
+ 
   <label class="col-sm-3 col-form-label" for="{{ field.auto_id }}">
     {{ field.label }}
     {% for error in field.errors %}
@@ -14,5 +17,7 @@
     <small>{{ field.help_text|safe }}</small>
     {% endif %}
   </div>
-</div>
+  </div>
+
 {% endfor %}
+</div>

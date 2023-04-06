@@ -16,7 +16,7 @@ import datetime
 
 class SessionYearModel(models.Model):
     id = models.AutoField(primary_key=True)
-    session_start_year = models.DateField( default= timeZ.now())
+    session_start_year = models.DateField( default=timeZ.now)
     session_end_year = models.DateField( default=timeZ.now() + datetime.timedelta(days=100))
     re_opening_date = models.DateField(null=True,blank=True,default=timeZ.now() + datetime.timedelta(days=120))
 

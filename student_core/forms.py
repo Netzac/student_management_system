@@ -1,5 +1,6 @@
 from datetime import datetime
 from email.policy import default
+from logging import PlaceHolder
 from django import forms 
 from django.core import validators
 from django.forms import Form,ModelForm, modelformset_factory, inlineformset_factory
@@ -22,13 +23,13 @@ mobile_num_regex = validators.RegexValidator(
 '''Parents data'''
 class AddStudentForm(forms.Form):
 
-    first_name = forms.CharField(label="First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    last_name = forms.CharField(label="Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    first_name = forms.CharField(label="", max_length=50, widget=forms.TextInput(attrs={"class":"form-control","PlaceHolder":"First Name"}))
+    last_name = forms.CharField(label="", max_length=50, widget=forms.TextInput(attrs={"class":"form-control","PlaceHolder":"Last Name"}))
+    address = forms.CharField(label="", max_length=50, widget=forms.TextInput(attrs={"class":"form-control","PlaceHolder":"Address"}))
     dob = forms.DateField(label="Date of Birth",widget = NumberInput(attrs={'type':'date'}),initial=timeZ.now)
-    username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    username = forms.CharField(label="", max_length=50, widget=forms.TextInput(attrs={"class":"form-control","PlaceHolder":"UserName"}))
    
-    email = forms.EmailField(validators=[validators.EmailValidator(message='Invalid email format')],label="Email",  max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
+    email = forms.EmailField(validators=[validators.EmailValidator(message='Invalid email format')],label="",  max_length=50, widget=forms.EmailInput(attrs={"class":"form-control","PlaceHolder":"Email"}))
     password = forms.CharField(label="Password", max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
    
     #For Displaying Courses
@@ -76,11 +77,11 @@ class AddStudentForm(forms.Form):
     profile_pic = forms.FileField(label="Profile Picture", required=False, widget=forms.FileInput(attrs={"class":"form-control"}))
 
   
-    parent_first_name = forms.CharField(label="Parent First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    parent_last_name = forms.CharField(label="Parent Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    parent_email = forms.CharField(validators=[validators.EmailValidator(message='Invalid email format')],label="Parent Email", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    parent_contact_number = forms.CharField(validators=[mobile_num_regex],label="Parent Contact Number", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    parent_occupation = forms.CharField(label="Parent Occupation", max_length=255, widget=forms.TextInput(attrs={"class":"form-control"}))
+    parent_first_name = forms.CharField(label="", max_length=50, widget=forms.TextInput(attrs={"class":"form-control","PlaceHolder":"Parent First Name"}))
+    parent_last_name = forms.CharField(label="", max_length=50, widget=forms.TextInput(attrs={"class":"form-control","PlaceHolder":"Parent Last Name"}))
+    parent_email = forms.CharField(validators=[validators.EmailValidator(message='Invalid email format')],label="", max_length=50, widget=forms.TextInput(attrs={"class":"form-control","PlaceHolder":"Parent Email"}))
+    parent_contact_number = forms.CharField(validators=[mobile_num_regex],label="", max_length=50, widget=forms.TextInput(attrs={"class":"form-control","PlaceHolder":"Parent Contact Number"}))
+    parent_occupation = forms.CharField(label="", max_length=255, widget=forms.TextInput(attrs={"class":"form-control","PlaceHolder":"Parent Occupation"}))
     
     
 
