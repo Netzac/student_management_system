@@ -14,14 +14,22 @@
 						<div class="col-sm-3">
 							<div class="grid-item">
 								<div class="view-details" style="cursor:pointer">
-									<img id="product_image" class="lookInsideImg" src="{{ book.coverpage.url }}">
+									{% if  book.coverpage %}
+										<img id="product_image" class="lookInsideImg" src="{{ book.coverpage.url }}">
+									{% else %}
+										<span>No Cover Page</span>
+									{% endif %}
 								</div>
 							</div>	
 							<div class="lookInsideDiv" style="display: none;">
 								<div class="exitBtn"></div>
 								<div class="pagesArea">
 									<ul class="list-unstyled pages">
+										{% if book.bookpage %}
 										<li><img src="{{ book.bookpage.url }}"></li>
+										{%else %}
+										<span>No image for book</span>
+										{%endif%}
 									</ul>
 								</div>
 							</div>				
@@ -30,7 +38,7 @@
 						<div class="col-sm-6">
 							<div class="product-information">
 								<h4>{{ book.title }}</h4>
-								<p style="margin: 0px">by <a style="font-weight:bold" href="{% url 'store:author' id=book.author.id %}">{{ book.author }}</a></p>
+								<p style="margin: 0px">by <a style="font-weight:bold" href="#">{{ book.author }}</a></p>
 								<div class='rating'>
 									{{ book.totalrating|averagerating:book.totalreview }}
 									<a href='#getreview'><span class='totalrating'>{{ book.totalreview|add:-1 }} Reviews</span></a>

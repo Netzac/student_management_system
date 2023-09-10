@@ -3,7 +3,7 @@
 
 
 {% block page_title %}
-  <small>Select subject(s) to generate sheet</small>
+  <small>Select subject(s)</small>
 {% endblock page_title %}
 
 
@@ -46,7 +46,8 @@
     <input type="hidden" name="finish" value="True">
     <input type="hidden" name="students" value="{{ students }}">
 
-    <input type="submit" class="btn btn-success" value="Create">
+    <input type="submit" class="btn btn-success" value="Generate Sheet">
+    <input type="submit"  name ="del_sheet" onclick="return confirm('Are You Sure You want to delete this Sheet ?') " class="btn btn-danger" value="Delete Sheet">
     {% include 'back_button.html' %}
   </form>
 </div>
@@ -55,3 +56,4 @@
 </div>
 </section>
 {% endblock main_content %}
+

@@ -922,7 +922,9 @@ def admin_view_attendance(request):
     return render(request, template_name, context)
 
 
-@csrf_exempt
+from django.views.decorators.csrf import requires_csrf_token
+
+@requires_csrf_token
 def admin_get_attendance_dates(request):
     # Getting Values from Ajax POST 'Fetch Student'
     cls_id = request.POST.get("cls")
@@ -947,7 +949,7 @@ def admin_get_attendance_dates(request):
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
 
-@csrf_exempt
+#@csrf_exempt
 def admin_get_attendance_student(request):
     # Getting Values from Ajax POST 'Fetch Student'
     attendance_date = request.POST.get('attendance_date')
@@ -1161,12 +1163,13 @@ class ClassTeacherAddView(SuccessMessageMixin,LoginRequiredMixin, CreateView):
     def get(self,*args,**kwargs):
         # staffs = Staffs.objects.all().values('id')
         # classes = Courses.objects.all().values('id')
-        formset=ClassTeacherFormSet(queryset=ClassTeacher.objects.all())
+        formset=ClassTeacherFormSet(initial=[{"staff_id":"0"},{"cls_id":"0"}],queryset=ClassTeacher.objects.all())
         return self.render_to_response({"class_teacher_formset":formset})
 
     def post(self,*args,**kwargs):
         formset= ClassTeacherFormSet(data=self.request.POST)
-        #print('formset: ',self.request.POST)
+        print('formset: ',self.request.POST,formset.errors)
+        print('erros: ',formset.errors)
         if formset.is_valid():
             formset.save()
             return redirect(reverse_lazy("class_teacher_list"))
@@ -1206,7 +1209,7 @@ class ExerciseListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
         return context
 
 class ExerciseCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    model = AcademicTerm
+    model = Exercise
     form_class = ExerciseForm
     template_name = "hod_template/mgt_form.html"
     success_url = reverse_lazy("exercises")

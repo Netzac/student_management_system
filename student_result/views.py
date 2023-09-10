@@ -34,9 +34,15 @@ from student_exam.models import Gradebook,Exercise,OverallGradebook
 def create_result(request,clsid):
     students = Student.objects.all().filter(course_id=clsid)
     sheet_exists= False
+    del_sheet = False
+
+    if "del_sheet" in request.POST:
+        del_sheet=True
+        #print("Deleting sheets...")
+
     if request.method == "POST":
-       
         # after visiting the second page
+        #print("Submist clicked", request.POST)
         if "finish" in request.POST:
            
             form = CreateResults(request.POST)
@@ -46,7 +52,7 @@ def create_result(request,clsid):
                 session = form.cleaned_data["session"]
                 term = form.cleaned_data["term"]
                 students = request.POST["students"]
-                print('Students again:',students)
+                #print('Students again:',students)
                 results = []
                 for student in students.split(","):
                     stu = Student.objects.get(pk=student)
@@ -71,9 +77,21 @@ def create_result(request,clsid):
                                 )
                             else:
                                 sheet_exists=True
-                if sheet_exists:  
-                    messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
+                                if del_sheet and sheet_exists:
+                                   #print("calling delete...")
+                                   check.delete()
+                                    
+                               
+            
+               
                 
+                
+                if sheet_exists and not del_sheet:  
+                    messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
+                elif not sheet_exists and del_sheet:
+                    messages.warning(request,"Deletion Aborted! Sheet does not exists.")
+                elif sheet_exists and del_sheet:
+                    messages.success(request,"Sheet successfully deleted")
                 Result.objects.bulk_create(results)
                 
                 return redirect("edit-results",clsid=clsid,students=students)
@@ -98,6 +116,12 @@ def create_result(request,clsid):
          
             messages.warning(request, "You didnt select any student.")
     return render(request, "student_result/create_result.html", {"students": students})
+
+# Delete marks sheets
+def delete_sheets(sheets):
+    for obj in sheets:
+        print(obj)
+        obj.delete()
 
 
 @login_required
@@ -472,6 +496,10 @@ def select_ex_class(request):
 def create_ex_result(request,clsid):
     students = Student.objects.all().filter(course_id=clsid)
     sheet_exists= False
+    del_sheet = False
+
+    if "del_sheet" in request.POST:
+        del_sheet=True
     if request.method == "POST":
        
         # after visiting the second page
@@ -518,9 +546,22 @@ def create_ex_result(request,clsid):
                                     )
                                 else:
                                     sheet_exists=True
+                                    if del_sheet and sheet_exists:
+                                        #print("calling delete...")
+                                        check.delete()
+
+
                 if sheet_exists and not msg_added:  
-                    messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
+                    #messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
                     msg_added=True
+                
+                if sheet_exists and not del_sheet:  
+                    messages.warning(request, "Mark Sheet for this student already exists, You could only edit")
+                elif not sheet_exists and del_sheet:
+                    messages.warning(request,"Deletion Aborted! Sheet does not exists.")
+                elif sheet_exists and del_sheet:
+                    messages.success(request,"Sheet successfully deleted")
+                
 
                 ClassExercise.objects.bulk_create(results)
                 load_class_scores(session,term,clsid,students)

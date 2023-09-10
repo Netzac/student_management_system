@@ -41,7 +41,7 @@
 								{% endif %}
 							</div>
 							<a href="{% url 'store:book' id=item.id %}">{{ item.title|text_short }}</a>
-							<a href="{% url 'store:author' id=item.author.id %}">{{ item.author }}</a>
+							<a href="#">{{ item.author }}</a>
 							<div class="rating">
 								{{ item.totalrating|averagerating:item.totalreview }}
 								<span class="totalrating">{{ item.totalreview|add:-1 }}</span>
@@ -68,7 +68,7 @@
 								{% endif %}
 							</div>
 							<a href="{% url 'store:book' id=p.id %}">{{ p.title|text_short }}</a>
-							<a href="{% url 'store:author' id=p.author.id %}">{{ p.author }}</a>
+							<a href="#">{{ p.author }}</a>
 							<div class="rating">
 								{{ p.totalrating|averagerating:p.totalreview }}
 								<span class="totalrating">{{ p.totalreview|add:-1 }}</span>

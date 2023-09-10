@@ -9,112 +9,92 @@
 {% load static %}
 
 <section class="content">
+    {% include 'status_message.html' %}
         <div class="container-fluid">
 
             <div class="row bg-secondary">
                 <div class="col-md-12">
                     <!-- general form elements -->
-                    <div class="card card-secondary">
-                    <div class="card-header">
-                        <h3 class="card-title">View Attendance</h3>
-                    </div>
+                    <form id="id" name="form">
+                        {% csrf_token %}
+                        <div class="card card-secondary">
+                        <div class="card-header">
+                            <h3 class="card-title">View Attendance</h3>
+                        </div>
                     <!-- /.card-header -->
 
-                                {% comment %} Display Messages {% endcomment %}
-                                {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-                                {% endif %}
+                             
                             
 
-                        <div class="card-body">
-                           
-                            <div class="form-group">
-                                <label class="text-dark">Class </label>
-                                <select class="form-control" name="cls" id="cls">
-                                    {% for cls in classes %}
-                                        <option value="{{ cls.id }}">{{cls.course_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="text-dark">Session Year </label>
-                                <select class="form-control" name="session_year_id" id="session_year_id">
-                                    {% for session_year in session_years %}
-                                        <option value="{{ session_year.id }}">{{ session_year.session_start_year }} to {{ session_year.session_end_year }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-
-                        </div>
-                        <!-- /.card-body -->
-
-                        <div class="card-footer card-secondary">
-                            <button type="button" class="btn btn-secondary" id="fetch_attendance">Fetch Attendance Date</button>
-                        </div>
-
-                        <div class="card-footer">
-                            <div class="form-group bg-white" id="attendance_block" style="display:none;">
-                                    <label>Attendance Date </label>
-                                    <select class="form-control" name="attendance_date" id="attendance_date">
-                                        
+                            <div class="card-body">
+                            
+                                <div class="form-group">
+                                    <label class="text-dark">Class </label>
+                                    <select class="form-control" name="cls" id="cls">
+                                        {% for cls in classes %}
+                                            <option value="{{ cls.id }}">{{cls.course_name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <div class="alert alert-danger" id="error_attendance" style="display:none;">
-
+                                <div class="form-group">
+                                    <label class="text-dark">Session Year </label>
+                                    <select class="form-control" name="session_year_id" id="session_year_id">
+                                        {% for session_year in session_years %}
+                                            <option value="{{ session_year.id }}">{{ session_year.session_start_year }} to {{ session_year.session_end_year }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
 
-                                <div class="alert alert-success" id="success_attendance" style="display:none;">
-                                    
-                                </div>
-                            </div>
 
-                            <div class="card-footer" id="fetch_student_block" style="display:none;">
-
-                                <button type="button" class="btn btn-dark" id="fetch_student">Fetch Student Data</button>
-                                {% include 'cancel_button.html'%}
                             </div>
-                            
                             <!-- /.card-body -->
 
-                            {% comment %} <div class="card-footer">
-                                <button type="button" class="btn btn-primary" id="save_student">Save Data</button>
-                            </div> {% endcomment %}
+                            <div class="card-footer card-secondary">
+                                <button type="button" class="btn btn-secondary" id="fetch_attendance">Fetch Attendance Date</button>
+                            </div>
 
-                        </div>
+                            <div class="card-footer">
+                                <div class="form-group bg-white" id="attendance_block" style="display:none;">
+                                        <label>Attendance Date </label>
+                                        <select class="form-control" name="attendance_date" id="attendance_date">
+                                            
+                                        </select>
+                                    </div>
+                                </div>
 
-                        {% comment %} Displaying Students Here {% endcomment %}
+                                <div class="form-group">
+                                    <div class="alert alert-danger" id="error_attendance" style="display:none;">
 
-                        <div class="card-footer" id="student_data">
-                        </div> 
+                                    </div>
+
+                                    <div class="alert alert-success" id="success_attendance" style="display:none;">
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="card-footer" id="fetch_student_block" style="display:none;">
+
+                                    <button type="button" class="btn btn-dark" id="fetch_student">Fetch Student Data</button>
+                                    {% include 'cancel_button.html'%}
+                                </div>
+                                
+                                <!-- /.card-body -->
+
+                                {% comment %} <div class="card-footer">
+                                    <button type="button" class="btn btn-primary" id="save_student">Save Data</button>
+                                </div> {% endcomment %}
+
+                            </div>
+
+                            {% comment %} Displaying Students Here {% endcomment %}
+
+                            <div class="card-footer" id="student_data">
+                            </div> 
 
                     </div>
                     <!-- /.card -->
-
+                </form> 
                 </div>
             </div>
 
@@ -132,6 +112,7 @@
         //Fetching Attendance Date
 
         $("#fetch_attendance").click(function(){
+                let csrftoken = $('[name="csrfmiddlewaretoken"]').val();
                 var cls = $("#cls").val()
                 var session_year_id = $("#session_year_id").val()
                 //console.log(subject)
@@ -139,6 +120,7 @@
 
                 $.ajax({
                     url:'{% url 'admin_get_attendance_dates' %}',
+                    headers: {'X-CSRFToken': csrftoken,},
                     type:'POST',
                     data:{cls:cls, session_year_id:session_year_id},
                 })
@@ -184,7 +166,7 @@
 
         // Now Working on Fetch Student after attendance date selected
         $("#fetch_student").click(function(){
-
+            let csrftoken = $('[name="csrfmiddlewaretoken"]').val();
             // Displaying Students Based on Staff, Course and Session Enrolled
 
             //var subject=$("#subject").val()
@@ -193,6 +175,7 @@
 
             $.ajax({
                 url:'{% url 'admin_get_attendance_student' %}',
+                headers: {'X-CSRFToken': csrftoken,},
                 type:'POST',
                 data:{attendance_date:attendance_date},
             })
