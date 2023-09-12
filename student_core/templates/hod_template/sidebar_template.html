@@ -305,12 +305,34 @@
                       </a>
                     </li>
                       <!-- Settings for Gender-->
-                      <li class="nav-item">
-                        {% url 'exercises' as add_exercise %}
-                          <a href="{{ add_exercise }}" class="nav-link {% if request.path == add_exercise %} active {% endif %}">
+                    <li class="nav-item">
+                      {% url 'exercises' as add_exercise %}
+                        <a href="{{ add_exercise }}" class="nav-link {% if request.path == add_exercise %} active {% endif %}">
+                          <i class="nav-icon fas fa-th"></i>
+                          <p>
+                            Class Exercises
+                          </p>
+                        </a>
+                      </li>
+                      
+                       <!-- Settings for Deductions-->
+                       <li class="nav-item">
+                        {% url 'deductions-list' as add_deductions %}
+                          <a href="{{ add_deductions }}" class="nav-link {% if request.path == add_deductions %} active {% endif %}">
                             <i class="nav-icon fas fa-th"></i>
                             <p>
-                              Class Exercises
+                              Deductions
+                            </p>
+                          </a>
+                        </li>
+
+                       <!-- Settings for Earnings-->
+                       <li class="nav-item">
+                        {% url 'earnings-list' as add_earnings %}
+                          <a href="{{ add_earnings }}" class="nav-link {% if request.path == add_earnings %} active {% endif %}">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                              Earnings
                             </p>
                           </a>
                         </li>
@@ -367,6 +389,17 @@
                     </li> 
                       <!-- Gradebook settings end here-->
                    
+                       <!-- Settings for Roles-->
+                       <li class="nav-item">
+                        {% url 'role-list' as add_role %}
+                          <a href="{{ add_role }}" class="nav-link {% if request.path == add_role %} active {% endif %}">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                              Role/Designation
+                            </p>
+                          </a>
+                        </li>
+                      
                     <li class="nav-item">
                       {% url 'add_subject' as add_subject %}
                       <a href="{{ add_subject }}" class="nav-link {% if request.path == add_subject %} active {% endif %}">

@@ -16,6 +16,7 @@
   
 
 {% block main_content %}
+{% include 'status_message.html' %}
 <section class="content">
   <div class="container-fluid">
   <div class="row">
@@ -52,7 +53,7 @@
       <div class="modal-content">
         <form action="{% url 'feetype-create' %}" method="POST">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add new Fee type</h5>
+            <h5 class="modal-title" id="exampleModalLabel">New Fee type</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>

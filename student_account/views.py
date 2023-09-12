@@ -13,8 +13,10 @@ from requests import request
 
 from student_core.models import AcademicTerm, Courses, SessionYearModel, Students as Student
 
-from .forms import InvoiceItemFormset, InvoiceReceiptFormSet, Invoices,FeeTypeForm
-from .models import Invoice, InvoiceItem, Receipt,FeeType
+from .forms import (
+    InvoiceItemFormset, InvoiceReceiptFormSet, Invoices,FeeTypeForm, DeductionsForm, 
+    RoleForm, EarningsForm,)
+from .models import Invoice, InvoiceItem, Receipt,FeeType, Earnings, Deductions,Role
 
 from .utils import get_prev_term_bills
 
@@ -240,6 +242,117 @@ class FeeTypeDeleteView(LoginRequiredMixin, DeleteView):
         print(obj.type)
         messages.success(self.request, self.success_message.format(obj.type))
         return super(FeeTypeDeleteView, self).delete(request, *args, **kwargs)
+    
+# Staff Earnings setup
+class EarningsCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Earnings
+    form_class = EarningsForm
+    template_name = "hod_template/mgt_form.html"
+    success_url = reverse_lazy("earnings-list")
+    success_message = "Earnings Type successfully added"
+
+class EarningsListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
+    model = Earnings
+    template_name = "earnings_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = EarningsForm()
+        return context
+
+class EarningsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Earnings
+    fields = ["type"]
+    success_url = reverse_lazy("earnings-list")
+    success_message = "Earnings successfully updated."
+    template_name = "hod_template/mgt_form.html"
+
+
+class EarningsDeleteView(LoginRequiredMixin, DeleteView):
+    model = Earnings
+    success_url = reverse_lazy("earnings-list")
+    template_name = "hod_template/core_confirm_delete.html"
+    success_message = "The class {} has been deleted with all its attached content"
+
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        print(obj.type)
+        messages.success(self.request, self.success_message.format(obj.type))
+        return super(FeeTypeDeleteView, self).delete(request, *args, **kwargs)
+
+# Staff Deductions setup
+class DeductionsCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Deductions
+    form_class = DeductionsForm
+    template_name = "hod_template/mgt_form.html"
+    success_url = reverse_lazy("deductions-list")
+    success_message = "Deductions type successfully added"
+
+class DeductionsListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
+    model = Deductions
+    template_name = "deductions_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = DeductionsForm()
+        return context
+
+class DeductionsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Deductions
+    fields = ["type"]
+    success_url = reverse_lazy("deductions-list")
+    success_message = "Deductions successfully updated."
+    template_name = "hod_template/mgt_form.html"
+
+
+class DeductionsDeleteView(LoginRequiredMixin, DeleteView):
+    model = Deductions
+    success_url = reverse_lazy("deductions-list")
+    template_name = "hod_template/core_confirm_delete.html"
+    success_message = "The class {} has been deleted with all its attached content"
+
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        print(obj.type)
+        messages.success(self.request, self.success_message.format(obj.type))
+        return super(DeductionsDeleteView, self).delete(request, *args, **kwargs)
+
+# Staff Deductions setup
+class RoleCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Role
+    form_class = RoleForm
+    template_name = "hod_template/mgt_form.html"
+    success_url = reverse_lazy("role-list")
+    success_message = "Role type successfully added"
+
+class RoleListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
+    model = Role
+    template_name = "role_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = RoleForm()
+        return context
+
+class RoleUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Role
+    fields = ["type"]
+    success_url = reverse_lazy("role-list")
+    success_message = "Role successfully updated."
+    template_name = "hod_template/mgt_form.html"
+
+
+class RoleDeleteView(LoginRequiredMixin, DeleteView):
+    model = Role
+    success_url = reverse_lazy("Role-list")
+    template_name = "hod_template/core_confirm_delete.html"
+    success_message = "The class {} has been deleted with all its attached content"
+
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        print(obj.type)
+        messages.success(self.request, self.success_message.format(obj.type))
+        return super(RoleDeleteView, self).delete(request, *args, **kwargs)
 
 
 @login_required

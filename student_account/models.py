@@ -11,6 +11,23 @@ from student_core.models import Students
 
 
 
+class Earnings(models.Model):
+    id = models.AutoField(primary_key=True)
+    type = models.CharField(unique=True,max_length=150)
+    description = models.CharField(max_length=200,blank=True)
+
+    def __str__(self):
+        return self.type
+
+class Deductions(models.Model):
+    id = models.AutoField(primary_key=True)
+    type = models.CharField(unique=True,max_length=150)
+    description = models.CharField(max_length=200,blank=True)
+
+    def __str__(self):
+        return self.type
+
+
 class FeeType(models.Model):
     id = models.AutoField(primary_key=True)
     type = models.CharField(unique=True,max_length=150)
@@ -18,6 +35,16 @@ class FeeType(models.Model):
 
     def __str__(self):
         return self.type
+
+#Staff Roles
+class Role(models.Model):
+    id = models.AutoField(primary_key=True)
+    type = models.CharField(unique=True,max_length=150)
+    description = models.CharField(max_length=200,blank=True)
+
+    def __str__(self):
+        return self.type
+
 
 
 
