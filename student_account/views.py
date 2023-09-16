@@ -1,4 +1,5 @@
 from datetime import date
+import json
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,7 +8,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy,reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from requests import request
 
@@ -15,8 +16,8 @@ from student_core.models import AcademicTerm, Courses, SessionYearModel, Student
 
 from .forms import (
     InvoiceItemFormset, InvoiceReceiptFormSet, Invoices,FeeTypeForm, DeductionsForm, 
-    RoleForm, EarningsForm,)
-from .models import Invoice, InvoiceItem, Receipt,FeeType, Earnings, Deductions,Role
+    RoleForm, EarningsForm, TaxTableForm,)
+from .models import Invoice, InvoiceItem, Receipt,FeeType, Earnings, Deductions,Role,TaxTable
 
 from .utils import get_prev_term_bills
 
@@ -516,3 +517,99 @@ class BillsPaymentByMonth(SlickReportView):
     ]
 
    
+
+   #Views for Payroll and Staff Accounts
+
+
+
+# TaxTable   
+'''|Extra views for the taxtable'''
+def context_data(request):
+    fullpath = request.get_full_path()
+    abs_uri = request.build_absolute_uri()
+    abs_uri = abs_uri.split(fullpath)[0]
+    context = {
+        'system_host' : abs_uri,
+        'page_name' : '',
+        'page_title' : '',
+        'system_name' : 'jSchoolAnywhere',
+    }
+
+    return context
+@login_required
+def taxtable(request):
+    context = context_data(request)
+    context['page'] = 'taxtable'
+    context['page_title'] = "Tax Table List"
+    context['taxtable'] = TaxTable.objects.all().order_by('id')
+    return render(request, 'student_account/taxtable.html', context)
+
+@login_required
+def save_taxtable(request):
+    resp = { 'status': 'failed', 'msg' : '' }
+    #print(request)
+    if request.method == 'POST':
+        post = request.POST
+        if not post['id'] == '':
+            gradebook = TaxTable.objects.get(id = post['id'])
+            form = TaxTableForm(request.POST, instance=gradebook)
+        else:
+            form = TaxTableForm(request.POST) 
+
+        if form.is_valid():
+            form.save()
+            if post['id'] == '':
+                messages.success(request, "Tax Table successfully saved .")
+            else:
+                messages.success(request, "Tax Table updated successfully.")
+            resp['status'] = 'success'
+        else:
+            for field in form:
+                for error in field.errors:
+                    if not resp['msg'] == '':
+                        resp['msg'] += str('<br/>')
+                    resp['msg'] += str(f'[{field.name}] {error}')
+    else:
+         resp['msg'] = "No data sent on the request"
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
+@login_required
+def view_taxtable(request, pk = None):
+    context = context_data(request)
+    context['page'] = 'view_taxtable'
+    context['page_title'] = 'View Tax Table'
+    if pk is None:
+        context['taxtable'] = {}
+    else:
+        context['taxtable'] = TaxTable.objects.get(id=pk)
+    
+    return render(request, 'student_account/view_taxtable.html', context)
+
+@login_required
+def manage_taxtable(request, pk = None):
+    context = context_data(request)
+    context['page'] = 'manage_taxtable'
+    context['page_title'] = 'Manage Tax Table'
+   
+    if pk is None:
+        context['taxtable'] = {}
+    else:
+        context['taxtable'] = TaxTable.objects.get(id=pk)
+    print('context:',context)
+    return render(request, 'student_account/manage_taxtable.html', context)
+
+@login_required
+def delete_taxtable(request, pk = None):
+    resp = { 'status' : 'failed', 'msg':''}
+    if pk is None:
+        resp['msg'] = 'ID is invalid'
+    else:
+        try:
+            TaxTable.objects.filter(pk = pk).delete()
+            messages.success(request, "Tax table item deleted successfully.")
+            resp['status'] = 'success'
+        except:
+            resp['msg'] = "Deleting Failed"
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")

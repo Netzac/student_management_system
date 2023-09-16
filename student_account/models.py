@@ -116,3 +116,15 @@ class Receipt(models.Model):
         return f"Receipt on {self.date_paid}"
 
 
+# Models for Accounts and Payroll
+
+class TaxTable(models.Model):
+    id = models.AutoField(primary_key=True)
+    chargeableIncome = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
+    rate = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    date_added=models.DateTimeField(auto_now=True)
+
+    class meta:
+        ordering=['id']
+    def __str__(self):
+        return f"{self.chargeableIncome} @ {self.rate}" 

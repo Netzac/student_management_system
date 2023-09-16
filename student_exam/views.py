@@ -544,7 +544,7 @@ def context_data(request):
         'system_host' : abs_uri,
         'page_name' : '',
         'page_title' : '',
-        'system_name' : 'jSchoolWeb',
+        'system_name' : 'jSchoolAnywhere',
     }
 
     return context

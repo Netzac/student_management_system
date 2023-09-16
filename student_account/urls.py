@@ -18,6 +18,7 @@ from .views import (
     bulk_invoice, EarningsCreateView ,EarningsListView, EarningsUpdateView,EarningsDeleteView,DeductionsListView,DeductionsUpdateView,
     DeductionsDeleteView,  DeductionsCreateView,  RoleCreateView,RoleUpdateView,RoleListView,RoleDeleteView,
     verify_online_payment,dashboard,BillsPaymentByRange,BillsPaymentByMonth,
+    save_taxtable,view_taxtable,delete_taxtable,taxtable,manage_taxtable,
 )
 
 urlpatterns = [
@@ -54,6 +55,15 @@ urlpatterns = [
     path("role/create/", RoleCreateView.as_view(), name="role-create"),
     path("role/<int:pk>/update/", RoleUpdateView.as_view(), name="role-update"),
     path("role/<int:pk>/delete/", RoleDeleteView.as_view(),name="role-delete"),
+
+    
+    # Tax Table
+    path('taxtable',taxtable,name='taxtable'),
+    path('manage_taxtable',manage_taxtable,name='manage-taxtable'),
+    path('manage_book/<int:pk>',manage_taxtable,name='manage-taxtable-pk'),
+    path('view_taxtable/<int:pk>',view_taxtable,name='view-taxtable-pk'),
+    path('save_taxtable',save_taxtable,name='save-taxtable'),
+    path('delete_taxtable/<int:pk>',delete_taxtable,name='delete-taxtable'),
 
 
     path('report_by_date_range/', BillsPaymentByRange.as_view(),name='report-by-range'),
