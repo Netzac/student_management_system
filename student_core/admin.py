@@ -4,7 +4,7 @@ from .models import (AcademicTerm, CustomUser, AdminHOD, SessionYearModel,
 Staffs, Courses, Subjects, Students,
  Attendance, AttendanceReport, LeaveReportStudent, LeaveReportStaff, 
  FeedBackStudent, FeedBackStaffs, NotificationStudent, NotificationStaffs,)
-from student_account.models import FeeType, Invoice, InvoiceItem
+from student_account.models import FeeType, Invoice, InvoiceItem, Payroll,Staff_Deductions,Staff_Earnings
 # Register your models here.
 class UserModel(UserAdmin):
     pass
@@ -30,4 +30,8 @@ admin.site.register(InvoiceItem)
 admin.site.register(FeeType)
 admin.site.register(SessionYearModel)
 admin.site.register(AcademicTerm)
+
+admin.site.register(Payroll)
+admin.site.register(Staff_Deductions)
+admin.site.register(Staff_Earnings)
 

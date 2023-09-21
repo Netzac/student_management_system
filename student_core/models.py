@@ -63,16 +63,23 @@ class AdminHOD(models.Model):
 
 
 class Staffs(models.Model):
+    STATUS_CHOICES = [('1','Active'),('2','Inactive'),("3",'Resigned')]
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
     address = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default = 1)
     signature = models.FileField(upload_to="staff/",null=True,blank=True)
     objects = models.Manager()
 
     def __str__(self):
         return f"{self.admin.last_name} {self.admin.first_name}"
+    
+    def get_status(self):
+        if self.status=='1':
+            return "Active"
+        return "Inactive"
 
 
 class Gender(models.Model):

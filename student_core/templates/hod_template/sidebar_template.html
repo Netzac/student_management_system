@@ -498,6 +498,16 @@
                     </p>
                   </a>
                 </li>
+                <!-- Payroll --> 
+                <li class="nav-item">
+                  {% url 'payroll-list' as payroll_list %}
+                  <a href="{{ payroll_list }}" class="nav-link {% if request.path == payroll_list %} active {% endif %}">
+                    <i class="nav-icon fas fa-bars"></i>
+                    <p>
+                      Payroll
+                    </p>
+                  </a>
+                </li>
 
                 <li class="nav-item">
                   {% url 'invoice-list' as invoice_list %}

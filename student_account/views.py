@@ -12,12 +12,13 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from requests import request
 
-from student_core.models import AcademicTerm, Courses, SessionYearModel, Students as Student
+from student_core.models import AcademicTerm, Courses, SessionYearModel, Students as Student, Staffs as Staff
 
 from .forms import (
     InvoiceItemFormset, InvoiceReceiptFormSet, Invoices,FeeTypeForm, DeductionsForm, 
-    RoleForm, EarningsForm, TaxTableForm,)
-from .models import Invoice, InvoiceItem, Receipt,FeeType, Earnings, Deductions,Role,TaxTable
+    RoleForm, EarningsForm, TaxTableForm,DeductionsItemFormset,EarningsItemFormset,)
+from .models import ( Invoice, InvoiceItem, Receipt,FeeType, Earnings, 
+                     Deductions,Role,TaxTable, Payroll,Staff_Deductions,Staff_Earnings)
 
 from .utils import get_prev_term_bills
 
@@ -613,3 +614,146 @@ def delete_taxtable(request, pk = None):
             resp['msg'] = "Deleting Failed"
 
     return HttpResponse(json.dumps(resp), content_type="application/json")
+
+
+class PayrollListView(LoginRequiredMixin,ListView):
+    template_name = 'student_account/payroll_list.html'
+
+    def get_queryset(self):
+        user =self.request.user
+        user_type =user.user_type
+        if user_type=='1':
+            self.queryset = Payroll.objects.all().distinct()
+        elif user_type=='2':
+            self.queryset = Payroll.objects.filter(staff=user.staffs).distinct()
+        return self.queryset
+    
+
+class PayrollCreateView(LoginRequiredMixin, CreateView):
+    model = Payroll
+    fields = ['staff','gross_pay']
+    success_url = "/studentaccount/payroll/list"
+
+    def get_context_data(self, **kwargs):
+        context = super(PayrollCreateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context["d_items"] = DeductionsItemFormset(
+                self.request.POST, prefix="deductionsItem_set"
+            )
+            context["e_items"] = EarningsItemFormset(
+                self.request.POST, prefix="earningsItem_set"
+            )
+        else:
+            context["d_items"] = DeductionsItemFormset(prefix="deductionsItem_set")
+            context["e_items"] = EarningsItemFormset(prefix="earningsItem_set")
+        return context
+
+    def form_valid(self, form):
+        id= self.request.POST.get('staff')
+        
+        staff=Staff.objects.get(id=id)
+        context = self.get_context_data()
+        formset_d =  DeductionsItemFormset(self.request.POST or None, prefix="DeductionsItem_set")
+        formset_e = EarningsItemFormset(self.request.POST or None,prefix="EarningsItem_set")
+        #form.instance.class_for=student.course_id
+
+        #print("Post",self.request.POST,staff)
+        saved = form.save()
+        
+        #print('formsets:', saved )
+
+        if saved.id != None:
+            if formset_d.is_valid() :
+                #print('object:', staff.id)
+                object_d = formset_d.save(commit=False)
+               
+                #object_d.instance = saved
+                for d in object_d:
+                    d.staff = saved.staff
+                    d.save()
+            if formset_e.is_valid() :
+                object_e = formset_e.save(commit=False)
+                for e in object_e:
+                    e.staff = saved.staff
+                    e.save()
+               
+            else:
+                print("formset_d valid =", formset_d.is_valid())
+        return super().form_valid(form)
+    
+    
+class PayrollDetailView(LoginRequiredMixin, DetailView):
+        model = Payroll
+        fields = "__all__"
+
+        def get_context_data(self, **kwargs):
+            context = super(PayrollDetailView, self).get_context_data(**kwargs)
+            context["payroll"] = Payroll.objects.filter(staff=self.object.staff)
+            context["deductions"] = Staff_Deductions.objects.filter(staff=self.object.staff)
+            context["earnings"] = Staff_Earnings.objects.filter(staff=self.object.staff)
+            return context
+
+
+class PayrollUpdateView(LoginRequiredMixin, UpdateView):
+    model = Payroll
+    fields = ['staff','gross_pay']
+
+    def get_context_data(self, **kwargs):
+
+        context = super(PayrollUpdateView, self).get_context_data(**kwargs)
+        q_deductions = Staff_Deductions.objects.filter(staff=self.object.staff)
+        q_earnings = Staff_Earnings.objects.filter(staff=self.object.staff)
+        if self.request.POST:
+            context["d_items"] = DeductionsItemFormset(
+                self.request.POST, prefix="deductionsItem_set",queryset=q_deductions
+            )
+            context["e_items"] = EarningsItemFormset(
+                self.request.POST, prefix="earningsItem_set",queryset=q_earnings
+            )
+        else:
+            #print("Staff is:", q_deductions[0].pk)
+            context["d_items"] = DeductionsItemFormset(prefix="deductionsItem_set",instance=self.object.staff)
+            context["e_items"] = EarningsItemFormset(prefix="earningsItem_set",instance=self.object.staff)
+        return context
+
+    def form_valid(self, form):
+      
+        context = self.get_context_data()
+        formset_d = context["d_items"]
+        formset_e = context["e_items"]
+        
+        saved = form.save()
+        if saved.id != None:
+
+            if formset_d.is_valid():
+                d_instance = formset_d.save(commit=False)
+               
+                for obj in formset_d.deleted_objects:
+                    obj.delete()
+                for d in d_instance:
+                    d.staff = saved.staff
+                    d.save()
+            if formset_e.is_valid():               
+                e_instance = formset_e.save(commit=False)
+                for obj in formset_e.deleted_objects:
+                    obj.delete()
+                for e in e_instance:
+                    e.staff = saved.staff
+                    e.save()
+        return super().form_valid(form)
+
+
+class PayrollDeleteView(LoginRequiredMixin, DeleteView):
+     
+    model = Payroll
+    success_url = reverse_lazy("payroll-list")
+    template_name = "hod_template/core_confirm_delete.html"
+    success_message = "The class {} has been deleted with all its attached content"
+
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        #print(obj.type)
+        Staff_Deductions.objects.filter(staff=obj.staff).delete()
+        Staff_Earnings.objects.filter(staff=obj.staff).delete()
+        messages.success(self.request, self.success_message.format(obj.staff))
+        return super(PayrollDeleteView, self).delete(request, *args, **kwargs)

@@ -19,6 +19,7 @@ from .views import (
     DeductionsDeleteView,  DeductionsCreateView,  RoleCreateView,RoleUpdateView,RoleListView,RoleDeleteView,
     verify_online_payment,dashboard,BillsPaymentByRange,BillsPaymentByMonth,
     save_taxtable,view_taxtable,delete_taxtable,taxtable,manage_taxtable,
+    PayrollCreateView,PayrollListView,PayrollDeleteView,PayrollUpdateView,PayrollDetailView,
 )
 
 urlpatterns = [
@@ -64,6 +65,14 @@ urlpatterns = [
     path('view_taxtable/<int:pk>',view_taxtable,name='view-taxtable-pk'),
     path('save_taxtable',save_taxtable,name='save-taxtable'),
     path('delete_taxtable/<int:pk>',delete_taxtable,name='delete-taxtable'),
+
+    # Payroll
+
+    path("payroll/list/", PayrollListView.as_view(), name="payroll-list"),
+    path("payroll/create/", PayrollCreateView.as_view(), name="payroll-create"),
+    path("payroll/<int:pk>/detail/", PayrollDetailView.as_view(), name="payroll-detail"),
+    path("payroll/<int:pk>/update/", PayrollUpdateView.as_view(), name="payroll-update"),
+    path("payroll/<int:pk>/delete/", PayrollDeleteView.as_view(), name="payroll-delete"),
 
 
     path('report_by_date_range/', BillsPaymentByRange.as_view(),name='report-by-range'),

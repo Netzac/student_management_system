@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from student_core.models import SessionYearModel, AcademicTerm, Courses as StudentClass
-from student_core.models import Students
+from student_core.models import Students, Staffs
 
 
 
@@ -16,6 +16,8 @@ class Earnings(models.Model):
     type = models.CharField(unique=True,max_length=150)
     description = models.CharField(max_length=200,blank=True)
 
+    objects= models.Manager()
+
     def __str__(self):
         return self.type
 
@@ -23,6 +25,8 @@ class Deductions(models.Model):
     id = models.AutoField(primary_key=True)
     type = models.CharField(unique=True,max_length=150)
     description = models.CharField(max_length=200,blank=True)
+
+    objects= models.Manager()
 
     def __str__(self):
         return self.type
@@ -120,7 +124,7 @@ class Receipt(models.Model):
 
 class TaxTable(models.Model):
     id = models.AutoField(primary_key=True)
-    chargeableIncome = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
+    chargeableIncome = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
     rate = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     date_added=models.DateTimeField(auto_now=True)
 
@@ -128,3 +132,74 @@ class TaxTable(models.Model):
         ordering=['id']
     def __str__(self):
         return f"{self.chargeableIncome} @ {self.rate}" 
+    
+
+    # Staff Payroll
+
+class Payroll(models.Model):
+    id=  models.AutoField(primary_key=True)
+    #deductions = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
+    #earnings =  models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
+    payable_tax = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
+    gross_pay = models.DecimalField(verbose_name="Basic Salary",max_digits=18, decimal_places=2, default=0.00)
+    net_pay = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
+    staff = models.ForeignKey(Staffs, on_delete=models.DO_NOTHING)
+    period  = models.CharField(max_length=50)
+    Paid_Date = models.DateField(auto_now_add=True, verbose_name='Paid Date')
+
+    objects= models.Manager()
+
+    def deductions(self):
+        items = Staff_Deductions.objects.filter(staff=self.staff)
+        total = 0
+        for item in items:
+            total += item.amt
+        return total
+    
+    def earnings(self):
+        items = Staff_Earnings.objects.filter(staff=self.staff)
+        total = 0
+        for item in items:
+            total += item.amt
+        return total
+
+
+    class Meta:
+        ordering = ["staff"]
+
+    # def __str__(self):
+    #     f"{self.staff}"
+    def get_absolute_url(self):
+        return reverse("payroll-detail", kwargs={"pk": self.pk})
+
+class Staff_Deductions(models.Model):
+    id=  models.AutoField(primary_key=True)
+    deductions =  models.ForeignKey(Deductions, on_delete=models.DO_NOTHING)
+    staff = models.ForeignKey(Staffs, on_delete=models.DO_NOTHING)
+    amt = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
+    period  = models.CharField(max_length=50)
+
+    objects= models.Manager()
+
+    class Meta:
+        ordering = ["staff"]
+
+    # def __str__(self):
+    #     f"{self.staff}"
+    # def get_absolute_url(self):
+    #     return reverse("invoice-detail", kwargs={"pk": self.pk})
+    
+class Staff_Earnings(models.Model):
+    id=  models.AutoField(primary_key=True)
+    earnings =  models.ForeignKey(Earnings, on_delete=models.DO_NOTHING)
+    staff = models.ForeignKey(Staffs, on_delete=models.DO_NOTHING)
+    amt =  models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
+    period  = models.CharField(max_length=50)
+
+    objects= models.Manager()
+
+    class Meta:
+        ordering = ["staff"]
+
+    # def __str__(self):
+    #     f"{self.staff}"

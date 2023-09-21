@@ -14,7 +14,7 @@ class School(models.Model):
     email = models.EmailField()
     address = models.TextField(null=False,blank=False)
     branch = models.CharField(max_length=255,null=True,blank=True)
-    admin = models.OneToOneField(User, on_delete = models.CASCADE)
+    admin = models.OneToOneField(User, on_delete = models.CASCADE, default=1)
     adminSignature = models.FileField(upload_to="school/",null=True,blank=True)
     logo = models.FileField(upload_to="school/",null=True,blank=True)
     seal = models.FileField(upload_to="school/",null=True,blank=True)

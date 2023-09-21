@@ -216,9 +216,10 @@ STATIC_URL = '/static/'
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 else:
-    STATIC_ROOT =""
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static'),]
+#STATICFILES_DIRS = [ os.path.join(BASE_DIR, ''),]
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
