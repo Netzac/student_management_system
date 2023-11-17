@@ -631,7 +631,7 @@ class PayrollListView(LoginRequiredMixin,ListView):
 
 class PayrollCreateView(LoginRequiredMixin, CreateView):
     model = Payroll
-    fields = ['staff','gross_pay']
+    fields = ['staff','basic_pay','period']
     success_url = "/studentaccount/payroll/list"
 
     def get_context_data(self, **kwargs):
@@ -653,8 +653,8 @@ class PayrollCreateView(LoginRequiredMixin, CreateView):
         
         staff=Staff.objects.get(id=id)
         context = self.get_context_data()
-        formset_d =  DeductionsItemFormset(self.request.POST or None, prefix="DeductionsItem_set")
-        formset_e = EarningsItemFormset(self.request.POST or None,prefix="EarningsItem_set")
+        formset_d =  context["d_items"] # DeductionsItemFormset(self.request.POST or None, prefix="DeductionsItem_set")
+        formset_e = context["e_items"] #EarningsItemFormset(self.request.POST or None,prefix="EarningsItem_set")
         #form.instance.class_for=student.course_id
 
         #print("Post",self.request.POST,staff)
@@ -664,17 +664,22 @@ class PayrollCreateView(LoginRequiredMixin, CreateView):
 
         if saved.id != None:
             if formset_d.is_valid() :
-                #print('object:', staff.id)
+                print('formset_d is valid:', staff.id)
                 object_d = formset_d.save(commit=False)
                
                 #object_d.instance = saved
                 for d in object_d:
                     d.staff = saved.staff
+                    d.period = saved.period
+                    d.payroll = saved
                     d.save()
             if formset_e.is_valid() :
+                print('formset_e is valid:', staff.id)
                 object_e = formset_e.save(commit=False)
                 for e in object_e:
                     e.staff = saved.staff
+                    e.period=saved.period
+                    e.payroll = saved
                     e.save()
                
             else:
@@ -747,13 +752,13 @@ class PayrollDeleteView(LoginRequiredMixin, DeleteView):
      
     model = Payroll
     success_url = reverse_lazy("payroll-list")
-    template_name = "hod_template/core_confirm_delete.html"
+    template_name = "student_account/payroll_confirm_delete.html"
     success_message = "The class {} has been deleted with all its attached content"
 
     def delete(self, request, *args, **kwargs):
         obj = self.get_object()
-        #print(obj.type)
-        Staff_Deductions.objects.filter(staff=obj.staff).delete()
-        Staff_Earnings.objects.filter(staff=obj.staff).delete()
+        print("Deletion reach here",obj.type)
+       # Staff_Deductions.objects.filter(staff=obj.staff).delete()
+       # Staff_Earnings.objects.filter(staff=obj.staff).delete()
         messages.success(self.request, self.success_message.format(obj.staff))
         return super(PayrollDeleteView, self).delete(request, *args, **kwargs)

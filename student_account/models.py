@@ -5,6 +5,7 @@ from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from decimal import Decimal
 
 from student_core.models import SessionYearModel, AcademicTerm, Courses as StudentClass
 from student_core.models import Students, Staffs
@@ -141,7 +142,7 @@ class Payroll(models.Model):
     #deductions = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
     #earnings =  models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
     payable_tax = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
-    gross_pay = models.DecimalField(verbose_name="Basic Salary",max_digits=18, decimal_places=2, default=0.00)
+    basic_pay = models.DecimalField(verbose_name="Basic Salary",max_digits=18, decimal_places=2, default=0.00)
     net_pay = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
     staff = models.ForeignKey(Staffs, on_delete=models.DO_NOTHING)
     period  = models.CharField(max_length=50)
@@ -162,13 +163,37 @@ class Payroll(models.Model):
         for item in items:
             total += item.amt
         return total
+    
+    def calcPayableTax(self):
+        items = TaxTable.objects.all()
+        income =self.basic_pay
+        tax = 0
+
+        for item in items:
+            if income >= item.chargeableIncome:
+                tax += round((item.chargeableIncome * item.rate * Decimal(0.01)),2)
+                income -= item.chargeableIncome
+        return tax
+    
+    def netPay(self):
+        net = 0
+        staffEarnings = Decimal (self.earnings())
+        staffDeductions = Decimal(self.deductions())
+        tax = self.calcPayableTax()
+        grossPay = self.basic_pay  + staffEarnings
+        net = grossPay - staffDeductions - tax
+
+        return net
+
+
 
 
     class Meta:
         ordering = ["staff"]
 
-    # def __str__(self):
-    #     f"{self.staff}"
+    def __str__(self):
+       return f"{self.staff}"
+        
     def get_absolute_url(self):
         return reverse("payroll-detail", kwargs={"pk": self.pk})
 
@@ -178,6 +203,7 @@ class Staff_Deductions(models.Model):
     staff = models.ForeignKey(Staffs, on_delete=models.DO_NOTHING)
     amt = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
     period  = models.CharField(max_length=50)
+    payroll = models.ForeignKey(Payroll,on_delete=models.CASCADE)
 
     objects= models.Manager()
 
@@ -195,6 +221,7 @@ class Staff_Earnings(models.Model):
     staff = models.ForeignKey(Staffs, on_delete=models.DO_NOTHING)
     amt =  models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
     period  = models.CharField(max_length=50)
+    payroll = models.ForeignKey(Payroll,on_delete=models.CASCADE)
 
     objects= models.Manager()
 
