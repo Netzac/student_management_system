@@ -139,25 +139,25 @@ class TaxTable(models.Model):
 
 class Payroll(models.Model):
     id=  models.AutoField(primary_key=True)
-    #deductions = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
-    #earnings =  models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
+    deductions = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
+    earnings =  models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
     payable_tax = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
     basic_pay = models.DecimalField(verbose_name="Basic Salary",max_digits=18, decimal_places=2, default=0.00)
     net_pay = models.DecimalField(max_digits=18, decimal_places=2, default=0.00)
     staff = models.ForeignKey(Staffs, on_delete=models.DO_NOTHING)
     period  = models.CharField(max_length=50)
-    Paid_Date = models.DateField(auto_now_add=True, verbose_name='Paid Date')
+    paid_date = models.DateField(auto_now_add=True, verbose_name='Paid Date')
 
     objects= models.Manager()
 
-    def deductions(self):
+    def calcDeductions(self):
         items = Staff_Deductions.objects.filter(staff=self.staff)
         total = 0
         for item in items:
             total += item.amt
         return total
     
-    def earnings(self):
+    def cakcEarnings(self):
         items = Staff_Earnings.objects.filter(staff=self.staff)
         total = 0
         for item in items:
@@ -175,10 +175,10 @@ class Payroll(models.Model):
                 income -= item.chargeableIncome
         return tax
     
-    def netPay(self):
+    def calcNetPay(self):
         net = 0
-        staffEarnings = Decimal (self.earnings())
-        staffDeductions = Decimal(self.deductions())
+        staffEarnings = Decimal (self.cakcEarnings())
+        staffDeductions = Decimal(self.calcDeductions())
         tax = self.calcPayableTax()
         grossPay = self.basic_pay  + staffEarnings
         net = grossPay - staffDeductions - tax

@@ -18,8 +18,8 @@ from .views import (
     bulk_invoice, EarningsCreateView ,EarningsListView, EarningsUpdateView,EarningsDeleteView,DeductionsListView,DeductionsUpdateView,
     DeductionsDeleteView,  DeductionsCreateView,  RoleCreateView,RoleUpdateView,RoleListView,RoleDeleteView,
     verify_online_payment,dashboard,BillsPaymentByRange,BillsPaymentByMonth,
-    save_taxtable,view_taxtable,delete_taxtable,taxtable,manage_taxtable,
-    PayrollCreateView,PayrollListView,PayrollDeleteView,PayrollUpdateView,PayrollDetailView,
+    save_taxtable,view_taxtable,delete_taxtable,taxtable,manage_taxtable,payroll_finalize,
+    PayrollCreateView,PayrollListView,PayrollDeleteView,PayrollUpdateView,PayrollDetailView, PayrollFinalize,
 )
 
 urlpatterns = [
@@ -70,6 +70,7 @@ urlpatterns = [
 
     path("payroll/list/", PayrollListView.as_view(), name="payroll-list"),
     path("payroll/create/", PayrollCreateView.as_view(), name="payroll-create"),
+    path("payroll/finalize/", PayrollFinalize.as_view(), name="payroll-finalize"),
     path("payroll/<int:pk>/detail/", PayrollDetailView.as_view(), name="payroll-detail"),
     path("payroll/<int:pk>/update/", PayrollUpdateView.as_view(), name="payroll-update"),
     path("payroll/<int:pk>/delete/", PayrollDeleteView.as_view(), name="payroll-delete"),

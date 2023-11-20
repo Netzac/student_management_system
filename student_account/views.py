@@ -762,3 +762,44 @@ class PayrollDeleteView(LoginRequiredMixin, DeleteView):
        # Staff_Earnings.objects.filter(staff=obj.staff).delete()
         messages.success(self.request, self.success_message.format(obj.staff))
         return super(PayrollDeleteView, self).delete(request, *args, **kwargs)
+    
+from django.db import transaction
+def payroll_finalize():
+
+    month = date.month()
+    yr = date.year()
+    period = str(month)+ '-' + str(yr)
+    curr_payroll = Payroll.objects.filter(period=period)
+
+    #with transaction.atomic():
+    update_list =[]
+    for r in curr_payroll:
+        r.deductions = r.calcDeductions()
+        r.earnings = r.cakcEarnings()
+        r.net_pay =r.calcNetPay()
+        r.Paid_Date = date.today()
+        update_list.append(r)
+
+    Payroll.objects.bulk_update(update_list,['deductions','earnings','net_pay','paid_date'])
+    return None
+
+class PayrollFinalize(ListView):
+
+    model=Payroll
+    template_name="student_account/bank_advice_slip.html"
+
+    
+    def get_queryset(self):
+        
+        payroll_finalize()
+        month = date.month()
+        yr = date.year()
+        period = str(month)+ '-' + str(yr)
+        
+        user_type = self.request.user.user_type
+        if user_type=='1':
+            return Payroll.objects.filter(period=period)
+        # elif user_type=='2':
+        #     return RequiredItem.objects.filter(cls=get_teacher_cls_id(self.request))
+        # elif user_type=='3':
+        #     return RequiredItem.objects.filter(cls=self.request.user.students.course_id)
