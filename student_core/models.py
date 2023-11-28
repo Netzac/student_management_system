@@ -14,11 +14,22 @@ from django.core import validators
 import datetime
 
 
+mobile_num_regex = validators.RegexValidator(
+        regex="^[0-9]{10,15}$", message="Invalid Contact Number format! Must be between 10 and 15 digits"
+    )
+class Bank(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+
+    objects= models.Manager()
+
+    def __str__(self):
+        return self.name
 class SessionYearModel(models.Model):
     id = models.AutoField(primary_key=True)
     session_start_year = models.DateField( default=timeZ.now)
-    session_end_year = models.DateField( default=timeZ.now() + datetime.timedelta(days=100))
-    re_opening_date = models.DateField(null=True,blank=True,default=timeZ.now() + datetime.timedelta(days=120))
+    session_end_year = models.DateField( default=timeZ.now)
+    re_opening_date = models.DateField(null=True,blank=True,default=timeZ.now)
 
     name = models.CharField(max_length=200, unique=True,default= "Demo Session")
     current = models.BooleanField(default=True)
@@ -45,9 +56,8 @@ class CustomUser(AbstractUser):
     user_type_data = ((1, "HOD"), (2, "Staff"), (3, "Student"))
     user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
 
-  
-
     class Meta:
+        managed=True
         ordering = ["last_name"]
     def __str__(self):
         return f"{self.last_name} {self.first_name}"
@@ -60,28 +70,6 @@ class AdminHOD(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
    
-
-
-class Staffs(models.Model):
-    STATUS_CHOICES = [('1','Active'),('2','Inactive'),("3",'Resigned')]
-    id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
-    address = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default = 1)
-    signature = models.FileField(upload_to="staff/",null=True,blank=True)
-    objects = models.Manager()
-
-    def __str__(self):
-        return f"{self.admin.last_name} {self.admin.first_name}"
-    
-    def get_status(self):
-        if self.status=='1':
-            return "Active"
-        return "Inactive"
-
-
 class Gender(models.Model):
     id = models.AutoField(primary_key=True)
     gender_name = models.CharField(max_length=155)
@@ -95,8 +83,44 @@ class Gender(models.Model):
         ordering = ["gender_name"]
     def __str__(self):
         return self.gender_name
+    
+#Staff Roles
+class Role(models.Model):
+    id = models.AutoField(primary_key=True)
+    type = models.CharField(unique=True,max_length=150)
+    description = models.CharField(max_length=200,blank=True)
 
-# Courses is a.k.a classes for lower levels
+    def __str__(self):
+        return self.type
+
+
+class Staffs(models.Model):
+    STATUS_CHOICES = [('1','Active'),('2','Inactive'),("3",'Resigned')]
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
+    dob = models.DateField(auto_now_add=True)
+    gender = models.ForeignKey(Gender, on_delete=models.DO_NOTHING)
+    role = models.ForeignKey(Role,on_delete=models.DO_NOTHING)
+    contact_number = models.CharField( validators=[mobile_num_regex],max_length=15,blank=True,null=True)
+    address = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default = 1)
+    signature = models.FileField(upload_to="staff/",null=True,blank=True)
+    ss_no = models.CharField(max_length=15,null=True,blank=True)
+    bank = models.ForeignKey(Bank, on_delete=models.DO_NOTHING)
+    bank_acc_no = models.CharField(max_length=50,null=True,blank=True)
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.admin.last_name} {self.admin.first_name}"
+    
+    def get_status(self):
+        if self.status=='1':
+            return "Active"
+        return "Inactive"
+    
+    # Courses is a.k.a classes for lower levels
 class Courses(models.Model):
     id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=255)
@@ -165,9 +189,7 @@ class Students(models.Model):
 
 
     ''''Fields for parents'''
-    mobile_num_regex = validators.RegexValidator(
-        regex="^[0-9]{10,15}$", message="Invalid Contact Number format! Must be between 10 and 15 digits"
-    )
+   
     parent_first_name =models.CharField(max_length=150)
     parent_last_name= models.CharField(max_length=150)
     parent_email = models.EmailField(default="",blank=True,null=True, validators=[validators.EmailValidator(message='Invalid email format')])
@@ -193,7 +215,7 @@ class Attendance(models.Model):
     id = models.AutoField(primary_key=True)
     student_id = models.ForeignKey(Students, on_delete=models.CASCADE)
     course_id = models.ForeignKey(Courses, on_delete=models.DO_NOTHING)
-    attendance_date = models.DateField(timeZ.now())
+    attendance_date = models.DateField(timeZ.now)
     session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
     status = models.BooleanField(default='True')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -313,7 +335,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         if instance.user_type == 1:
             AdminHOD.objects.create(admin=instance)
         if instance.user_type == 2:
-            Staffs.objects.create(admin=instance)
+            Staffs.objects.create(admin=instance,bank=Bank.objects.first(),gender=Gender.objects.first(),role=Role.objects.first())
         if instance.user_type == 3:
             Students.objects.create(admin=instance, course_id=Courses.objects.get(id=1), session_year_id=SessionYearModel.objects.get(id=1), address="", profile_pic="", gender=Gender.objects.all().first())
     

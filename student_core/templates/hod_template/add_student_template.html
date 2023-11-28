@@ -1,8 +1,17 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Add Student
+ Registration Panel
 {% endblock page_title %}
+
+{% block breadcrumb %}
+{% if user.user_type == '1' %}
+<a class="btn btn-primary" href="{% url 'manage_student' %}" role="button">+ New Student</a>&nbsp;
+{% endif %}
+<a class="btn btn-success" href="#" onclick="window.print()" style="text-align:right; float:right;color:white"><strong>Get PDF Copy</strong></a></a>
+<!-- <a class="btn btn-primary" href="{% url 'bulk-invoice' %}"><i
+    class="fas fa-upload"></i> Bulk Invoice</a> -->
+{% endblock breadcrumb %}
 
 {% block main_content %}
 
@@ -16,7 +25,7 @@
                     <!-- general form elements -->
                     <div class="card card-secondary">
                     <div class="card-header">
-                        <h3 class="card-title">Add Student</h3>
+                        <h3 class="card-title">Student Registration Form</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->

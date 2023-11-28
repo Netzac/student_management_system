@@ -4,9 +4,9 @@ from django.forms import (
 )
 
 from django import forms
-from .models import (FeeType, Invoice, InvoiceItem, Receipt, Deductions,Earnings, Role,TaxTable,Payroll,
+from .models import (FeeType, Invoice, InvoiceItem, Receipt, Deductions,Earnings,TaxTable,Payroll,
 Staff_Deductions,Staff_Earnings,)
-from student_core.models import Staffs as Staff
+from student_core.models import Staffs as Staff, Bank,Role
 
 InvoiceItemFormset = inlineformset_factory(
     Invoice, InvoiceItem, fields=["feetype", "amount"], extra=1, can_delete=True
@@ -30,6 +30,12 @@ EarningsItemFormset = inlineformset_factory(
     Staff, Staff_Earnings, fields=["earnings","amt"], extra=1, can_delete=True
 )
 
+class BankForm(ModelForm):
+    prefix = "Bank"
+
+    class Meta:
+        model = Bank
+        fields = ["name"]
 
 class EarningsForm(ModelForm):
     prefix = "Earnings"

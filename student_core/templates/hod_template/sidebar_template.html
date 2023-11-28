@@ -40,7 +40,7 @@
                   <p>Person Registry  <i class="fas fa-angle-left right"></i></p>
                 </a>
                 <ul class="nav nav-treeview">           
-                  <li class="nav-item">
+                  <!-- <li class="nav-item">
                     {% url 'add_staff' as add_staff %}
                     <a href="{{ add_staff }}" class="nav-link {% if request.path == add_staff %} active {% endif %}">
                       <i class="nav-icon fas fa-th"></i>
@@ -48,14 +48,14 @@
                         Add Staff
                       </p>
                     </a>
-                  </li>
+                  </li> -->
                   <li class="nav-item">
                     {% url 'manage_staff' as manage_staff %}
                     {% url 'edit_staff' staff_id=id as edit_staff %}
                     <a href="{{ manage_staff }}" class="nav-link {% if request.path == manage_staff %} active {% endif %} {% if request.path == edit_staff %} active {% endif %}">
                       <i class="nav-icon fas fa-chalkboard-teacher"></i>
                       <p>
-                        Manage Staff
+                        Staff
                       </p>
                     </a>
                   </li>
@@ -79,7 +79,7 @@
                       </p>
                     </a>
                   </li>
-                  <li class="nav-item">
+                  <!-- <li class="nav-item">
                     {% url 'add_student' as add_student %}
                     <a href="{{ add_student }}" class="nav-link {% if request.path == add_student %} active {% endif %}">
                       <i class="nav-icon fas fa-th"></i>
@@ -87,14 +87,14 @@
                         Add Student
                       </p>
                     </a>
-                  </li>
+                  </li> -->
                   <li class="nav-item">
                     {% url 'manage_student' as manage_student %}
                     {% url 'edit_student' student_id=id as edit_student %}
                     <a href="{{ manage_student }}" class="nav-link {% if request.path == manage_student %} active {% endif %} {% if request.path == edit_student %} active {% endif %}">
                       <i class="nav-icon fas fa-user-graduate"></i>
                       <p>
-                        Manage Student
+                        Student
                       </p>
                     </a>
                   </li>
@@ -264,6 +264,16 @@
                       <p>General Settings  <i class="fas fa-angle-left right"></i></p>
                     </a>
                   <ul class="nav nav-treeview"> 
+                     <!-- Settings for Roles-->
+                     <li class="nav-item">
+                      {% url 'bank-list' as add_bank %}
+                        <a href="{{ add_bank }}" class="nav-link {% if request.path == add_bank %} active {% endif %}">
+                          <i class="nav-icon fas fa-th"></i>
+                          <p>
+                            Bank
+                          </p>
+                        </a>
+                      </li>
                     <li class="nav-item">
                       {% url 'add_course' as add_course %}
                         <a href="{{ add_course }}" class="nav-link {% if request.path == add_course %} active {% endif %}">

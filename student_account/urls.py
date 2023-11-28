@@ -7,16 +7,14 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 
 
 from .views import (
-    InvoiceCreateView,
-    InvoiceDeleteView,
-    InvoiceDetailView,
-    InvoiceListView,
-    InvoiceUpdateView,
+    InvoiceCreateView,InvoiceDeleteView,InvoiceDetailView,InvoiceListView,InvoiceUpdateView,
     ReceiptCreateView,
     ReceiptUpdateView,
     FeeTypeCreateView, FeeTypeUpdateView, FeeTypeDeleteView, FeeTypeListView,ClassInvoiceCreateView,
-    bulk_invoice, EarningsCreateView ,EarningsListView, EarningsUpdateView,EarningsDeleteView,DeductionsListView,DeductionsUpdateView,
-    DeductionsDeleteView,  DeductionsCreateView,  RoleCreateView,RoleUpdateView,RoleListView,RoleDeleteView,
+    bulk_invoice, EarningsCreateView ,EarningsListView, EarningsUpdateView,EarningsDeleteView,
+    BankListView,BankUpdateView,BankDeleteView,BankCreateView,  
+    DeductionsListView,DeductionsUpdateView,DeductionsDeleteView, DeductionsCreateView,  
+    RoleCreateView,RoleUpdateView,RoleListView,RoleDeleteView,
     verify_online_payment,dashboard,BillsPaymentByRange,BillsPaymentByMonth,
     save_taxtable,view_taxtable,delete_taxtable,taxtable,manage_taxtable,payroll_finalize,
     PayrollCreateView,PayrollListView,PayrollDeleteView,PayrollUpdateView,PayrollDetailView, PayrollFinalize,
@@ -38,6 +36,12 @@ urlpatterns = [
     path("create", FeeTypeCreateView.as_view(), name="feetype-create"),
     path("feetype/<int:pk>/update/", FeeTypeUpdateView.as_view(), name="feetype-update"),
     path("feetype/<int:pk>/delete/", FeeTypeDeleteView.as_view(),name="feetype-delete"),
+
+    ## Banks 
+    path("bank/list/", BankListView.as_view(), name="bank-list"),
+    path("bank/create/", BankCreateView.as_view(), name="bank-create"),
+    path("bank/<int:pk>/update/", BankUpdateView.as_view(), name="bank-update"),
+    path("bank/<int:pk>/delete/", BankDeleteView.as_view(),name="bank-delete"),
 
     ## Earnings 
     path("earnings/list/", EarningsListView.as_view(), name="earnings-list"),

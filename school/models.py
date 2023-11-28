@@ -6,7 +6,7 @@ import uuid
 # Create your models here.
 
 
-from student_core.models import CustomUser as User
+from student_core.models import CustomUser as User, Bank
 
 def unique_school_id():
     d = uuid.uuid4()
@@ -20,6 +20,7 @@ class School(models.Model):
     email = models.EmailField()
     address = models.TextField(null=False,blank=False)
     branch = models.CharField(max_length=255,null=True,blank=True)
+    bank = models.ForeignKey(Bank,on_delete=models.DO_NOTHING,default=1)
     admin = models.OneToOneField(User, on_delete = models.CASCADE, default=1)
     adminSignature = models.FileField(upload_to="school/",null=True,blank=True)
     logo = models.FileField(upload_to="school/",null=True,blank=True)

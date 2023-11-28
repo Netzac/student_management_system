@@ -12,13 +12,14 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from requests import request
 
-from student_core.models import AcademicTerm, Courses, SessionYearModel, Students as Student, Staffs as Staff
-
+from student_core.models import AcademicTerm, Courses, SessionYearModel, Students as Student, Staffs as Staff, \
+    Bank,Role
+from school.models import School
 from .forms import (
-    InvoiceItemFormset, InvoiceReceiptFormSet, Invoices,FeeTypeForm, DeductionsForm, 
+    InvoiceItemFormset, InvoiceReceiptFormSet, Invoices,FeeTypeForm, BankForm,DeductionsForm, 
     RoleForm, EarningsForm, TaxTableForm,DeductionsItemFormset,EarningsItemFormset,)
 from .models import ( Invoice, InvoiceItem, Receipt,FeeType, Earnings, 
-                     Deductions,Role,TaxTable, Payroll,Staff_Deductions,Staff_Earnings)
+                     Deductions,TaxTable, Payroll,Staff_Deductions,Staff_Earnings,)
 
 from .utils import get_prev_term_bills
 
@@ -319,7 +320,45 @@ class DeductionsDeleteView(LoginRequiredMixin, DeleteView):
         messages.success(self.request, self.success_message.format(obj.type))
         return super(DeductionsDeleteView, self).delete(request, *args, **kwargs)
 
-# Staff Deductions setup
+# Banks setup
+class BankCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Bank
+    form_class = BankForm
+    template_name = "hod_template/mgt_form.html"
+    success_url = reverse_lazy("bank-list")
+    success_message = "Bank successfully added"
+
+class BankListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
+    model = Bank
+    template_name = "student_account/bank_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = BankForm()
+        return context
+
+class BankUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Bank
+    fields = ["name"]
+    success_url = reverse_lazy("bank-list")
+    success_message = "Bank successfully updated."
+    template_name = "hod_template/mgt_form.html"
+
+
+class BankDeleteView(LoginRequiredMixin, DeleteView):
+    model = Bank
+    success_url = reverse_lazy("bank-list")
+    template_name = "hod_template/core_confirm_delete.html"
+    success_message = "The class {} has been deleted with all its attached content"
+
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        print(obj.type)
+        messages.success(self.request, self.success_message.format(obj.type))
+        return super(DeductionsDeleteView, self).delete(request, *args, **kwargs)
+
+
+# Staff Role setup
 class RoleCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Role
     form_class = RoleForm
@@ -329,7 +368,7 @@ class RoleCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 class RoleListView(LoginRequiredMixin, SuccessMessageMixin, ListView):
     model = Role
-    template_name = "role_list.html"
+    template_name = "student_account/role_list.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -686,22 +725,25 @@ class PayrollCreateView(LoginRequiredMixin, CreateView):
                 print("formset_d valid =", formset_d.is_valid())
         return super().form_valid(form)
     
-    
+from num2words import num2words  
 class PayrollDetailView(LoginRequiredMixin, DetailView):
         model = Payroll
         fields = "__all__"
 
         def get_context_data(self, **kwargs):
             context = super(PayrollDetailView, self).get_context_data(**kwargs)
-            context["payroll"] = Payroll.objects.filter(staff=self.object.staff)
+            payroll_obj = Payroll.objects.filter(staff=self.object.staff)[0]
+            context["payroll"] = payroll_obj
+            context["net_pay_in_words"] = num2words(payroll_obj.net_pay)
             context["deductions"] = Staff_Deductions.objects.filter(staff=self.object.staff)
             context["earnings"] = Staff_Earnings.objects.filter(staff=self.object.staff)
+            context["adminSign"] = School.objects.first().adminSignature
             return context
 
 
 class PayrollUpdateView(LoginRequiredMixin, UpdateView):
     model = Payroll
-    fields = ['staff','gross_pay']
+    fields = ['staff','net_pay']
 
     def get_context_data(self, **kwargs):
 
@@ -764,13 +806,15 @@ class PayrollDeleteView(LoginRequiredMixin, DeleteView):
         return super(PayrollDeleteView, self).delete(request, *args, **kwargs)
     
 from django.db import transaction
+import datetime
+from datetime import datetime
 def payroll_finalize():
 
-    month = date.month()
-    yr = date.year()
-    period = str(month)+ '-' + str(yr)
+   # month = date.month()
+   # yr = date.year()
+    period =  datetime.now().strftime('%m-%Y')
     curr_payroll = Payroll.objects.filter(period=period)
-
+    print("current payroll",curr_payroll,period)
     #with transaction.atomic():
     update_list =[]
     for r in curr_payroll:
@@ -790,16 +834,28 @@ class PayrollFinalize(ListView):
 
     
     def get_queryset(self):
-        
+
         payroll_finalize()
-        month = date.month()
-        yr = date.year()
-        period = str(month)+ '-' + str(yr)
+           # yr = date.year()
+        period =datetime.now().strftime('%m-%Y')
+
         
         user_type = self.request.user.user_type
         if user_type=='1':
-            return Payroll.objects.filter(period=period)
+            return Payroll.objects.select_related('staff').filter(period=period)
         # elif user_type=='2':
         #     return RequiredItem.objects.filter(cls=get_teacher_cls_id(self.request))
         # elif user_type=='3':
         #     return RequiredItem.objects.filter(cls=self.request.user.students.course_id)
+
+    def get_context_data(self, **kwargs):
+        try:
+            school = School.objects.all().first()
+        except:
+            school={}
+        period =datetime.now().strftime('%B-%Y')
+        context = super().get_context_data(**kwargs)
+        context["payroll_period"] = period
+        context["bank"] = school.bank
+        context["school"] = school
+        return context

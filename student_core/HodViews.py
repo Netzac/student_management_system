@@ -24,7 +24,7 @@ from student_account.forms import FeeTypeForm
 from student_core.models import (ClassTeacher, CustomUser, Staffs, Courses, Subjects, Gender,
 Students, SessionYearModel, FeedBackStudent, FeedBackStaffs, 
 LeaveReportStudent, LeaveReportStaff, Attendance,
- AttendanceReport, AcademicTerm,
+ AttendanceReport, AcademicTerm,Bank,Role,
 )
 from .forms import (AddStudentForm, ClassTeacherFormSet, ClassTeacherFormSet, EditStudentForm,
  AcademicTermForm, CurrentSessionForm, ExerciseForm)
@@ -135,7 +135,9 @@ def admin_home(request):
 
 def add_staff(request):
     gender = Gender.objects.all()
-    context ={'genders': gender}
+    banks = Bank.objects.all()
+    roles = Role.objects.all()
+    context ={'genders': gender,"banks":banks,"roles":roles}
     return render(request, "hod_template/add_staff_template.html",context)
 
 
@@ -150,6 +152,13 @@ def add_staff_save(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         address = request.POST.get('address')
+        contact =request.POST.get('contact')
+        ss_no= request.POST.get('ssno')
+        acc_no= request.POST.get('accno')
+        bank_id= request.POST.get('bank')
+        role_id= request.POST.get('role')
+
+        # print("POST",request.POST,bank_id)
 
           # Getting Profile Pic first
             # First Check whether the file is selected or not
@@ -158,20 +167,31 @@ def add_staff_save(request):
             signature = request.FILES['signature']
             fs = FileSystemStorage('media/signature/')
             filename = fs.save(signature.name, signature)
-            signature_url = fs.url(filename)
+            signature_url = (fs.url(filename)).replace("media",'signature')
+            print("filename:",signature_url)
         else:
             signature_url = None
 
-        try:
-            user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=2)
+       # try:
+        if 1:
+            user = CustomUser.objects.create_user(username=username, password=password, email=email,first_name=first_name, last_name=last_name, user_type=2)
             user.staffs.address = address
             user.staffs.signature=signature_url
+            user.staffs.ss_no = ss_no
+            user.staffs.contact_number=contact
+            bank_obj = Bank.objects.get(id=bank_id)
+            role_obj = Role.objects.get(id=role_id)
+            user.staffs.role_id = role_obj
+            user.staffs.bank_id = bank_obj
+            user.staffs.bank_acc_no = acc_no
+           
+            print("Object",user.staffs) 
             user.save()
             messages.success(request, "Staff Added Successfully!")
             return redirect('add_staff')
-        except:
-            messages.error(request, "Failed to Add Staff!")
-            return redirect('add_staff')
+        # except:
+        #     messages.error(request, "Failed to Add Staff!")
+        #     return redirect('add_staff')
 
 
 
@@ -203,6 +223,11 @@ def edit_staff_save(request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         address = request.POST.get('address')
+        ss_no= request.POST.get('ssno')
+        acc_no= request.POST.get('accno')
+        contact= request.POST.get('contact')
+        bank_id= request.POST.get('bank')
+        role_id= request.POST.get('role')
 
         if len(request.FILES) != 0:
             signature = request.FILES['signature']
@@ -214,18 +239,33 @@ def edit_staff_save(request):
             signature_url = None
 
         try:
+        #if 1:
             # INSERTING into Customuser Model
             user = CustomUser.objects.get(id=staff_id)
             user.first_name = first_name
             user.last_name = last_name
             user.email = email
             user.username = username
+            user.staffs.signature=signature_url
+
+           
             user.save()
             
             # INSERTING into Staff Model
+            
             staff_model = Staffs.objects.get(admin=staff_id)
+            staff_model.contact_number=contact
             staff_model.address = address
             staff_model.signature= signature_url
+            staff_model.ss_no = ss_no
+            staff_model.bank_acc_no = acc_no
+            
+            bank_obj = Bank.objects.get(id=bank_id)
+            role_obj = Role.objects.get(id=role_id)
+            staff_model.role_id = role_obj
+            staff_model.bank_id = bank_obj
+            staff_model.bank_acc_no = acc_no
+            
             staff_model.save()
 
             messages.success(request, "Staff Updated Successfully.")

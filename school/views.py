@@ -30,7 +30,7 @@ class SchoolCreateView(LoginRequiredMixin, CreateView):
 class SchoolListView(LoginRequiredMixin, ListView):
     model = School
     field_list = [
-        'School Name', 'Motto', 'Phone','Email', 'Address', 'Branch','Administrator','Admin Signature',
+        'School Name', 'Motto', 'Phone','Email', 'Address', 'Branch','Bank','Administrator','Admin Signature',
         'Logo','School Seal'
     ]
     def get_context_data(self, **kwargs):
@@ -41,7 +41,7 @@ class SchoolListView(LoginRequiredMixin, ListView):
 class SchoolDetailView(LoginRequiredMixin, DetailView):
     model = School
     field_list = [
-        'School Name', 'Motto', 'Phone','Email', 'Address', 'Branch','Administrator','Admin Signature',
+        'School Name', 'Motto', 'Phone','Email', 'Address', 'Branch','Bank','Administrator','Admin Signature',
         'Logo','School Seal'
     ]
     def get_context_data(self, **kwargs):

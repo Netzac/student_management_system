@@ -12,6 +12,8 @@ from student_core.models import Students, Staffs
 
 
 
+
+
 class Earnings(models.Model):
     id = models.AutoField(primary_key=True)
     type = models.CharField(unique=True,max_length=150)
@@ -42,16 +44,13 @@ class FeeType(models.Model):
         return self.type
 
 #Staff Roles
-class Role(models.Model):
-    id = models.AutoField(primary_key=True)
-    type = models.CharField(unique=True,max_length=150)
-    description = models.CharField(max_length=200,blank=True)
+# class Role(models.Model):
+#     id = models.AutoField(primary_key=True)
+#     type = models.CharField(unique=True,max_length=150)
+#     description = models.CharField(max_length=200,blank=True)
 
-    def __str__(self):
-        return self.type
-
-
-
+#     def __str__(self):
+#         return self.type
 
         
 class Invoice(models.Model):
