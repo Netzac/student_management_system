@@ -18,6 +18,7 @@ from .views import (
     verify_online_payment,dashboard,BillsPaymentByRange,BillsPaymentByMonth,
     save_taxtable,view_taxtable,delete_taxtable,taxtable,manage_taxtable,payroll_finalize,
     PayrollCreateView,PayrollListView,PayrollDeleteView,PayrollUpdateView,PayrollDetailView, PayrollFinalize,
+    PayrollPaye,
 )
 
 urlpatterns = [
@@ -75,6 +76,7 @@ urlpatterns = [
     path("payroll/list/", PayrollListView.as_view(), name="payroll-list"),
     path("payroll/create/", PayrollCreateView.as_view(), name="payroll-create"),
     path("payroll/finalize/", PayrollFinalize.as_view(), name="payroll-finalize"),
+    path("payroll/paye/", PayrollPaye.as_view(), name="payroll-paye"),
     path("payroll/<int:pk>/detail/", PayrollDetailView.as_view(), name="payroll-detail"),
     path("payroll/<int:pk>/update/", PayrollUpdateView.as_view(), name="payroll-update"),
     path("payroll/<int:pk>/delete/", PayrollDeleteView.as_view(), name="payroll-delete"),

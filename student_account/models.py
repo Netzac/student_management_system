@@ -156,7 +156,7 @@ class Payroll(models.Model):
             total += item.amt
         return total
     
-    def cakcEarnings(self):
+    def calcEarnings(self):
         items = Staff_Earnings.objects.filter(staff=self.staff)
         total = 0
         for item in items:
@@ -176,7 +176,7 @@ class Payroll(models.Model):
     
     def calcNetPay(self):
         net = 0
-        staffEarnings = Decimal (self.cakcEarnings())
+        staffEarnings = Decimal (self.calcEarnings())
         staffDeductions = Decimal(self.calcDeductions())
         tax = self.calcPayableTax()
         grossPay = self.basic_pay  + staffEarnings

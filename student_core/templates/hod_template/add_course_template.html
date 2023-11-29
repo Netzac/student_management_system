@@ -4,6 +4,15 @@
     Add Class
 {% endblock page_title %}
 
+{% block breadcrumb %}
+{% if user.user_type == '1' %}
+<a class="btn btn-primary" href="{% url 'manage_course' %}" role="button"> Manage Class</a>&nbsp;
+{% endif %}
+<a class="btn btn-success" href="#" onclick="window.print()" style="text-align:right; float:right;color:white"><strong>Get PDF Copy</strong></a></a>
+<!-- <a class="btn btn-primary" href="{% url 'bulk-invoice' %}"><i
+    class="fas fa-upload"></i> Bulk Invoice</a> -->
+{% endblock breadcrumb %}
+
 {% block main_content %}
 
 {% load static %}
@@ -60,7 +69,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="submit" class="btn btn-dark">Add Class</button>
+                        <button type="submit" class="btn btn-dark">Save</button>
                         {% include 'back_button.html'%}
                         </div>
                     </form>

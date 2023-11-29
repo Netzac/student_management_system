@@ -819,7 +819,7 @@ def payroll_finalize():
     update_list =[]
     for r in curr_payroll:
         r.deductions = r.calcDeductions()
-        r.earnings = r.cakcEarnings()
+        r.earnings = r.calcEarnings()
         r.net_pay =r.calcNetPay()
         r.Paid_Date = date.today()
         update_list.append(r)
@@ -831,6 +831,40 @@ class PayrollFinalize(ListView):
 
     model=Payroll
     template_name="student_account/bank_advice_slip.html"
+
+    
+    def get_queryset(self):
+
+        payroll_finalize()
+           # yr = date.year()
+        period =datetime.now().strftime('%m-%Y')
+
+        
+        user_type = self.request.user.user_type
+        if user_type=='1':
+            return Payroll.objects.select_related('staff').filter(period=period)
+        # elif user_type=='2':
+        #     return RequiredItem.objects.filter(cls=get_teacher_cls_id(self.request))
+        # elif user_type=='3':
+        #     return RequiredItem.objects.filter(cls=self.request.user.students.course_id)
+
+    def get_context_data(self, **kwargs):
+        try:
+            school = School.objects.all().first()
+        except:
+            school={}
+        period =datetime.now().strftime('%B-%Y')
+        context = super().get_context_data(**kwargs)
+        context["payroll_period"] = period
+        context["bank"] = school.bank
+        context["school"] = school
+        return context
+    
+
+class PayrollPaye(ListView):
+
+    model=Payroll
+    template_name="student_account/payroll_paye.html"
 
     
     def get_queryset(self):

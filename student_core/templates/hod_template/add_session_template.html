@@ -1,5 +1,14 @@
 {% extends 'hod_template/base_template.html' %}
 
+{% block breadcrumb %}
+{% if user.user_type == '1' %}
+<a class="btn btn-primary" href="{% url 'manage_session' %}" role="button"> Manage Session</a>&nbsp;
+{% endif %}
+<a class="btn btn-success" href="#" onclick="window.print()" style="text-align:right; float:right;color:white"><strong>Get PDF Copy</strong></a></a>
+<!-- <a class="btn btn-primary" href="{% url 'bulk-invoice' %}"><i
+    class="fas fa-upload"></i> Bulk Invoice</a> -->
+{% endblock breadcrumb %}
+
 {% block page_title %}
     Add Session/School Year
 {% endblock page_title %}
@@ -81,7 +90,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Add Session </button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                         {% include 'cancel_button.html'%}
                         </div>
                     </form>

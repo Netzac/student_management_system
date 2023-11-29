@@ -20,13 +20,13 @@
 					<ul class="navbar-nav bg-white">
 						{% if request.user.is_authenticated %}
 						
-					    <li class="dropdown profile bg-secondary"><a href="#">{{ request.user}}</a>
+					    <li class="dropdown profile bg-light"><a href="#">{{ request.user}}</a>
 					        <ul role="menu" class="sub-menu">
 					            <li><a href="{% url 'order:order_list' %}"><i class="fa fa-shopping-cart"></i> My order</a></li>
 					        </ul> 
 					    </li>
 						
-					    <li class="cart bg-secondary">
+					    <li class="cart bg-primary">
 					    	<a href="{% url 'cart:cart_details' %}">Cart <i class="fa fa-angle-left"></i>
 					    		<span class="totalcart" id="gettotalcart"> {{ cart|length }} </span> 
 					    		<i class="fa fa-angle-right"></i>

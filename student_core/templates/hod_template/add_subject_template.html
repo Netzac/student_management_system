@@ -4,8 +4,17 @@
     Add Subject
 {% endblock page_title %}
 
-{% block main_content %}
 
+{% block breadcrumb %}
+{% if user.user_type == '1' %}
+<a class="btn btn-primary" href="{% url 'manage_subject' %}" role="button"> Manage Subject</a>&nbsp;
+{% endif %}
+<a class="btn btn-success" href="#" onclick="window.print()" style="text-align:right; float:right;color:white"><strong>Get PDF Copy</strong></a></a>
+<!-- <a class="btn btn-primary" href="{% url 'bulk-invoice' %}"><i
+    class="fas fa-upload"></i> Bulk Invoice</a> -->
+{% endblock breadcrumb %}
+
+{% block main_content %}
 {% load static %}
 
 <section class="content">
@@ -69,7 +78,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Add Subject</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                         {% include 'cancel_button.html'%}
                         </div>
                     </form>
