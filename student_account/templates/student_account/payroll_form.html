@@ -1,0 +1,150 @@
+{% extends 'hod_template/base_template.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{% endblock title %}
+{% block page_title %}
+  {% if object %}
+    Update Payroll For {{ object.staff |title }}
+  {% else %}
+    Add Payroll
+  {% endif %}
+{% endblock page_title %}
+
+
+{% block breadcrumb %}
+<a class="btn btn-success" href="{% url 'payroll-create' %}"><i
+    class="fas fa-plus"></i> New Payroll</a>
+
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+<section class="content">
+  <div class="container-fluid">
+
+<form method="POST">
+  {% csrf_token %}
+
+  <div class="row justify-content-center">
+    <div class="col-sm-8 ">
+      {% for field in form %}
+      <div class="form-group row">
+        <label class="col-3 col-form-label text-right" for="{{ field.auto_id }}">
+          {{ field.label }}
+          {% for error in field.errors %}
+          <small id="{{ field.auto_id }}" class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </label>
+        <div class="col-8">
+          {{ field | add_class:"form-control"}}
+          {% if field.help_text %}
+          <small>{{ field.help_text|safe }}</small>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    </div> <!-- end row-->
+    
+  <div class="row">
+   
+    <div class="col-sm-6 callout callout-info">
+      {{ d_items.management_form }}
+      <div class="text-center">DEDUCTIONS</div>
+      <hr>
+      <div class="row">
+        <div class="col"><strong>Deduction</strong></div>
+        <div class="col"><strong>Amount</strong></div>
+        {# <div class="col"><strong>Description</strong></div> #}
+      </div>
+      {% for d_item in d_items %}
+      <div class="form-group row items-group" id="formset1">
+        {{ d_item.id}}
+        <div class="col">{{ d_item.deductions | add_class:"form-control"}}</div>
+        <div class="col">{{ d_item.amt | add_class:"form-control"}}</div>
+      {#  <div class="col">{{ d_item.description| add_class:"form-control"}}</div> #}
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="col-sm-6 callout callout-info">
+      {{ e_items.management_form }}
+      <div class="text-center">EARNINGS</div>
+      <hr>
+      <div class="row">
+        <div class="col"><strong>Earnings</strong></div>
+        <div class="col"><strong>Amount</strong></div>
+        {# <div class="col"><strong>Description</strong></div> #}
+      </div>
+      {% for e_item in e_items %}
+      <div class="form-group row items-group"  id="formset2">
+        {{ e_item.id}}
+        <div class="col">{{ e_item.earnings | add_class:"form-control"}}</div>
+        <div class="col">{{ e_item.amt | add_class:"form-control"}}</div>
+      {#  <div class="col">{{ e_item.description| add_class:"form-control"}}</div> #}
+      </div>
+      {% endfor %}
+    </div>
+   
+  </div>
+
+
+ 
+  {% if object %}
+  <input type="submit" class="btn btn-success" value="Update Payroll">
+  {% include 'back_button.html' %}
+  {% else %}
+  <input type="submit" class="btn btn-success" value="Save Payroll">
+  {% include 'back_button.html' %}
+  {% endif %}
+</form>
+
+<hr>
+
+</div>
+</section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script src="{% static 'dist/js/jquery.formset.js' %}"> </script>
+<script>
+  $("#formset1").formset(
+    {
+      prefix: '{{ d_items.prefix }}',
+      deleteText: "<div class='btn btn-danger btn-circle'><i class='fas fa-trash'></i></div>",
+      addText: "<div class='btn btn-success btn-circle'><i class='fas fa-plus'></i></div>"
+    }
+  
+  );
+  $("#formset2").formset(
+    {
+      prefix: '{{ e_items.prefix }}',
+      deleteText: "<div class='btn btn-danger btn-circle'><i class='fas fa-trash'></i></div>",
+      addText: "<div class='btn btn-success btn-circle'><i class='fas fa-plus'></i></div>"
+    }
+  
+  )
+</script>
+
+<script>
+  
+  $(function(){
+    
+    var now = new Date();
+    var month = (now.getMonth() + 1);               
+    var year = now.getFullYear();
+    if (month < 10) 
+        month = "0" + month;
+   
+    var period =  month + '-' + year;
+    $('#id_period').val(period);
+   
+
+  
+    });
+  
+  </script>
+  
+{% endblock custom_js %}

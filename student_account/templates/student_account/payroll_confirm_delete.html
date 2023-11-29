@@ -1,0 +1,30 @@
+{% extends 'hod_template/base_template.html' %}
+
+
+{% block title %}
+{% endblock title %}
+
+
+{% block main_content %}
+
+<section class="content">
+  <div class="container-fluid">
+
+<form action="" method="POST">
+  {% csrf_token %}
+
+  <div class="alert">
+    <p>Are you sure you want to delete payroll "{{ object }}"?</p>
+   
+  </div>
+
+  <input type="submit" class="btn btn-primary" value="Confirm">
+  <input type="button"  class="btn btn-secondary" value="Cancel" onclick="window.history.back()">
+
+
+</form>
+
+</div>
+</section>
+
+{% endblock main_content %}

@@ -1,0 +1,90 @@
+{% extends 'hod_template/base_template.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}{% endblock title %}
+{% block page_title %}
+  <small>Payroll Dashboard - Double click an item for details </small>
+{% endblock page_title %}
+
+
+{% block breadcrumb %}
+{% if user.user_type == '1' %}
+  <a class="btn btn-success mx-1" href="{% url 'payroll-create' %}"><i
+      class="fas fa-plus "></i> New Payroll</a>
+
+  <a class="btn btn-secondary mx-1" href="{% url 'payroll-paye' %}"><i
+        class="fas fa-thumps "></i> Tax List</a>
+
+  <a class="btn btn-primary mx-1" href="{% url 'payroll-finalize' %}"><i
+        class="fas fa-thumps "></i> Finalize Payroll</a>
+{% endif %}
+<a class="btn-tool btn-success" href="#" onclick="window.print()" style="text-align:right; float:right;color:white"><strong>Get PDF Copy</strong></a></a>
+<!-- <a class="btn btn-primary" href="{% url 'bulk-invoice' %}"><i
+    class="fas fa-upload"></i> Bulk Invoice</a> -->
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% include 'status_message.html' %}
+<section class="content">
+  <div class="container-fluid">
+  <div class="table-responsive bg-white">
+      <table id="payrolltable" class="table table-bordered table-hover">
+        <thead class="thead-secondary bg-secondary">
+          <tr>
+            <th>S/N</th>
+            <th>Staff</th>
+            <th>Basic Salary</th>
+            <th>Total Deductions</th>
+            <th>Total Earnings</th>
+            <th>Net Pay</th>
+            <th>Tax Payable</th>
+            <th>Update</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {% for payroll in object_list %}
+            <tr class='clickable-row' data-href="{% url 'payroll-detail' payroll.id %}">
+              <td>{{ forloop.counter}}</td>
+              <td>{{ payroll.staff.admin}}</td>
+              <td>{{ payroll.basic_pay}}</td>
+              <td>{{ payroll.calcDeductions | intcomma }}</td>
+              <td>{{ payroll.calcEarnings | intcomma }}</td>
+              <td>{{ payroll.calcNetPay | intcomma }}</td>
+              <td>{{ payroll.calcPayableTax | intcomma }}</td>
+              
+              <td><a class="btn btn-success btn-sm"
+                  href="{% url 'edit_staff' payroll.staff.admin.id %}" > Staff Details
+                  </a></td>
+            </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+<script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+
+<script>
+  (function ($) {
+    $('.clickable-row').css('cursor', 'pointer');
+    $(".clickable-row").click(function () {
+      window.location = $(this).data("href");
+    });
+  })(jQuery)
+
+   $('#payrolltable').DataTable({
+    select: false
+    });
+
+</script>
+
+
+{% endblock custom_js %}

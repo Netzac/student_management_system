@@ -1,0 +1,115 @@
+{% extends 'hod_template/base_template.html' %}
+{% load static widget_tweaks %}
+
+
+{% block page_title %}
+   Payroll Panel
+{% endblock page_title %}
+
+  
+
+{% block main_content %}
+{% include 'status_message.html' %}
+{% include 'school_header_short.html' %}
+
+<div class="row justify-content-center">
+  <div class="col-sm-8">
+
+      <table class="table">
+        <tbody>
+         <tr>
+          <td colspan="3"><p class="text-left"><strong>MONTH PAYE DEDUCTIONS</strong></p> </td>
+         </tr>
+         <tr>
+          <td colspan="3"><p class="text-center">RETURN OF INCOME TAX FOR THE MONTH {{payroll_period|upper}}</p> </td>
+         </tr>
+      
+        </tbody>
+      </table>
+
+  </div>
+</div>
+
+  <div class="row justify-content-center">
+    <div class="col-sm-8">
+
+        <table id="id_table2" class="table table-sm table-bordered">
+          <thead class="bg-white">
+            <tr>
+              <th>#</th>
+              <th>Staff Name</th>
+              <th>Role/Designation</th>
+              <th>Basic Salary</th>
+              <th>Total Allowance</th>
+              <th>Tax Payable</th>
+             {# <th>Action</th> #}
+            </tr>
+          </thead>
+          <tbody>
+            {% for object in object_list %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+              <td>{{ object.staff }}</td>
+              <td>{{ object.staff.role }}</td>
+              <td>{{ object.basic_pay }}</td>
+              <td>{{ object.calcEarnings }}</td>
+              <td>
+                {{object.calcPayableTax}}
+              </td>
+              {%comment%}  
+               <td>
+                <a href="{% url 'store:requireditem-delete' object.id %}"><i class="fa fa-trash-alt"></i></a>
+              </td>
+              {%endcomment%}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+          <div class=" row justify-content-center">
+          
+          <div  class="col col-sm-12">I certify that I have deducted the correct amount of tax 
+              for each member of the staff
+          </div>
+          </div>
+          <div class="row justify-content-left">
+              <div class="col col-sm-6 my-3">
+                <strong>Date </strong><span class="border-bottom border-dark ">:{% now "dS-F-Y' %}</span>
+              </div>
+
+              <div class=" col col-sm-6 justify-content-left my-3 text-decoration-underline"> 
+               <strong>Signature </strong>:
+                {% if adminSign %}
+                <img src={{adminSign.url}} style="width:6em; height: 1.5em;" class=" border-bottom border-dark text-left" >
+                {%else %}
+                  <span class=" border-bottom border-dark text-left">{ {{user.first_name}}-{{user.last_name}} }</span>
+                {%endif%}
+              </div>
+              
+          </div> 
+
+    </div>
+  </div>
+
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+<script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+
+<script>
+  (function ($) {
+    $('.clickable-row').css('cursor', 'pointer');
+    $(".clickable-row").click(function () {
+      window.location = $(this).data("href");
+    });
+  })(jQuery)
+
+   $('#id_table').DataTable({
+    select: false
+    });
+
+</script>
+
+
+{% endblock custom_js %}

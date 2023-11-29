@@ -1,0 +1,104 @@
+{% extends 'hod_template/base_template.html' %}
+{% load humanize %}
+
+{% block page_title %}
+  Payroll Slip
+{% endblock page_title %}
+
+{% block breadcrumb %}
+<!-- <div class="card-header"> -->
+  <div class="card-tools bg-dark">
+   <button class="bg-success"> <a href="#" onclick="window.print()" class="btn btn-tool"><i class="fas fa-print"></i>Print</a></button>
+   {% if user.user_type == '1' %}
+  <button class="bg-secondary"><a href="{% url 'payroll-update' object.id %}" class="btn btn-tool"><i class="fas fa-edit"></i>Edit</a></button>
+  <button class="bg-danger"> <a href="{% url 'payroll-delete' object.id %}" class="btn btn-tool">
+      <i class="fas fa-times"></i>Delete</a></button>
+  {% endif %}
+  </div>
+<!--</div> -->
+{% endblock breadcrumb %}
+
+
+
+{% block main_content %}
+<section class="content">
+<div class="container-fluid bg-white">
+<div class="row">
+  <div class="col-sm-4">
+    <h4>{{ object.staff|title }} </h4>
+    <h5>Role: {{ object.staff.role|title }} </h5>
+    <h4>{{ object.session }} </h4>
+    <h6>Basic Salary: <strong>{{ payroll.basic_pay}} </strong></h6>
+    <h6>SSNo: <strong>{{ payroll.staff.ss_no}} </strong></h6> 
+    <h6>Bank: <strong>{{ payroll.staff.bank}} </strong></h6> 
+    <h6>Bank Acc No: <strong>{{ payroll.staff.bank_acc_no}}</strong> </h6> 
+   
+    <h6>Status: <strong>{{ object.staff.get_status }}</strong> </h6>
+    <hr>
+    <!-- <div>
+      <h4>Expected Balance: {{ object.balance | intcomma }}</h4>
+    </div> -->
+  </div>
+  <div class="col-sm-8">
+    <table class="table table-sm table-bordered">
+      Payroll Breakdown</br>
+      <thead class="thead-light">
+        <tr>
+          <th>S/N</th>
+          <th>Description</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="3"><strong>Deductions</strong></td></tr>
+        {% for item in deductions %}
+        <tr>
+          <td>{{ forloop.counter }} </td>
+          <td>{{ item.deductions }} </td>
+          <td>{{ item.amt }} </td>
+        </tr>
+        {% endfor %}
+        <tr><td colspan="3"><strong>Earnings</strong></td></tr>
+        {% for item in earnings %}
+        <tr>
+          <td>{{ forloop.counter }} </td>
+          <td>{{ item.earnings }} </td>
+          <td>{{ item.amt }} </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<hr>
+
+
+<div class="row col-sm-12"">
+  <div class="col-sm-2"><strong>Net Pay:</strong></div>
+  <div class="col-sm-10">{{net_pay_in_words| title}} Ghana Cedis</div>
+</div>
+<div class="row col-sm-12"">
+  <div class="col-sm-2"><strong>Date:</strong></div>
+  <div class="col-sm-2"> {{payroll.paid_date}}</div>
+  <div class="col-sm-2"><strong>Employer Signature</strong></div>
+  <div class="col-sm-2">
+    {% if adminSign %}
+    <img src={{adminSign.url}} style="width:6em; height: 1.5em;" class=" border-bottom border-dark text-left" >
+    {%else %}
+      <span class=" border-bottom border-dark text-left">{ {{user.first_name}}-{{user.last_name}} }</span>
+    {%endif%}
+  </div>
+  <div class="col-sm-2"> <strong>Employee Signature</strong></div>
+  <div class="col-sm-2">  {% if object.staff.signature %}
+    <img src={{object.staff.signature.url}} style="width:6em; height: 1.5em;" class=" border-bottom border-dark text-left" >
+    {%else %}
+      <span class=" border-bottom border-dark text-left">{ {{user.first_name}}-{{user.last_name}} }</span>
+    {%endif%}
+   </div></div>
+</div>
+</section>
+{% endblock main_content %}

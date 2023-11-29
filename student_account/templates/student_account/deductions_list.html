@@ -1,0 +1,89 @@
+{% extends 'hod_template/base_template.html' %}
+{% load widget_tweaks %}
+
+
+{% block title %}
+  Deductions
+{% endblock title %}
+
+
+{% block breadcrumb %}
+  <a class="btn btn-success" href="#" data-toggle="modal" data-target="#modal1">
+    <i class="fa fa-plus"></i>
+    New Deductions
+  </a>
+{% endblock breadcrumb %}
+  
+
+{% block main_content %}
+{% include 'status_message.html' %}
+<section class="content">
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+
+        <table id="id_table" class="table table-bordered  table-striped">
+          <thead class="bg-secondary">
+            <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Action</th>
+            </tr>
+        </thead>
+          <tbody>
+            {% for object in object_list %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+              <td>{{ object }}</td>
+              <td><a href="{% url 'deductions-update' object.id %}"><i
+                    class="fa fa-edit"></i></a> <a
+                  href="{% url 'deductions-delete' object.id %}"><i
+                    class="fa fa-trash-alt"></i></a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="modal1"  tabindex="-1" data-backdrop="false" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="{% url 'deductions-create' %}" method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">New Deductions type</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              {% csrf_token %}
+
+              {% for field in form %}
+                  <div class="form-group">
+                    {{field.label_tag}}
+                    {{ field|add_class:"form-control" }}
+                  </div>
+              {% endfor %}
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Save</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div><!-- /.container-fluid -->
+</section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+{% include 'table_format.html' %}
+
+{% endblock custom_js %}
