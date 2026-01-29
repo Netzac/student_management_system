@@ -6,7 +6,7 @@
 
 {% block breadcrumb %}
 {% if user.user_type == '1' %}
-<a class="btn btn-primary" href="{% url 'manage_student' %}" role="button">+ New Student</a>&nbsp;
+<a class="btn btn-primary" href="{% url 'manage_student' %}" role="button">Manage Students</a>&nbsp;
 {% endif %}
 <a class="btn btn-success" href="#" onclick="window.print()" style="text-align:right; float:right;color:white"><strong>Get PDF Copy</strong></a></a>
 <!-- <a class="btn btn-primary" href="{% url 'bulk-invoice' %}"><i
@@ -17,7 +17,7 @@
 
 {% load static %}
 <section class="content">
-    
+
         <div class="container-fluid">
 
             <div class="row justify-content-center bg-white">
@@ -36,7 +36,7 @@
                     <!-- /.card -->
 
                 </div>
-                
+
             </div>
 
         </div><!-- /.container-fluid -->
@@ -79,12 +79,12 @@
                 else{
                     $(".email_error").remove();
                 }
-                
+
             })
 
             $("#id_username").keyup(function(){
                 var username = $(this).val();
-                
+
                 if(username!=""){
                     $.ajax({
                         url : '{% url 'check_username_exist' %}',
@@ -111,7 +111,7 @@
                 else{
                     $(".username_error").remove();
                 }
-                
+
             })
         })
     </script>

@@ -1,0 +1,80 @@
+# --- Build & Compatibility Tools ---
+setuptools>=70.0.0
+wheel
+pip>=25.0
+legacy-cgi          # Fixes removal of 'cgi' module in newer Python
+
+# --- Core Framework ---
+Django==4.2.27
+asgiref==3.8.1
+sqlparse==0.4.4
+
+# --- Database & Storage ---
+mysql-connector-python==9.1.0
+psycopg2-binary==2.9.10
+python-dotenv==1.0.1
+
+# --- Security & Cryptography ---
+cryptography==42.0.5
+asn1crypto==1.5.1
+certifi==2024.2.2
+cffi==1.17.1
+pyHanko==0.21.0
+pyhanko-certvalidator==0.26.3
+oscrypto==1.3.0
+
+# --- Forms & UI Extensions ---
+django-crispy-forms==2.3
+crispy-bootstrap4==2024.1   # Essential for Crispy 2.0+
+crispy-bootstrap5==2024.10  # Included both for safety
+django-widget-tweaks==1.5.0
+django-extensions==3.2.3
+django-comments-xtd==2.10.11
+django-contrib-comments>=2.2
+django-slick-reporting==1.3.1
+
+# --- Images & PDFs ---
+Pillow==11.0.0
+reportlab==4.1.0
+pypdf==4.0.1
+xhtml2pdf==0.2.17
+svglib==1.5.1
+qrcode==7.4.2
+arabic-reshaper==3.0.0
+python-bidi==0.6.3
+
+# --- Utilities & Data Science ---
+requests==2.31.0
+urllib3==1.26.18
+charset-normalizer==3.3.2
+idna==3.6
+lxml==5.3.0
+numpy==2.1.3
+pandas==2.2.3
+protobuf==4.25.3
+PyYAML==6.0.1
+click==8.1.7
+colorama==0.4.6
+tqdm==4.66.2
+html5lib==1.1
+cssselect2==0.7.0
+tinycss2==1.2.1
+webencodings==0.5.1
+
+# --- Timezones ---
+pytz==2024.1
+tzdata==2024.1
+tzlocal==5.2
+
+# --- Infrastructure ---
+gunicorn==21.2.0
+graphviz==0.20.1
+pydot==2.0.0
+uritools==4.0.2
+future==1.0.0
+six==1.16.0
+
+paystackapi==2.1.3
+num2words==0.5.14
+zombie-imp
+whitenoise==6.7.0

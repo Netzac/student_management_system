@@ -15,9 +15,9 @@ PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY =os.environ.get('SECRET_KEY')
-
+SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','*']
 
@@ -78,7 +78,7 @@ COMMENTS_XTD_APP_MODEL_OPTIONS = {
 }
 
 
-# Email Sending 
+# Email Sending
 if not DEBUG:
 
     CSRF_COOKIE_SECURE = True
@@ -148,18 +148,18 @@ WSGI_APPLICATION = 'student_management_system.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
-      'default' : {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':  os.environ.get('DB_NAME'),
-        'USER':  os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSCODE'),
-        'HOST': 'localhost',
-        'PORT': '',
-    }
+     'default': {
+         'ENGINE': 'django.db.backends.sqlite3',
+         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+     }
+  #    'default' : {
+  #      'ENGINE': 'django.db.backends.postgresql_psycopg2',
+  #      'NAME':  os.environ.get('DB_NAME'),
+  #      'USER':  os.environ.get('DB_USER'),
+  #      'PASSWORD': os.environ.get('DB_PASSCODE'),
+  #      'HOST': 'localhost',
+  #      'PORT': '',
+  #  }
     #   'default' : {
     #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
     #     'NAME': 'cpihstje',
