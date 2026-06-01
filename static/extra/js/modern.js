@@ -89,6 +89,37 @@
   }
 
   /* ---------------------------------------------------------------------- */
+  /* 5. Toast notifications (redesign.md micro-interaction).                 */
+  /*    Exposes window.SMSModern.toast(message, type). Self-contained; uses  */
+  /*    only the .m-toast* styles from modern.css.                          */
+  /* ---------------------------------------------------------------------- */
+  function getToastContainer() {
+    var c = document.querySelector('.m-toast-container');
+    if (!c) {
+      c = document.createElement('div');
+      c.className = 'm-toast-container';
+      document.body.appendChild(c);
+    }
+    return c;
+  }
+
+  function toast(message, type) {
+    var el = document.createElement('div');
+    el.className = 'm-toast m-toast-' + (type || 'info');
+    el.setAttribute('role', 'status');
+    el.textContent = message;
+    getToastContainer().appendChild(el);
+    window.setTimeout(function () {
+      el.classList.add('m-toast-hide');
+      window.setTimeout(function () {
+        if (el.parentNode) {
+          el.parentNode.removeChild(el);
+        }
+      }, 260);
+    }, 4000);
+  }
+
+  /* ---------------------------------------------------------------------- */
   /* Init                                                                   */
   /* ---------------------------------------------------------------------- */
   function init() {
@@ -96,6 +127,8 @@
     wireFormLoadingStates();
     autoDismissAlerts();
     loadLucide();
+    // Public, namespaced API (no bare globals).
+    window.SMSModern = { toast: toast };
   }
 
   if (document.readyState === 'loading') {
