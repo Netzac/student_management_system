@@ -35,6 +35,9 @@
 
   <link rel="stylesheet" href="{% static 'extra/css/extra.css' %}" />
 
+  <!-- Modern UI layer (additive; restyles existing AdminLTE classes) -->
+  <link rel="stylesheet" href="{% static 'extra/css/modern.css' %}" />
+
 
  
 
@@ -227,6 +230,9 @@
 <script>
  document.getElementById("color-overlay").style.display="block"
 </script>
+
+<!-- Modern UI enhancements (additive; vanilla ES6, no globals) -->
+<script src="{% static 'extra/js/modern.js' %}"></script>
 
 {% comment %} For Custom JS {% endcomment %}
 {% block custom_js %}
