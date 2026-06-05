@@ -15,7 +15,7 @@
 {% endblock page_title %}
 {% block breadcrumb %}
    
-  <a id="addAss" type="button" class="btn btn-success float-right" data-target= "#create_assignment" data-toggle="modal" href="{% url 'create-assignment' %}" ><i class="fas fa-plus">Add New Assignment</i></a>
+  <a id="addAss" href="{% url 'create-assignment' %}" data-target="#genericModel" class="btn btn-success float-right"><i class="fas fa-plus mr-1"></i>Add New Assignment</a>
 {% endblock breadcrumb %}
 {% block main_content%}
 
@@ -106,7 +106,7 @@
     <div class="">
       <div class="row">
         <div class="col sm-6">
-          <a id="addAss" data-target= "#genericModel" data-toggle="modal" href="{% url 'create-assignment' %}" ><i class="fas fa-plus">Add</i></a>
+          <a id="addAss" href="{% url 'create-assignment' %}" data-target="#genericModel" class="btn btn-success"><i class="fas fa-plus mr-1"></i>Add New Assignment</a>
         </div>
        
       <div class="no-assignment">
@@ -116,36 +116,27 @@
   </div>
 {% endif %}
 
-<!-- Modal Structure -->
-<div class="modal" id="genericModel" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-  <div class="modal-content animated bounceInRight">
-          <div class="modal-header">
-             
-              <h4 class="modal-title"> {% trans 'Create Assignment' %}</h4>
-              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
-                <span class="sr-only">&times;</span>
-            </button>
-              <!-- <small class="font-bold">{% trans 'Insert new values to modify as required' %}</small> -->
-          </div>
-          <div class="modal-body">
-          </div>
-          <div class="modal-footer">
-              <!-- <button type="button" class="btn btn-white" data-dismiss="modal">{% trans 'Close' %}</button>
-              <button id="btn-save" type="button" class="btn btn-primary">{% trans 'Save changes' %}</button> -->
-          </div>
+<!-- Modal Structure (form is loaded via AJAX by utils.js) -->
+<div class="modal fade" id="genericModel" tabindex="-1" role="dialog" aria-labelledby="genericModelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h4 class="modal-title" id="genericModelTitle">
+          <i class="fas fa-file-signature mr-2"></i>{% trans 'Create Assignment' %}
+        </h4>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body"></div>
+    </div>
   </div>
 </div>
 {% endblock main_content %}
 
 {% block custom_js %}
-<script src="{% static 'students-exam/js/bootstrap-modalmanager.js' %}"></script>
-<script src="{% static 'students-exam/js/utils.js' %}"></script>
-
-
-
 <script src="{% static 'plugins/Datatables/datatables.min.js' %}"></script>
+<script src="{% static 'students-exam/js/utils.js' %}"></script>
 
 <script>
   (function ($) {
@@ -153,91 +144,14 @@
     $(".clickable-row").click(function () {
       window.location = $(this).data("href");
     });
-  })(jQuery)
 
-   $('#exams').DataTable({
-    select: false
-    });
-
-</script>
-
-
-
-<!-- <script>
-$(function(){
-  $('#addAss').click(function (event) {
-            event.preventDefault();
-           
-            console.log('LInked clicked');
-            openCreateAssignmentModal(event);
-  });
-        
-
-  function openCreateAssignmentModal(event) {
-      var modal = $('#create_assignment')
-      var url = $(event.target).closest('a').attr('href');
-      $.ajax({
-          type: "GET",
-          url: url
-      }).done(function(data, textStatus, jqXHR) {
-          modal.find('.modal-body').html(data);
-          console.log(url);
-          modal.modal('show');
-          formAjaxSubmit(modal, url);
-      }).fail(function(jqXHR, textStatus, errorThrown) {
-          alert(errorThrown);
+    if ($('#exams').length) {
+      $('#exams').DataTable({
+        select: false
       });
-  }
-
-
-  function formAjaxSubmit(modal, action) {
-        var form = modal.find('.modal-body form');
-        var formData = new FormData(form);
-        var footer = $(modal).find('.modal-footer');
-
-        // bind to the form’s submit event
-        $(form).on('submit', function(event) {
-
-            // prevent the form from performing its default submit action
-            event.preventDefault();
-            footer.addClass('loading');
-
-            // either use the action supplied by the form, or the original rendering url
-            var url = $(this).attr('action') || action;
-
-            // serialize the form’s content and sent via an AJAX call
-            // using the form’s defined method
-            $.ajax({
-                type: $(this).attr('method'),
-                url: url,
-                data: formData.serialize(), //$(this).serialize(),
-                enctype: 'multipart/form-data',
-                success: function(xhr, ajaxOptions, thrownError) {
-
-                    // If the server sends back a successful response,
-                    // we need to further check the HTML received
-
-                    // If xhr contains any field errors, the form did not
-                    // validate successfully, so we update the modal body
-                    // with the new form and its error
-                    if ($(xhr).find('.has-error').length > 0) {
-                        $(modal).find('.modal-body').html(xhr);
-                        formAjaxSubmit(modal, url);
-                    } else {
-                        // otherwise, we've done and can close the modal
-                        $(modal).modal('hide');
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                },
-                complete: function() {
-                    footer.removeClass('loading');
-                }
-            });
-        });
     }
-
- 
-});
-</script> -->
+    // The Create Assignment modal is driven entirely by utils.js (AJAX load +
+    // submit, select2 init, backdrop hygiene). No inline modal wiring needed.
+  })(jQuery);
+</script>
 {% endblock custom_js %}

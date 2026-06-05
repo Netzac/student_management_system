@@ -2,74 +2,51 @@
 {% load widget_tweaks %}
 {% load i18n %}
 
-<!-- <div class="row">
-    <div class="col-sm-4">
-        <form method="POST" action={% url 'create-assignment'%} enctype="multipart/form-data">
-            {% csrf_token %}
-                <div class="row">
-                <div class="input-field col sm-12">
-                    {{ assignment.title }}
-                    <label for="id_title">Title</label>
-                </div>
-                <div class="input-field col sm-12">
-                    {{ assignment.course }}
-                    <label for="id_course_title">Course title</label>
-                </div>
-                <div class="input-field col s-12">
-                    {{ assignment.course.id}}
-                    <label for="id_course_code">Course code</label>
-                </div>
-                <div class="col sm-12">
-                    {{ assignment.due_date }}
-                </div>
-                </div>
-                <div class="row">
-                <div class="file-field input-field col sm-12">
-                    <div class="btn col s6">
-                    <span>File</span>
-                    {{ assignment.upload }}
-                    </div>
-                    <div class="file-path-wrapper col sm-6">
-                    <input class="file-path validate" type="text" placeholder="Upload one or more files">
-                    </div>
-                </div>
-                </div>
-                <button class="btn btn-primary" type="submit" name="create-assignment">Create assignment
-                <i class="fa float-sm-right ">send</i>
-                </button>
-            </form>
-        </div>
-</div> -->
+{% comment %}
+  Loaded via AJAX into the modal body by static/students-exam/js/utils.js.
+  Keep the form contract intact: POST, multipart, csrf, the {% for field in assignment %}
+  loop, and `.text-danger` for field errors (the controller keys on that class to decide
+  whether to keep the modal open). UI/UX only — no logic changes.
+{% endcomment %}
 
-<section class="content">
-    <div class="container-fluid">
-   
-<form method="POST" action={% url 'create-assignment' %} enctype="multipart/form-data">
+<form method="POST"
+      action="{% url 'create-assignment' %}"
+      enctype="multipart/form-data"
+      id="assignment-form"
+      novalidate>
     {% csrf_token %}
-  
-    <div class="row">
-      <div class="col-sm-12">
-        {% for field in assignment %}
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label" for="{{ field.auto_id }}">
-            {{ field.label }}
-            {% for error in field.errors %}
-            <small id="{{ field.auto_id }}" class="text-danger">{{ error }}</small>
-            {% endfor %}
-          </label>
-          <div class="col-sm-10">
-            {{ field | add_class:"form-control"}}
-            {% if field.help_text %}
-            <small>{{ field.help_text|safe }}</small>
-            {% endif %}
-          </div>
-        </div>
+
+    {% if assignment.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in assignment.non_field_errors %}
+        <div>{{ error }}</div>
         {% endfor %}
-        <button class="btn btn-secondary" type="submit" name="create-assignment">Create assignment
-            <!-- <i class="fa float-sm-right "></i> -->
-        </button>
-      </div>
-      
-    </form>
     </div>
-</section>
+    {% endif %}
+
+    {% for field in assignment %}
+    <div class="form-group">
+        <label for="{{ field.auto_id }}">
+            {{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}
+        </label>
+        {{ field|add_class:"form-control" }}
+        {% for error in field.errors %}
+        <small class="text-danger d-block">
+            <i class="fas fa-exclamation-circle mr-1"></i>{{ error }}
+        </small>
+        {% endfor %}
+        {% if field.help_text %}
+        <small class="form-text">{{ field.help_text|safe }}</small>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="modal-form-actions">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+            <i class="fas fa-times mr-1"></i>{% trans 'Cancel' %}
+        </button>
+        <button class="btn btn-primary" type="submit" name="create-assignment">
+            <i class="fas fa-check mr-1"></i>{% trans 'Create Assignment' %}
+        </button>
+    </div>
+</form>

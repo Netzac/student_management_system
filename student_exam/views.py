@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.postgres.search import SearchVector, SearchQuery
+from django.db.models import Q
 # Create your views here.
 
 from student_exam import forms
@@ -32,7 +32,8 @@ def dashboard(request):
     
     assignments_list = assignments
     if user.user_type == '1':
-        assignments_list = Assignment.objects.all()
+        assignments = Assignment.objects.all()
+        assignments_list = assignments
         template_name ='student_exam/dashboard.html'
         paginator = Paginator(assignments_list, 10)
         page = request.GET.get('page')
@@ -47,9 +48,11 @@ def dashboard(request):
         if request.method == 'GET':
             if search_form.is_valid():
                 q = request.GET['q']
-                assignments = assignments.annotate(
-                    search=SearchVector('title', 'course', 'title'),
-                    ).filter(search=SearchQuery(q))
+                assignments = assignments.filter(
+                    Q(title__icontains=q)
+                    | Q(course__course_name__icontains=q)
+                    | Q(subject__subject_name__icontains=q)
+                )
 
                 paginator = Paginator(assignments, 10)
                 page = request.GET.get('page')
@@ -61,22 +64,24 @@ def dashboard(request):
                     assignments = paginator.page(paginator.num_pages)
             else:
                 for error in search_form.errors.values():
-                    messages(request, error)
-                   
+                    messages.error(request, error)
+
                 context = {
-                    "assignments": assignments,
+                    "assignments": assignments_list,
                     "search_form": search_form,
                     "assignment": assignment_form
                 }
                 return render(request, template_name, context=context)
-               
+
+        else:
+            assignments = assignments_list
         context = {
             "assignments": assignments,
             "assignment": assignment_form,
             "search_form": search_form
         }
         return render(request, template_name, context=context)
-    
+
     elif user.user_type == '2':
         template_name ='student_exam/staff_dashboard.html'
         paginator = Paginator(assignments_list, 10)
@@ -92,9 +97,11 @@ def dashboard(request):
         if request.method == 'GET':
             if search_form.is_valid():
                 q = request.GET['q']
-                assignments = assignments.annotate(
-                    search=SearchVector('title', 'course', 'title'),
-                    ).filter(search=SearchQuery(q))
+                assignments = assignments.filter(
+                    Q(title__icontains=q)
+                    | Q(course__course_name__icontains=q)
+                    | Q(subject__subject_name__icontains=q)
+                )
 
                 paginator = Paginator(assignments, 10)
                 page = request.GET.get('page')
@@ -106,15 +113,17 @@ def dashboard(request):
                     assignments = paginator.page(paginator.num_pages)
             else:
                 for error in search_form.errors.values():
-                    messages(request, error)
-                   
+                    messages.error(request, error)
+
                 context = {
-                    "assignments": assignments,
+                    "assignments": assignments_list,
                     "search_form": search_form,
                     "assignment": assignment_form
                 }
                 return render(request, template_name, context=context)
-               
+
+        else:
+            assignments = assignments_list
         context = {
             "assignments": assignments,
             "assignment": assignment_form,
@@ -144,9 +153,9 @@ def dashboard(request):
         if request.method == 'GET':
             if search_form.is_valid():
                 q = request.GET['q']
-                submissions = submissions.annotate(
-                    search=SearchVector('matric_number'),
-                    ).filter(search=SearchQuery(q))
+                submissions = submissions.filter(
+                    Q(matric_number__icontains=q)
+                )
 
                 paginator = Paginator(submissions, 10)
                 page = request.GET.get('page')
@@ -188,7 +197,6 @@ def create_assignment(request):
             assignment.user_id = request.user.id
             print('User is :',request.user.id)
             assignment.save()
-            new_data = Assignment.objects.last()
             messages.success(request, 'Assignment was successfully created.')
             return redirect('dashboard')
         else:
@@ -267,9 +275,9 @@ def assignment_submissions(request, id):
         if request.method == "GET":
             if search_form.is_valid():
                 q = request.GET['q']
-                submissions = submissions.annotate(
-                    search=SearchVector('matric_number'),
-                    ).filter(search=SearchQuery(q))
+                submissions = submissions.filter(
+                    Q(matric_number__icontains=q)
+                )
 
                 paginator = Paginator(submissions, 10)
                 page = request.GET.get('page')
@@ -441,12 +449,11 @@ def edit_submission(request, id):
                     submission.last_updated = datetime.date.today()
                     submission.save()
                     messages.success(request, 'Submission was successfully edited.')
-                    new_data = Submission.objects.last()
-                    return redirect('submission-detail', id=new_data.id)
+                    return redirect('submission-detail', id=submission.id)
                 else:
                     messages.error(request, "You are not authorized to carry out this operation")
             else:
-                for error in submission_form.values():
+                for error in submission_form.errors.values():
                     messages.error(request, error)
                 
         else:
@@ -494,8 +501,7 @@ def edit_assignment(request, id):
                 assignment.last_updated = datetime.date.today()
                 assignment.save()
                 messages.success(request, 'Assignment was successfully edited.')
-                new_data = Assignment.objects.last()
-                return redirect('assignment-detail', id=new_data.id)
+                return redirect('assignment-detail', id=assignment.id)
             else:
                 messages.error(request, "You are not authorized to carry out this operation")
         else:
@@ -510,8 +516,8 @@ def edit_assignment(request, id):
 
 
 def pre_submission(request, id):
-    if not request.user.is_authenticated():
-      return redirect('/')  
+    if not request.user.is_authenticated:
+      return redirect('/')
     pass_form = forms.PassForm(request.POST or None)
     if request.method == "POST":
         assignment = Assignment.objects.get(id=id)
@@ -519,7 +525,7 @@ def pre_submission(request, id):
             passcode = request.POST["passcode"]
             if passcode == assignment.passcode:
                 request.session['passcode'] = passcode
-                return redirect('assignment_submission', id=id)
+                return redirect('assignment-submission', id=id)
             else:
                 messages.error(request, "Passcode does not match")
         else:
@@ -532,7 +538,7 @@ def pre_submission(request, id):
         "assignment_id": id,
         "submission": submission_form
     }
-    return render(request, "/pass.html", context)
+    return render(request, "student_exam/submission.html", context)
 
 
 '''|Extra views for the gradebook'''

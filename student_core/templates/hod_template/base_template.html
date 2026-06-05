@@ -190,9 +190,9 @@
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
-<script src="{% static '/extra/popper.min.js' %}"></script>
-<script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
-<!-- Bootstrap 4 -->
+<!-- Bootstrap 4 (bundle includes Popper; do NOT also load standalone bootstrap.min.js +
+     popper.min.js — loading Bootstrap twice registers the modal plugin twice and leaves a
+     stuck .modal-backdrop that freezes modals) -->
 <script src="{% static "bootstrap/js/bootstrap.bundle.min.js"  %}"></script>
 <!-- ChartJS -->
 <script src="{% static "chart.js/Chart.min.js"  %}"></script>

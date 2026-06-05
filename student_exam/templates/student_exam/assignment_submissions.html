@@ -3,6 +3,7 @@
 {% load i18n %}
 
 {% load customfunction %}
+{% load widget_tweaks %}
 
 {% block  page_title %} <i class="fas fa-tasks"></i>  Assignment Submission{% endblock page_title %}
 
@@ -67,7 +68,11 @@
                     {% endif %}
                   </td>
                   <td>
-                    <a id="addAss" data-target= "#genericModel" data-toggle="modal" href="{% url 'submissions' submission.id  %}" ><i class="fas fa-check">Grade Me</i></a>
+                    <button type="button" class="btn btn-link grade-btn" data-toggle="modal" data-target="#genericModel"
+                            data-submission-id="{{ submission.id }}"
+                            data-action="{% url 'submissions' submission.id %}"
+                            data-grade="{{ submission.grade }}"
+                            data-feedback="{{ submission.feedback }}"><i class="fas fa-check">Grade Me</i></button>
                   </td>
                 </tr>
                 {% endfor %}
@@ -97,29 +102,36 @@
         </div>
       </div>
     </div>
-    <!-- Modal-->
-    <div class="modal" id="genericModel" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-          <div class="modal-content animated bounceInRight">
-              <div class="modal-header">
-                  <h4 class="modal-title">Grade Submission</h4>
-                  <button type="button" class="close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span>
-                    <span class="sr-only">&times;</span>
-                  </button>
-              </div>
-              <form id="id_form" action="" method="POST">
+    <!-- Modal (grade form server-rendered; opened via native Bootstrap toggle) -->
+    <div class="modal fade" id="genericModel" tabindex="-1" role="dialog" aria-labelledby="genericModelTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <form id="id_form" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-              <div class="modal-body"></div>
-                  
-
-                 
-  
-              <div class="modal-footer">
+                <div class="modal-header bg-primary text-white">
+                    <h4 class="modal-title" id="genericModelTitle">
+                      <i class="fas fa-clipboard-check mr-2"></i>Grade Submission
+                    </h4>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                      <span class="sr-only">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="id_grade">Grade</label>
+                        {{ grade_form.grade|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_feedback">Feedback</label>
+                        {{ grade_form.feedback|add_class:"form-control" }}
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cancel</button>
+                    {# value (submission id) and action are set by JS when "Grade Me" is clicked #}
+                    <button type="submit" class="btn btn-primary" name="submit-grade" id="grade-submit-btn" value=""><i class="fas fa-check-circle mr-1"></i>Save Grade</button>
+                </div>
               </form>
-                  <!-- <button type="button" class="btn btn-white" data-dismiss="modal">{% trans 'Close' %}</button>
-                  <button id="btn-save" type="button" class="btn btn-primary">{% trans 'Save changes' %}</button> -->
-                
-              </div>
           </div>
       </div>
     </div>
@@ -141,23 +153,36 @@
 {% endblock main_content%}
 
 {% block custom_js %}
-<script src="{% static '/extra/popper.min.js' %}"></script>
-<script src="{% static '/extra/bootstrap.min.js' %}"></script>
-<script src="{% static 'students-exam/js/bootstrap-modalmanager.js' %}"></script>
-<script src="{% static 'students-exam/js/utils.js' %}"></script>
+{# jQuery + Bootstrap (with Popper) come from the base template; do NOT reload
+   them here — a second Bootstrap copy left a stuck backdrop that froze the modal. #}
 <script src="{% static '/extra/extras.js' %}"></script>
 
 <script>
-      $(function(){
-        loadAnswer();
-      });
-    function loadAnswer(){
+  $(function () {
+    // Answer viewer (uses uni_modal from extras.js)
+    $('.view-answer').click(function () {
+      uni_modal("<i class='fa fa-th-list'></i> Answer Details", $(this).attr('data-url'));
+    });
 
-        $('.view-answer').click(function() {
-            uni_modal("<i class='fa fa-th-list'></i> Answer Details", $(this).attr('data-url'));
-        })
+    // Grade Me: server-rendered grade form lives in #genericModel; opened by
+    // Bootstrap's native toggle. On click, point the form at the right
+    // submission and prefill any existing grade/feedback. No AJAX.
+    $('.grade-btn').click(function () {
+      var $btn = $(this);
+      var $form = $('#id_form');
+      $form.attr('action', $btn.data('action'));
+      $('#grade-submit-btn').val($btn.data('submission-id'));
 
-    }
+      var grade = String($btn.data('grade'));
+      var feedback = String($btn.data('feedback'));
+      $form.find('#id_grade').val(
+        (grade && grade !== 'No grade yet' && grade !== 'None') ? grade : ''
+      );
+      $form.find('#id_feedback').val(
+        (feedback && feedback !== 'No feedback yet' && feedback !== 'None') ? feedback : ''
+      );
+    });
+  });
 </script>
 
 {% endblock custom_js %}

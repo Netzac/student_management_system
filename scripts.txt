@@ -6,3 +6,31 @@ pip install --only-binary :all: Pillow==11.0.0 numpy==2.1.3 pandas==2.2.3 psycop
 
 # Install the rest of the list
 pip install -r safe_requirements.txt --prefer-binary
+
+
+
+# 1. Initialize git
+git init -b main
+
+# 2. Add all files (except what's in .gitignore)
+git add .
+
+# 3. Create your first commit
+git commit -m "Initial commit: Student Management System on Python 3.12"
+
+# 4. Connect to GitHub (REPLACE the URL with yours from Step 1)
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+
+# 5. Verify the connection
+git remote -v
+
+# 6. Push to GitHub
+git push -u origin main
+
+
+# Set your identity for THIS project only (does not affect others)
+git config --local user.name "NetZac"
+git config --local user.email "WGsystems777@gmail.com"
+
+# Force the Credential Manager to treat this path as a unique login
+git config --local credential.github.com.useHttpPath true

@@ -29,7 +29,7 @@
   <form method="POST" action={% url 'delete-submission' id=submission_id %}>
     {% csrf_token %}
     <div class="edit-delete">
-      <a class=" btn btn-primary" id="addAss" data-target= "#genericModel" data-toggle="modal" href="{% url 'edit-submission' single_submission.id  %}" ><i class="fas fa-edit">Edit</i></a>
+      <a class=" btn btn-primary" id="addAss" data-target="#genericModel" href="{% url 'edit-submission' single_submission.id  %}" ><i class="fas fa-edit mr-1"></i>Edit</a>
       <button class="btn btn-danger" type="submit" name="delete-submission">
         <i class="fas fa-trash">Delete</i>
       </button>
@@ -42,7 +42,8 @@
 {% endblock %}
 
 {% block custom_js %}
-<script src="{% static 'students-exam/js/bootstrap-modalmanager.js' %}"></script>
+{# Bootstrap is provided by base_template.html; the legacy BS2 modalmanager plugin
+   conflicts with BS4 modals, so it is intentionally not loaded here. #}
 <script src="{% static 'students-exam/js/utils.js' %}"></script>
 
 

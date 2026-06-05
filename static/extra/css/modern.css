@@ -238,12 +238,16 @@ label {
 }
 
 /* --------------------------------------------------------------- Entrance animation */
+/* Opacity-only: modern.js adds .fade-in to .content-wrapper, which is an ANCESTOR
+   of the create-assignment modal. A `transform` here (even the final `translateY(0)`
+   kept alive by `both`) would make .content-wrapper a containing block for the
+   position:fixed modal/backdrop and freeze the page. Fading opacity alone is safe. */
 .fade-in {
   animation: m-fade-in 320ms ease-out both;
 }
 @keyframes m-fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* --------------------------------------------------------------- Lucide icons */
@@ -588,7 +592,10 @@ label {
     radial-gradient(1200px 480px at 100% -10%, rgba(99, 102, 241, 0.10), transparent 60%),
     radial-gradient(900px 420px at -10% 0%, rgba(20, 184, 166, 0.07), transparent 55%),
     linear-gradient(180deg, #f4f6fb 0%, #eef1f8 100%) !important;
-  background-attachment: fixed;
+  /* NOTE: `background-attachment: fixed` was removed here. On Chromium it forces a
+     compositing layer on .content-wrapper that, combined with the navbar's
+     backdrop-filter, traps position:fixed modals/backdrops and freezes the page.
+     The gradient still looks identical scrolling normally. */
 }
 
 /* The content header sits on the same surface; give the page title contrast */
@@ -623,8 +630,204 @@ label {
 body.sidebar-mini,
 body.hold-transition { background-color: #eef1f8; }
 
-/* Mobile: keep the fixed background from causing jank */
-@media (max-width: 768px) {
-  .content-wrapper,
-  .content-wrapper.bg-white { background-attachment: scroll; }
+/* ==========================================================================
+   MODAL SAFETY  —  guarantee Bootstrap modals are never trapped or out-stacked.
+   --------------------------------------------------------------------------
+   The whole-app "freeze" when the Create Assignment popup opened was a CSS
+   containing-block bug: a transform / filter / background-attachment:fixed on a
+   modal ANCESTOR (.content-wrapper, .wrapper) makes the position:fixed modal and
+   its backdrop resolve against that ancestor instead of the viewport, so the
+   semi-opaque backdrop ends up painted over the dialog and eats every click.
+   utils.js also reparents the modal to <body> at open time; these rules make the
+   layout correct even before/without that, for any modal anywhere in the app.
+   ========================================================================== */
+
+/* Never let an ancestor's transform/filter capture the fixed modal layer. */
+.modal,
+.modal-backdrop {
+  /* Resolve against the viewport, with the modal above its backdrop. */
+  position: fixed !important;
+}
+.modal { z-index: 1050 !important; }
+.modal-backdrop { z-index: 1040 !important; }
+.modal-dialog { z-index: 1051; }
+
+/* The backdrop must never become opaque enough (or mis-stacked) to block the
+   dialog; keep Bootstrap's intended translucency. */
+.modal-backdrop.show { opacity: 0.5; }
+
+/* Belt-and-suspenders: the shell wrappers must not create a containing block for
+   the fixed modal. They never need a transform/filter themselves. */
+.wrapper,
+.content-wrapper,
+.content-wrapper.bg-white {
+  transform: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  perspective: none !important;
+}
+
+/* ==========================================================================
+   MODAL FORM POLISH  —  engaging, consistent styling for the AJAX popup forms
+   (create-assignment, edit-submission, grade-submission). All rules are scoped
+   under `.modal` so page forms elsewhere are untouched. UI/UX only.
+   ========================================================================== */
+
+/* ----------------------------------------------------------- Dialog & header */
+.modal-dialog { margin-top: 1.75rem; }
+.modal-content {
+  border: none;
+  border-radius: var(--m-radius);
+  box-shadow: var(--m-shadow-hover);
+  overflow: hidden;
+}
+.modal-header.bg-primary {
+  background-image: var(--m-grad-primary) !important;
+  border-bottom: none;
+  padding: 1rem 1.5rem;
+}
+.modal-header .modal-title {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+}
+.modal-header .close {
+  color: #fff;
+  opacity: 0.85;
+  text-shadow: none;
+  transition: opacity var(--m-transition), transform var(--m-transition);
+}
+.modal-header .close:hover { opacity: 1; transform: rotate(90deg); }
+.modal-body { padding: 1.5rem; }
+
+/* Gentle, transform-free entrance for the form content (safe: opacity only). */
+.modal.show .modal-body { animation: m-modal-body-in 280ms ease-out both; }
+@keyframes m-modal-body-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ----------------------------------------------------------- Fields */
+.modal .form-group { margin-bottom: 1.15rem; }
+.modal .form-group > label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--m-text-secondary);
+  margin-bottom: 0.4rem;
+}
+.modal .form-group > label .required { color: var(--m-danger); margin-left: 2px; }
+
+.modal .form-control,
+.modal textarea,
+.modal select,
+.modal .custom-select,
+.modal .select2-container--default .select2-selection--single {
+  border-radius: var(--m-radius-sm);
+  border: 1px solid var(--m-border);
+  padding: 0.6rem 0.85rem;
+  height: auto;
+  font-size: 0.95rem;
+  background-color: #fff;
+  transition: border-color var(--m-transition), box-shadow var(--m-transition),
+    background-color var(--m-transition);
+}
+.modal .form-control:hover,
+.modal textarea:hover { border-color: #cbd0d9; }
+.modal .form-control:focus,
+.modal textarea:focus,
+.modal select:focus,
+.modal .custom-select:focus {
+  border-color: var(--m-primary);
+  background-color: #fff;
+  box-shadow: 0 0 0 0.18rem rgba(79, 70, 229, 0.16);
+  outline: none;
+}
+.modal textarea,
+.modal textarea.form-control {
+  min-height: 7rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* select2 single control: match input height inside modals */
+.modal .select2-container--default .select2-selection--single {
+  height: calc(2.55rem + 2px);
+  display: flex;
+  align-items: center;
+}
+.modal .select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 100%;
+}
+
+/* ----------------------------------------------------------- Help & errors */
+.modal .form-text,
+.modal .help-text {
+  font-size: 0.8rem;
+  color: var(--m-muted);
+  margin-top: 0.35rem;
+}
+.modal .text-danger {
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 0.35rem;
+}
+
+/* ----------------------------------------------------------- File input */
+/* Turn the bare <input type="file"> into a tidy, inviting drop-zone-style control
+   using only padding/border — no custom markup needed. */
+.modal input[type="file"] {
+  display: block;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  font-size: 0.9rem;
+  color: var(--m-text-secondary);
+  background-color: #fbfcfe;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: var(--m-radius-sm);
+  cursor: pointer;
+  transition: border-color var(--m-transition), background-color var(--m-transition);
+}
+.modal input[type="file"]:hover,
+.modal input[type="file"]:focus {
+  border-color: var(--m-primary);
+  background-color: #f5f5ff;
+  outline: none;
+}
+.modal input[type="file"]::-webkit-file-upload-button,
+.modal input[type="file"]::file-selector-button {
+  margin-right: 0.85rem;
+  padding: 0.4rem 0.9rem;
+  border: none;
+  border-radius: var(--m-radius-sm);
+  background-image: var(--m-grad-primary);
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: filter var(--m-transition);
+}
+.modal input[type="file"]:hover::file-selector-button { filter: brightness(1.05); }
+/* Filename echo line written by utils.js after a file is chosen. */
+.modal .file-name {
+  display: none;
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--m-text);
+}
+.modal .file-name.has-file { display: block; }
+.modal .file-name .fa-paperclip { color: var(--m-primary); margin-right: 0.35rem; }
+
+/* ----------------------------------------------------------- Footer actions */
+.modal-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--m-border);
+}
+.modal-form-actions .btn { padding: 0.5rem 1.25rem; font-weight: 500; }
+@media (max-width: 480px) {
+  .modal-form-actions { flex-direction: column-reverse; }
+  .modal-form-actions .btn { width: 100%; }
 }

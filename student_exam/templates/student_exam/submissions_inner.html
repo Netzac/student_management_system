@@ -1,32 +1,42 @@
 {% load static widget_tweaks %}
 {% load i18n %}
-<section class="content">
-    <div class="container-fluid">
-      <form method="POST" action={% url 'submissions' submission_id %} enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="row">
-                <div class="col-sm-12">
-                  {% for field in grade_form %}
-                  <div class="form-group row">
-                    <label class="col-sm-2 col-form-label" for="{{ field.auto_id }}">
-                      {{ field.label }}
-                      {% for error in field.errors %}
-                      <small id="{{ field.auto_id }}" class="text-danger">{{ error }}</small>
-                      {% endfor %}
-                    </label>
-                    <div class="col-sm-10">
-                      {{ field | add_class:"form-control"}}
-                      {% if field.help_text %}
-                      <small>{{ field.help_text|safe }}</small>
-                      {% endif %}
-                    </div>
-                  </div>
-                  {% endfor %}
-                  <button type="submit" name="submit-grade" value="{{ submission_id }}">
-                    <i class="fas fa-plus">send</i>
-                  </button>
-                </div>
-                
-      </form>
-  </div>
-</section>
+
+{% comment %}
+  Loaded via AJAX into the modal body by static/students-exam/js/utils.js.
+  Preserve the form contract: POST, multipart, csrf, the {% for field in grade_form %}
+  loop, `.text-danger` errors, and the submit name/value (submit-grade). UI only.
+{% endcomment %}
+
+<form method="POST"
+      action="{% url 'submissions' submission_id %}"
+      enctype="multipart/form-data"
+      id="grade-form"
+      novalidate>
+    {% csrf_token %}
+
+    {% for field in grade_form %}
+    <div class="form-group">
+        <label for="{{ field.auto_id }}">
+            {{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}
+        </label>
+        {{ field|add_class:"form-control" }}
+        {% for error in field.errors %}
+        <small class="text-danger d-block">
+            <i class="fas fa-exclamation-circle mr-1"></i>{{ error }}
+        </small>
+        {% endfor %}
+        {% if field.help_text %}
+        <small class="form-text">{{ field.help_text|safe }}</small>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="modal-form-actions">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+            <i class="fas fa-times mr-1"></i>{% trans 'Cancel' %}
+        </button>
+        <button class="btn btn-primary" type="submit" name="submit-grade" value="{{ submission_id }}">
+            <i class="fas fa-check-circle mr-1"></i>{% trans 'Save Grade' %}
+        </button>
+    </div>
+</form>
