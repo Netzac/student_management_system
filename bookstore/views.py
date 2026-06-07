@@ -6,6 +6,7 @@ from .models import Category,SubCategory,Book,Stationery
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Count, Sum
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -22,16 +23,67 @@ from.utils import get_teacher_cls_id
 
 # Create your views here.
 def index(request):
+    active_books = Book.objects.filter(status='1', delete_flag=0).select_related('category')
+    categories = Category.objects.filter(status='1', delete_flag=0).order_by('name')
     try:
-        newpublished = Book.objects.order_by('-date_created')[:15]
+        newpublished = active_books.order_by('-date_created')[:15]
         slide = Slider.objects.order_by('-created')[:3]
     except:
         newpublished = []
         slide = []
 
+    try:
+        from order.models import OrderItem
+        top_selling_ids = (
+            OrderItem.objects.values('book')
+            .annotate(sold=Sum('quantity'))
+            .order_by('-sold')[:10]
+        )
+        sales_by_book = {item['book']: item['sold'] for item in top_selling_ids}
+        top_selling_books = list(active_books.filter(id__in=sales_by_book.keys()))
+        top_selling_books.sort(key=lambda book: sales_by_book.get(book.id, 0), reverse=True)
+    except:
+        sales_by_book = {}
+        top_selling_books = []
+
+    if not top_selling_books:
+        top_selling_books = list(active_books.order_by('-totalrating', '-totalreview')[:10])
+
+    low_stock_books = active_books.filter(stock__gt=0, stock__lte=5).order_by('stock', 'title')[:6]
+    featured_books = active_books.filter(stock__gt=0).order_by('-totalrating', '-date_created')[:8]
+    category_cards = (
+        categories.annotate(book_count=Count('book'))
+        .filter(book_count__gt=0)
+        .order_by('-book_count', 'name')[:6]
+    )
+    book_count = active_books.count()
+    in_stock_count = active_books.filter(stock__gt=0).count()
+    out_of_stock_count = active_books.filter(stock__lte=0).count()
+    review_count = Review.objects.count()
+    total_stock = active_books.aggregate(total=Sum('stock'))['total'] or 0
+
+    try:
+        cart_items = len(request.session.get('cart', {}))
+    except:
+        cart_items = 0
+
     context = {
         "newbooks":newpublished,
-        "slide": slide
+        "slide": slide,
+        "categories": categories,
+        "category_cards": category_cards,
+        "featured_books": featured_books,
+        "top_selling_books": top_selling_books,
+        "low_stock_books": low_stock_books,
+        "sales_by_book": sales_by_book,
+        "store_stats": {
+            "book_count": book_count,
+            "in_stock_count": in_stock_count,
+            "out_of_stock_count": out_of_stock_count,
+            "review_count": review_count,
+            "total_stock": total_stock,
+        },
+        "cart_items": cart_items,
     }
     return render(request, 'bookstore/dashboard.html', context)
 
@@ -239,4 +291,3 @@ class RIDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("store:requireditem-list")
     template_name = "hod_template/core_confirm_delete.html"
     success_message = "The term {} has been deleted with all its attached content"
-
