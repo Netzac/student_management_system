@@ -9,58 +9,90 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Brand palette (redesign.md) */
-  --m-primary: #4f46e5;        /* indigo-600 */
-  --m-primary-dark: #4338ca;   /* indigo-700 */
-  --m-secondary: #14b8a6;      /* teal-500   */
-  --m-accent: #f59e0b;         /* amber-500  */
-  --m-success: #10b981;        /* emerald-500 */
-  --m-info: #0ea5e9;           /* sky-500    */
-  --m-warning: #f59e0b;        /* amber-500  */
-  --m-danger: #e11d48;         /* rose-600   */
+  /* Brand palette — Microsoft Dynamics 365 / Fluent UI (Teal Blue) */
+  --m-primary: #006e7f;        /* Teal Blue primary */
+  --m-primary-dark: #005769;   /* hover */
+  --m-primary-darker: #003e4d; /* active/pressed */
+  --m-primary-tint: #d6eaee;   /* soft teal tint (selected bg) */
+  --m-primary-tint-2: #eef7f8; /* lighter teal tint (hover bg)  */
+  --m-secondary: #ffffff;      /* Fluent default/secondary button bg */
+  --m-secondary-border: #8a8886; /* Fluent secondary button border */
+  --m-secondary-hover: #f3f2f1;  /* Fluent secondary button hover bg */
+  --m-accent: #ffaa44;         /* fluent amber */
+  --m-success: #107c10;        /* fluent green */
+  --m-info: #006e7f;
+  --m-warning: #ffb900;        /* fluent yellow */
+  --m-danger: #a4262c;         /* fluent red (destructive) */
 
-  /* Neutrals */
-  --m-surface: #f8fafc;        /* slate-50   */
+  /* Neutrals (Fluent gray ramp) */
+  --m-surface: #faf9f8;        /* fluent neutralLighterAlt-ish app bg */
   --m-card-bg: #ffffff;
-  --m-border: #e5e7eb;         /* gray-200   */
-  --m-text: #111827;           /* gray-900   */
-  --m-text-secondary: #4b5563; /* gray-600   */
-  --m-muted: #9ca3af;          /* gray-400   */
+  --m-border: #e1e4e8;         /* requested Dynamics form/card divider */
+  --m-border-strong: #8a8886;  /* Dynamics input border */
+  --m-text: #323130;           /* fluent neutralPrimary (Dynamics label/body) */
+  --m-text-secondary: #605e5c; /* fluent neutralSecondary (hint/description) */
+  --m-muted: #a19f9d;          /* fluent neutralTertiary (disabled text) */
+  --m-disabled-bg: #f3f2f1;    /* fluent disabled button bg */
 
-  /* Radius (redesign.md) */
-  --m-radius: 0.75rem;         /* cards (xl)  */
-  --m-radius-sm: 0.375rem;     /* buttons/inputs */
+  /* Sidebar (light, Vercel/Linear) */
+  --m-sidebar-bg: #ffffff;
+  --m-sidebar-border: #edebe9;
+  --m-sidebar-text: #424242;
+  --m-sidebar-muted: #8a8886;
+  --m-sidebar-hover-bg: #f3f2f1;     /* fluent neutralLighter */
+  --m-sidebar-active-bg: var(--m-primary-tint);
+  --m-sidebar-active-text: var(--m-primary-darker);
+
+  /* Radius */
+  --m-radius: 0.5rem;          /* cards */
+  --m-radius-sm: 4px;          /* Dynamics buttons/inputs */
   --m-radius-card: 0.5rem;
 
-  /* Elevation (redesign.md) */
-  --m-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --m-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --m-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  --m-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  /* Elevation — Fluent depth (soft, neutral) */
+  --m-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.08);
+  --m-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --m-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
+  --m-shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
 
-  --m-transition: all 0.2s ease-in-out;
+  --m-transition: all 0.18s cubic-bezier(0.33, 0, 0.67, 1);
 
   /* Gradients */
-  --m-grad-primary: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-  --m-grad-hero: linear-gradient(120deg, #eef2ff 0%, #ffffff 50%, #ecfeff 100%);
+  --m-grad-primary: linear-gradient(135deg, #008a9e 0%, #006e7f 100%);
+  --m-grad-hero: linear-gradient(120deg, #eef7f8 0%, #ffffff 55%, #f3fafb 100%);
 }
 
 /* --------------------------------------------------------------- Typography */
+/* Fluent/Dynamics 365 use Segoe UI Variable / Segoe UI as the system face; Inter
+   is a near-identical web fallback for non-Windows. */
 body,
 .wrapper {
-  font-family: 'Inter', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Segoe UI Variable Text', 'Segoe UI', 'Inter', -apple-system,
+    BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--m-text);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  letter-spacing: 0;
 }
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: inherit;
+  font-family: 'Segoe UI Variable Display', 'Segoe UI Semibold', 'Segoe UI',
+    'Inter', inherit;
   font-weight: 600;
   letter-spacing: -0.01em;
+  color: var(--m-text);
 }
+h1, .h1 { font-size: 1.75rem; }
+h2, .h2 { font-size: 1.4rem; }
+h3, .h3 { font-size: 1.2rem; }
+h4, .h4 { font-size: 1.05rem; }
+h5, .h5 { font-size: 0.95rem; }
+small, .small { font-size: 0.82rem; }
+a { color: var(--m-primary); }
+a:hover { color: var(--m-primary-dark); }
 
 /* --------------------------------------------------------------- Surfaces */
 .content-wrapper {
@@ -122,30 +154,107 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* --------------------------------------------------------------- Buttons */
+/* Dynamics 365 / Fluent buttons: flat, compact, 2px radius, 32px tall, crisp
+   focus outline (no lift). */
 .btn {
   border-radius: var(--m-radius-sm);
-  font-weight: 500;
-  transition: background-color var(--m-transition), box-shadow var(--m-transition),
-    transform var(--m-transition);
-}
-.btn:hover {
-  transform: translateY(-1px);
-}
-.btn:active {
-  transform: translateY(0);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  min-width: 100px;
+  min-height: 36px;
+  padding: 8px 20px;
+  border: 1px solid transparent;
+  transition: background-color var(--m-transition), border-color var(--m-transition),
+    box-shadow var(--m-transition), color var(--m-transition);
 }
 .btn:focus,
-.btn.focus {
-  box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+.btn.focus,
+.btn:focus-visible {
+  outline: 2px solid var(--m-primary);
+  outline-offset: 2px;
+  box-shadow: none;
 }
+
+/* Primary — Teal Blue */
 .btn-primary {
   background-color: var(--m-primary);
-  border-color: var(--m-primary);
+  border-color: transparent;
+  color: #fff;
 }
-.btn-primary:hover,
-.btn-primary:focus {
+.btn-primary:hover {
   background-color: var(--m-primary-dark);
-  border-color: var(--m-primary-dark);
+  border-color: transparent;
+  color: #fff;
+}
+.btn-primary:active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary.active {
+  background-color: var(--m-primary-darker);
+  border-color: transparent;
+  color: #fff;
+}
+.btn-primary:focus {
+  background-color: var(--m-primary);
+  border-color: transparent;
+}
+
+/* Secondary / default — white with neutral border */
+.btn-secondary,
+.btn-default,
+.btn-outline-secondary,
+.btn-light {
+  background-color: var(--m-secondary);
+  border: 1px solid var(--m-secondary-border);
+  color: var(--m-text);
+}
+.btn-secondary:hover,
+.btn-default:hover,
+.btn-outline-secondary:hover,
+.btn-light:hover {
+  background-color: var(--m-secondary-hover);
+  border-color: var(--m-secondary-border);
+  color: var(--m-text);
+}
+.btn-secondary:active,
+.btn-default:active,
+.btn-outline-secondary:active,
+.btn-light:active {
+  background-color: #edebe9;
+  border-color: var(--m-secondary-border);
+  color: var(--m-text);
+}
+
+/* Destructive / danger */
+.btn-danger {
+  background-color: var(--m-danger);
+  border-color: transparent;
+  color: #fff;
+}
+.btn-danger:hover {
+  background-color: #8e1f24;
+  border-color: transparent;
+  color: #fff;
+}
+.btn-danger:active {
+  background-color: #751a1e;
+  border-color: transparent;
+  color: #fff;
+}
+
+/* Disabled (all variants) */
+.btn:disabled,
+.btn.disabled,
+.btn-primary:disabled,
+.btn-primary.disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled {
+  background-color: var(--m-disabled-bg);
+  border-color: var(--m-disabled-bg);
+  color: var(--m-muted);
+  opacity: 1;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* --------------------------------------------------------------- Forms */
@@ -154,21 +263,35 @@ h1, h2, h3, h4, h5, h6,
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
   border-radius: var(--m-radius-sm);
-  border: 1px solid var(--m-border);
+  border: 1px solid var(--m-border-strong);
   transition: border-color var(--m-transition), box-shadow var(--m-transition);
 }
 .form-control:focus,
 .custom-select:focus {
   border-color: var(--m-primary);
-  box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.15);
+  box-shadow: 0 0 0 1px var(--m-primary);
 }
 .select2-container--default.select2-container--focus .select2-selection--multiple,
 .select2-container--default .select2-selection--single:focus {
   border-color: var(--m-primary);
 }
-label {
-  font-weight: 500;
+label,
+.col-form-label,
+.control-label {
+  font-size: 14px;
+  font-weight: 600;
   color: var(--m-text);
+}
+/* Required-field asterisk and hint/description text (Dynamics) */
+label .required,
+.required-asterisk,
+label .text-danger {
+  color: var(--m-danger);
+}
+.form-text,
+.help-block,
+.text-muted {
+  color: var(--m-text-secondary) !important;
 }
 
 /* --------------------------------------------------------------- Sidebar / Navbar */
@@ -202,7 +325,7 @@ label {
   transition: background-color var(--m-transition);
 }
 .table-hover tbody tr:hover {
-  background-color: rgba(79, 70, 229, 0.04);
+  background-color: var(--m-primary-tint-2);
 }
 
 /* --------------------------------------------------------------- Alerts */
@@ -299,30 +422,23 @@ label {
 .gradient-bg   { background: var(--m-grad-primary); }
 .hero-gradient { background: var(--m-grad-hero); }
 
-/* --------------------------------------------------- Gradient primary buttons */
+/* --------------------------------------------------- Solid Teal primary button */
 .btn-primary {
-  background-image: var(--m-grad-primary);
-  border: none;
+  background-image: none;
+  background-color: var(--m-primary);
+  border-color: transparent;
+  color: #fff;
 }
-.btn-primary:hover,
-.btn-primary:focus {
-  background-image: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
-  transform: translateY(-1px) scale(1.01);
+.btn-primary:hover {
+  background-image: none;
+  background-color: var(--m-primary-dark);
+  border-color: transparent;
 }
-.btn-success { background-color: var(--m-success); border-color: var(--m-success); }
-.btn-danger  { background-color: var(--m-danger);  border-color: var(--m-danger); }
-.btn-info    { background-color: var(--m-info);    border-color: var(--m-info); }
-.btn-warning { background-color: var(--m-warning); border-color: var(--m-warning); color: #fff; }
-.btn-secondary { background-color: var(--m-secondary); border-color: var(--m-secondary); }
-/* Ghost / outline secondary per redesign.md */
-.btn-outline-secondary {
-  border-color: #d1d5db;
-  color: var(--m-text-secondary);
-}
-.btn-outline-secondary:hover {
-  background-color: #f3f4f6;
-  color: var(--m-text);
-}
+/* Coloured semantic variants (kept flat). Secondary/danger/disabled are defined
+   in the Dynamics button block above. */
+.btn-success { background-color: var(--m-success); border-color: transparent; color: #fff; }
+.btn-info    { background-color: var(--m-info);    border-color: transparent; color: #fff; }
+.btn-warning { background-color: var(--m-warning); border-color: transparent; color: #fff; }
 
 /* --------------------------------------------------- Pill badges */
 .badge {
@@ -438,135 +554,135 @@ label {
 }
 
 /* ==========================================================================
-   ELEGANT SHELL  —  refined sidebar + layered content background + navbar.
+   MODERN SHELL  —  light Vercel/Linear sidebar + airy content + clean navbar.
    Loaded last, so these rules are authoritative over earlier sidebar tweaks.
-   Pure restyle of existing AdminLTE classes; no markup changes. Works for both
-   sidebar-dark-primary (staff/student) and sidebar-dark-secondary (hod).
+   Pure restyle of existing AdminLTE classes; no markup changes. Works for the
+   sidebar-dark-primary (staff/student) and sidebar-dark-secondary (hod) shells
+   by overriding their dark defaults with a light scheme.
    ========================================================================== */
-
-:root {
-  --m-sidebar-bg-start: #1e1b4b;   /* indigo-950 */
-  --m-sidebar-bg-end:   #0f172a;   /* slate-900  */
-  --m-sidebar-text:     #c7cad9;
-  --m-sidebar-muted:    #8b90a7;
-  --m-sidebar-hover-bg: rgba(255, 255, 255, 0.06);
-  --m-sidebar-active:   linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-}
 
 /* ----------------------------------------------------------- Sidebar shell */
 .main-sidebar,
 .main-sidebar.sidebar-dark-primary,
 .main-sidebar.sidebar-dark-secondary {
-  background: linear-gradient(195deg, var(--m-sidebar-bg-start) 0%, var(--m-sidebar-bg-end) 100%) !important;
-  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.18);
+  background: var(--m-sidebar-bg) !important;
+  border-right: 1px solid var(--m-sidebar-border);
+  box-shadow: none;
 }
 
 /* Brand / logo area */
 .main-sidebar .brand-link {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.9rem 1rem;
-  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--m-sidebar-border);
+  padding: 0.85rem 1.1rem;
+  letter-spacing: -0.01em;
   transition: background-color var(--m-transition);
 }
-.main-sidebar .brand-link:hover { background-color: rgba(255, 255, 255, 0.04); }
+.main-sidebar .brand-link:hover { background-color: var(--m-sidebar-hover-bg); }
 .main-sidebar .brand-link .brand-text {
   font-weight: 600;
-  color: #fff;
+  font-size: 1.05rem;
+  color: var(--m-text) !important;
 }
 .main-sidebar .brand-image {
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+  box-shadow: none;
+  border: 1px solid var(--m-sidebar-border);
+  margin-top: -2px;
 }
 
 /* User panel */
 .main-sidebar .user-panel {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--m-sidebar-border);
+  padding-bottom: 0.9rem !important;
 }
 .main-sidebar .user-panel .info > a {
-  color: #f1f2f7;
-  font-weight: 500;
+  color: var(--m-text) !important;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
-.main-sidebar .user-panel .info > a:hover { color: #fff; }
+.main-sidebar .user-panel .info > a:hover { color: var(--m-primary) !important; }
 .main-sidebar .user-panel .image img {
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 0 2px var(--m-border-strong);
 }
 
 /* ----------------------------------------------------------- Nav items */
+.main-sidebar .nav-sidebar { padding: 0.35rem 0; }
 .main-sidebar .nav-sidebar .nav-link {
-  color: var(--m-sidebar-text);
-  border-radius: 10px;
-  margin: 2px 10px;
-  padding: 0.6rem 0.85rem;
+  color: var(--m-sidebar-text) !important;
+  border-radius: 6px;
+  margin: 1px 8px;
+  padding: 0.5rem 0.75rem;
   font-weight: 500;
-  transition: background-color var(--m-transition), color var(--m-transition),
-    transform var(--m-transition);
+  font-size: 0.9rem;
+  transition: background-color var(--m-transition), color var(--m-transition);
 }
 .main-sidebar .nav-sidebar .nav-link .nav-icon {
-  color: var(--m-sidebar-muted);
-  transition: color var(--m-transition), transform var(--m-transition);
+  color: var(--m-sidebar-muted) !important;
+  font-size: 1rem;
+  transition: color var(--m-transition);
 }
 .main-sidebar .nav-sidebar .nav-link p { color: inherit; }
 
-/* Hover: subtle frosted pill + icon brightening + tiny nudge */
+/* Hover: soft neutral pill */
 .main-sidebar .nav-sidebar .nav-link:hover {
-  background-color: var(--m-sidebar-hover-bg);
-  color: #ffffff;
-  transform: translateX(2px);
+  background-color: var(--m-sidebar-hover-bg) !important;
+  color: var(--m-text) !important;
 }
 .main-sidebar .nav-sidebar .nav-link:hover .nav-icon {
-  color: #a5b4fc; /* indigo-300 */
+  color: var(--m-text-secondary) !important;
 }
 
-/* Active: indigo gradient pill with depth + accent bar (override earlier rules) */
+/* Active: soft blue tint pill + left accent bar (Fluent/Linear style) */
 .main-sidebar .nav-sidebar > .nav-item > .nav-link.active,
 .main-sidebar .nav-sidebar .nav-treeview > .nav-item > .nav-link.active,
 .main-sidebar .nav-sidebar .nav-link.active {
-  background: var(--m-sidebar-active) !important;
-  color: #ffffff !important;
-  box-shadow: 0 6px 16px -4px rgba(79, 70, 229, 0.55);
+  background: var(--m-sidebar-active-bg) !important;
+  color: var(--m-sidebar-active-text) !important;
+  font-weight: 600;
+  box-shadow: none;
   position: relative;
 }
-.main-sidebar .nav-sidebar .nav-link.active .nav-icon { color: #ffffff !important; }
+.main-sidebar .nav-sidebar .nav-link.active .nav-icon { color: var(--m-primary) !important; }
 .main-sidebar .nav-sidebar > .nav-item > .nav-link.active::before {
   content: '';
   position: absolute;
-  left: -10px;
+  left: 0;
   top: 50%;
   transform: translateY(-50%);
-  height: 60%;
-  width: 4px;
-  border-radius: 0 4px 4px 0;
-  background: #a5b4fc;
+  height: 55%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--m-primary);
 }
 
 /* Open parent of a treeview keeps a gentle highlight */
 .main-sidebar .nav-sidebar .nav-item.menu-open > .nav-link {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  background-color: var(--m-sidebar-hover-bg) !important;
+  color: var(--m-text) !important;
 }
 
-/* Treeview (nested) items: indent + slightly dimmer, transparent bg */
+/* Treeview (nested) items: indent + dimmer, subtle inset bg */
 .main-sidebar .nav-sidebar .nav-treeview {
-  background-color: rgba(0, 0, 0, 0.12);
-  border-radius: 10px;
-  margin: 2px 10px;
+  background-color: #fbfbfa;
+  border-radius: 6px;
+  margin: 1px 8px 2px;
   padding: 2px 0;
 }
 .main-sidebar .nav-sidebar .nav-treeview .nav-link {
   margin: 1px 6px;
-  padding-left: 1.6rem;
-  font-size: 0.9rem;
-  color: var(--m-sidebar-muted);
+  padding-left: 1.5rem;
+  font-size: 0.86rem;
+  color: var(--m-sidebar-muted) !important;
 }
-.main-sidebar .nav-sidebar .nav-treeview .nav-link:hover { color: #fff; }
+.main-sidebar .nav-sidebar .nav-treeview .nav-link:hover { color: var(--m-text) !important; }
 
 /* Section header labels */
 .main-sidebar .nav-header {
-  color: #818cf8; /* indigo-400 */
+  color: var(--m-sidebar-muted);
   text-transform: uppercase;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 1rem 1.25rem 0.4rem;
+  letter-spacing: 0.06em;
+  padding: 1rem 1.1rem 0.35rem;
   background: transparent;
 }
 
@@ -576,36 +692,33 @@ label {
 /* Slim, refined scrollbar inside the sidebar */
 .main-sidebar .os-scrollbar-vertical .os-scrollbar-handle,
 .main-sidebar ::-webkit-scrollbar-thumb {
-  background: rgba(165, 180, 252, 0.35);
+  background: #d6d4d2;
   border-radius: 8px;
 }
-.main-sidebar ::-webkit-scrollbar { width: 7px; }
+.main-sidebar ::-webkit-scrollbar { width: 6px; }
 .main-sidebar ::-webkit-scrollbar-track { background: transparent; }
 
 /* ----------------------------------------------------------- Content background */
-/* Replace the flat white (.content-wrapper.bg-white is !important in AdminLTE)
-   with a soft, layered, elegant surface that gives subtle depth. */
+/* Airy, near-white app surface (Fluent neutralLighterAlt). */
 .content-wrapper,
 .content-wrapper.bg-white {
-  background-color: #eef1f8 !important;
-  background-image:
-    radial-gradient(1200px 480px at 100% -10%, rgba(99, 102, 241, 0.10), transparent 60%),
-    radial-gradient(900px 420px at -10% 0%, rgba(20, 184, 166, 0.07), transparent 55%),
-    linear-gradient(180deg, #f4f6fb 0%, #eef1f8 100%) !important;
-  /* NOTE: `background-attachment: fixed` was removed here. On Chromium it forces a
-     compositing layer on .content-wrapper that, combined with the navbar's
-     backdrop-filter, traps position:fixed modals/backdrops and freezes the page.
-     The gradient still looks identical scrolling normally. */
+  background-color: var(--m-surface) !important;
+  background-image: none !important;
 }
 
-/* The content header sits on the same surface; give the page title contrast */
+/* The content header */
+.content-header { padding: 1.25rem 1rem 0.5rem; }
 .content-header h1,
 .content-header h3,
 .content-header .m-0 {
   color: var(--m-text) !important;
   text-shadow: none;
+  font-weight: 600;
 }
-/* The PDF link in the breadcrumb was white-on-light; make it readable */
+.content-header .breadcrumb {
+  background: transparent;
+  font-size: 0.85rem;
+}
 .content-header .breadcrumb a[style*="color:white"],
 .content-header .breadcrumb a {
   color: var(--m-primary) !important;
@@ -614,21 +727,48 @@ label {
 /* ----------------------------------------------------------- Top navbar */
 .main-header.navbar,
 .main-header.navbar-white {
-  background: rgba(255, 255, 255, 0.85) !important;
-  backdrop-filter: saturate(180%) blur(8px);
-  -webkit-backdrop-filter: saturate(180%) blur(8px);
+  background: #ffffff !important;
   border-bottom: 1px solid var(--m-border);
-  box-shadow: 0 1px 12px rgba(16, 24, 40, 0.06);
+  box-shadow: none;
 }
-.main-header.navbar .nav-link { color: var(--m-text-secondary); border-radius: 8px; }
+.main-header.navbar .nav-link {
+  color: var(--m-text-secondary);
+  border-radius: 6px;
+}
 .main-header.navbar .nav-link:hover {
   color: var(--m-primary);
-  background-color: rgba(79, 70, 229, 0.06);
+  background-color: var(--m-primary-tint-2);
 }
 
 /* Body fallback so any gap around the wrapper matches the surface */
 body.sidebar-mini,
-body.hold-transition { background-color: #eef1f8; }
+body.hold-transition { background-color: var(--m-surface); }
+
+/* ----------------------------------------------------------- Legacy overrides */
+/* Page titles are often marked `text-white` for the old dark header — force them
+   readable on the new light surface. */
+.content-header .text-white,
+.content-header h1.text-white,
+.content-header h3.text-white { color: var(--m-text) !important; }
+.content-header a[style*="color:white"] { color: var(--m-primary) !important; }
+
+/* The legacy full-screen dark overlay (#color-overlay) is toggled on at page load
+   by the base template; neutralise it so it never muddies the light theme. */
+#color-overlay { background-color: transparent !important; display: none !important; }
+
+/* Soften the stat-tile hover (no big jump). */
+.small-box:hover { transform: translateY(-2px); box-shadow: var(--m-shadow-md); }
+.small-box:hover .icon > i { transform: scale(1.05); }
+
+/* Tables — clean Fluent grid lines */
+.table thead th {
+  border-bottom: 1px solid var(--m-border-strong);
+  border-top: none;
+  color: var(--m-text-secondary);
+  text-transform: none;
+}
+.table td, .table th { border-top: 1px solid var(--m-border); }
+.table-hover tbody tr:hover { background-color: var(--m-primary-tint-2); }
 
 /* ==========================================================================
    MODAL SAFETY  —  guarantee Bootstrap modals are never trapped or out-stacked.
@@ -709,10 +849,10 @@ body.hold-transition { background-color: #eef1f8; }
 .modal .form-group { margin-bottom: 1.15rem; }
 .modal .form-group > label {
   display: block;
-  font-size: 0.82rem;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--m-text-secondary);
+  letter-spacing: 0;
+  color: var(--m-text);
   margin-bottom: 0.4rem;
 }
 .modal .form-group > label .required { color: var(--m-danger); margin-left: 2px; }
@@ -739,7 +879,7 @@ body.hold-transition { background-color: #eef1f8; }
 .modal .custom-select:focus {
   border-color: var(--m-primary);
   background-color: #fff;
-  box-shadow: 0 0 0 0.18rem rgba(79, 70, 229, 0.16);
+  box-shadow: 0 0 0 1px var(--m-primary);
   outline: none;
 }
 .modal textarea,
@@ -763,7 +903,7 @@ body.hold-transition { background-color: #eef1f8; }
 .modal .form-text,
 .modal .help-text {
   font-size: 0.8rem;
-  color: var(--m-muted);
+  color: var(--m-text-secondary);
   margin-top: 0.35rem;
 }
 .modal .text-danger {
@@ -826,8 +966,453 @@ body.hold-transition { background-color: #eef1f8; }
   padding-top: 1.1rem;
   border-top: 1px solid var(--m-border);
 }
-.modal-form-actions .btn { padding: 0.5rem 1.25rem; font-weight: 500; }
+.modal-form-actions .btn { padding: 6px 16px; font-weight: 400; }
 @media (max-width: 480px) {
   .modal-form-actions { flex-direction: column-reverse; }
   .modal-form-actions .btn { width: 100%; }
+}
+
+/* ==========================================================================
+   DYNAMICS 365 TEAL BLUE FORMS
+   --------------------------------------------------------------------------
+   Authoritative additive form layer. It keeps Django/AdminLTE markup and
+   behaviour intact while giving every form control a Dynamics 365 / Fluent
+   Teal Blue treatment.
+   ========================================================================== */
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto,
+    Helvetica, Arial, sans-serif;
+}
+
+.content .card:has(form),
+.login-page .login-box > .card,
+.modal-content {
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.content .card:has(form) .card-body,
+.login-page .login-card-body,
+.modal-body {
+  padding: 32px;
+}
+
+.content form:not(.form-inline):not(.d-inline):not(.navbar-form):not([role="search"]) {
+  display: grid;
+  gap: 20px;
+}
+
+.content form:not(.form-inline):not(.d-inline):not(.navbar-form):not([role="search"]):not(.m-form-in-card) {
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 32px;
+}
+
+.content .card:has(form) form,
+.login-page form,
+.modal form {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.form-title,
+.card:has(form) .card-title,
+.modal-title,
+.login-page h2 {
+  color: #323130 !important;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.form-section,
+fieldset {
+  border: 0;
+  border-top: 1px solid #e1e4e8;
+  margin: 12px 0 0;
+  padding: 20px 0 0;
+}
+
+.form-section-title,
+legend,
+.card:has(form) .card-header {
+  color: #323130;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #e1e4e8;
+  padding-bottom: 10px;
+}
+
+.form-group,
+.input-group,
+.mb-3 {
+  margin-bottom: 20px !important;
+}
+
+label,
+.col-form-label,
+.control-label,
+.form-group > label,
+.modal .form-group > label {
+  display: block;
+  color: #323130;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  margin-bottom: 4px;
+}
+
+label .required,
+label .text-danger,
+.required-asterisk,
+.m-required-mark {
+  color: #a4262c !important;
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+.form-control,
+.custom-select,
+select.form-control,
+textarea.form-control,
+.input-group > .form-control,
+.modal .form-control,
+.modal textarea,
+.modal select,
+.modal .custom-select {
+  width: 100%;
+  min-height: 36px;
+  height: 36px;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  padding: 0 12px;
+  color: #323130;
+  background-color: #fff;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  box-shadow: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease,
+    background-color 120ms ease;
+}
+
+.form-control::placeholder {
+  color: #a19f9d;
+  opacity: 1;
+}
+
+.form-control:hover:not(:focus):not(:disabled):not([readonly]),
+.custom-select:hover:not(:focus):not(:disabled),
+select.form-control:hover:not(:focus):not(:disabled),
+textarea.form-control:hover:not(:focus):not(:disabled) {
+  border-color: #605e5c;
+}
+
+.form-control:focus,
+.custom-select:focus,
+select.form-control:focus,
+textarea.form-control:focus,
+.modal .form-control:focus,
+.modal textarea:focus,
+.modal select:focus,
+.modal .custom-select:focus {
+  border-color: #006e7f;
+  box-shadow: 0 0 0 2px rgba(0, 110, 127, 0.2);
+  outline: 2px solid rgba(0, 110, 127, 0.2);
+  outline-offset: 0;
+}
+
+textarea,
+textarea.form-control,
+.modal textarea,
+.modal textarea.form-control {
+  min-height: 100px;
+  height: auto;
+  padding: 8px 12px;
+  resize: vertical;
+}
+
+select,
+.custom-select,
+select.form-control {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #605e5c 50%),
+    linear-gradient(135deg, #605e5c 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 15px,
+    calc(100% - 13px) 15px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 36px;
+}
+
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple,
+.modal .select2-container--default .select2-selection--single {
+  min-height: 36px;
+  border: 1px solid #8a8886;
+  border-radius: 4px;
+  color: #323130;
+  box-shadow: none;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: #323130;
+  line-height: 34px;
+  padding-left: 12px;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default .select2-selection--single:focus {
+  border-color: #006e7f;
+  box-shadow: 0 0 0 2px rgba(0, 110, 127, 0.2);
+  outline: 2px solid rgba(0, 110, 127, 0.2);
+}
+
+.form-text,
+.help-block,
+.help-text,
+.hint,
+.text-muted {
+  color: #605e5c !important;
+  font-size: 12px;
+  line-height: 16px;
+  margin-top: 4px;
+}
+
+.invalid-feedback,
+.text-danger,
+.errorlist,
+.m-field-error {
+  color: #a4262c !important;
+  font-size: 12px;
+  line-height: 16px;
+  margin-top: 4px;
+}
+
+.valid-feedback,
+.m-field-success {
+  color: #107c10 !important;
+  font-size: 12px;
+  line-height: 16px;
+  margin-top: 4px;
+}
+
+.form-control.is-invalid,
+.was-validated .form-control:invalid,
+.m-invalid {
+  border-color: #a4262c !important;
+  background-image: none;
+}
+
+.form-control.is-valid,
+.was-validated .form-control:valid,
+.m-valid {
+  border-color: #107c10 !important;
+  background-image: none;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  margin: 0 8px 0 0;
+  border: 1.5px solid #8a8886;
+  background: #fff;
+  vertical-align: middle;
+  cursor: pointer;
+  position: relative;
+}
+
+input[type='checkbox'] {
+  border-radius: 3px;
+}
+
+input[type='radio'] {
+  border-radius: 50%;
+}
+
+input[type='checkbox']:checked,
+input[type='radio']:checked {
+  background-color: #006e7f;
+  border-color: #006e7f;
+}
+
+input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 6px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+input[type='radio']:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+input[type='checkbox']:focus-visible,
+input[type='radio']:focus-visible {
+  outline: 2px solid rgba(0, 110, 127, 0.35);
+  outline-offset: 2px;
+}
+
+.form-check,
+.custom-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+
+.form-check label,
+.form-check-label,
+.custom-control-label {
+  color: #323130;
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+.btn-primary,
+.btn-info,
+.btn-success,
+.btn-warning,
+.bg-primary,
+.bg-info,
+.bg-success,
+.bg-warning,
+.bg-teal {
+  color: #fff !important;
+}
+
+.btn-primary {
+  background: #006e7f !important;
+  border-color: #006e7f !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover {
+  background: #005769 !important;
+  border-color: #005769 !important;
+}
+
+.btn-primary:active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary.active {
+  background: #003e4d !important;
+  border-color: #003e4d !important;
+}
+
+.btn-secondary,
+.btn-default,
+.btn-outline-secondary,
+.btn-light {
+  background: #fff !important;
+  border: 1px solid #8a8886 !important;
+  color: #323130 !important;
+}
+
+.btn-secondary:hover,
+.btn-default:hover,
+.btn-outline-secondary:hover,
+.btn-light:hover {
+  background: #f3f2f1 !important;
+  border-color: #8a8886 !important;
+  color: #323130 !important;
+}
+
+.btn-danger {
+  background: #a4262c !important;
+  border-color: #a4262c !important;
+  color: #fff !important;
+}
+
+.form-actions,
+.modal-form-actions,
+.card:has(form) .card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid #e1e4e8;
+}
+
+.form-actions .btn-secondary,
+.form-actions .btn-default,
+.modal-form-actions .btn-secondary,
+.modal-form-actions .btn-default {
+  margin-right: auto;
+}
+
+.m-form-shake {
+  animation: m-form-shake 180ms ease-in-out 0s 2;
+}
+
+@keyframes m-form-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@media (min-width: 600px) {
+  .m-form-grid,
+  .form-grid,
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 599px) {
+  .content .card:has(form) .card-body,
+  .login-page .login-card-body,
+  .modal-body,
+  .content form:not(.form-inline):not(.d-inline):not(.navbar-form):not([role="search"]):not(.m-form-in-card) {
+    padding: 20px;
+  }
+
+  .content,
+  .container-fluid {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .form-actions,
+  .modal-form-actions,
+  .card:has(form) .card-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .form-actions .btn,
+  .modal-form-actions .btn,
+  .card:has(form) .card-footer .btn,
+  form .btn {
+    width: 100%;
+  }
 }
