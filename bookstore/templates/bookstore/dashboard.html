@@ -2,96 +2,740 @@
 {% load static %}
 {% load customfunction %}
 
+{% block page_title %}
+    Book Store
+{% endblock page_title %}
+
+{% block breadcrumb %}{% endblock breadcrumb %}
+
+{% block fullcard %}
+<section class="content storefront-shell">
+  <div class="container-fluid">
+    <header class="store-nav">
+      <a href="{% url 'store:index' %}" class="store-brand">
+        <span><i class="fas fa-book-open"></i></span>
+        <strong>Campus Store</strong>
+      </a>
+      <form action="{% url 'search:search' %}" method="GET" class="store-search">
+        <i class="fas fa-search"></i>
+        <input type="text" name="q" value="{{ search }}" placeholder="Search books, authors, ISBNs">
+        <button type="submit">Search</button>
+      </form>
+      <div class="store-actions">
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'order:order_list' %}" class="btn btn-light">
+            <i class="fas fa-box mr-2"></i>Orders
+          </a>
+        {% endif %}
+        <a href="{% url 'cart:cart_details' %}" class="btn btn-primary">
+          <i class="fas fa-shopping-cart mr-2"></i>Cart
+          <span id="gettotalcart" class="cart-count">{{ cart|length }}</span>
+        </a>
+      </div>
+    </header>
+
+    <section class="store-hero">
+      <div class="store-hero-copy">
+        <span class="store-kicker">School-ready shopping</span>
+        <h1>Books, class essentials, and learning supplies in one place.</h1>
+        <p>Discover new arrivals, monitor stock, and move from browsing to checkout with a cleaner ecommerce experience.</p>
+        <div class="hero-actions">
+          <a href="{% url 'store:books' %}" class="btn btn-primary">
+            <i class="fas fa-store mr-2"></i>Browse Catalog
+          </a>
+          <a href="{% url 'store:requireditem-list' %}" class="btn btn-light">
+            <i class="fas fa-list-check mr-2"></i>Required Items
+          </a>
+        </div>
+      </div>
+      <div class="store-hero-panel">
+        <span class="store-kicker">Inventory snapshot</span>
+        <strong>{{ store_stats.in_stock_count }}</strong>
+        <p>books ready for checkout</p>
+        <div class="hero-meter" aria-hidden="true">
+          <i style="width: {% if store_stats.book_count %}{% widthratio store_stats.in_stock_count store_stats.book_count 100 %}{% else %}0{% endif %}%"></i>
+        </div>
+      </div>
+    </section>
+
+    <div class="store-stat-grid">
+      <article class="store-stat-card accent-teal">
+        <i class="fas fa-book"></i>
+        <span>Catalog</span>
+        <strong>{{ store_stats.book_count }}</strong>
+        <small>active titles</small>
+      </article>
+      <article class="store-stat-card accent-green">
+        <i class="fas fa-warehouse"></i>
+        <span>Total Stock</span>
+        <strong>{{ store_stats.total_stock }}</strong>
+        <small>units available</small>
+      </article>
+      <article class="store-stat-card accent-amber">
+        <i class="fas fa-star"></i>
+        <span>Reviews</span>
+        <strong>{{ store_stats.review_count }}</strong>
+        <small>customer ratings</small>
+      </article>
+      <article class="store-stat-card accent-red">
+        <i class="fas fa-triangle-exclamation"></i>
+        <span>Out of Stock</span>
+        <strong>{{ store_stats.out_of_stock_count }}</strong>
+        <small>titles need attention</small>
+      </article>
+    </div>
+
+    <section class="store-section">
+      <div class="section-heading">
+        <div>
+          <span class="store-kicker">Shop by department</span>
+          <h2>Popular Categories</h2>
+        </div>
+        <a href="{% url 'store:books' %}" class="btn btn-sm btn-light">View all books</a>
+      </div>
+      <div class="category-grid">
+        {% for category in category_cards %}
+          <a href="{% url 'store:category' id=category.id %}" class="category-card">
+            <span><i class="fas fa-bookmark"></i></span>
+            <strong>{{ category.name }}</strong>
+            <small>{{ category.book_count }} title{{ category.book_count|pluralize }}</small>
+          </a>
+        {% empty %}
+          <div class="empty-state">No active categories are available yet.</div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="store-section">
+      <div class="section-heading">
+        <div>
+          <span class="store-kicker">Fresh on the shelf</span>
+          <h2>Featured Books</h2>
+        </div>
+        <a href="{% url 'store:books' %}" class="btn btn-sm btn-light">Open catalog</a>
+      </div>
+      <div class="product-grid">
+        {% for item in featured_books %}
+          <article class="product-card">
+            <a href="{% url 'store:book' id=item.id %}" class="product-cover">
+              {% if item.coverpage %}
+                <img src="{{ item.coverpage.url }}" alt="{{ item.title }}" loading="lazy">
+              {% else %}
+                <div class="cover-fallback">{{ item.title|first }}</div>
+              {% endif %}
+              {% if item.stock <= 0 %}
+                <span class="stock-badge danger">Out of stock</span>
+              {% elif item.stock <= 5 %}
+                <span class="stock-badge warning">Low stock</span>
+              {% else %}
+                <span class="stock-badge success">In stock</span>
+              {% endif %}
+            </a>
+            <div class="product-body">
+              <a href="{% url 'store:book' id=item.id %}" class="product-title">{{ item.title|text_short }}</a>
+              <span class="product-author">{{ item.author }}</span>
+              <div class="product-rating">
+                {{ item.totalrating|averagerating:item.totalreview }}
+                <small>{{ item.totalreview|add:-1 }} review{{ item.totalreview|add:-1|pluralize }}</small>
+              </div>
+              <div class="product-footer">
+                <strong>GHC {{ item.price }}</strong>
+                <button class="btn btn-sm btn-primary" id="addTocart" data-book-id="{{ item.id }}" {% if item.stock <= 0 %}disabled{% endif %}>
+                  <i class="fas fa-cart-plus"></i>
+                </button>
+              </div>
+            </div>
+          </article>
+        {% empty %}
+          <div class="empty-state">No featured books are available yet.</div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <div class="store-grid">
+      <section class="store-section">
+        <div class="section-heading">
+          <div>
+            <span class="store-kicker">Customer favorites</span>
+            <h2>Best Sellers</h2>
+          </div>
+        </div>
+        <div class="seller-list">
+          {% for book in top_selling_books|slice:":6" %}
+            <a href="{% url 'store:book' id=book.id %}" class="seller-row">
+              <span class="seller-rank">{{ forloop.counter }}</span>
+              <div>
+                <strong>{{ book.title }}</strong>
+                <small>{{ book.author }}</small>
+              </div>
+              <b>GHC {{ book.price }}</b>
+            </a>
+          {% empty %}
+            <div class="empty-state">No sales data is available yet.</div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="store-section">
+        <div class="section-heading">
+          <div>
+            <span class="store-kicker">Inventory attention</span>
+            <h2>Low Stock Watchlist</h2>
+          </div>
+        </div>
+        <div class="stock-list">
+          {% for book in low_stock_books %}
+            <a href="{% url 'store:book' id=book.id %}" class="stock-row">
+              <i class="fas fa-triangle-exclamation"></i>
+              <div>
+                <strong>{{ book.title }}</strong>
+                <small>{{ book.category }}</small>
+              </div>
+              <b>{{ book.stock }} left</b>
+            </a>
+          {% empty %}
+            <div class="empty-state">Stock levels look healthy right now.</div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </div>
+  <div id="snackbar" class="store-toast"></div>
+</section>
+{% endblock fullcard %}
 
 {% block custom_css %}
- <link rel="stylesheet" href="{% static 'extra/css/store.css' %}">
- <link rel="stylesheet" href="{% static 'jquery-touchspin/css/jquery.bootstrap-touchspin.min.css' %}>
- <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
+<style>
+  .storefront-shell {
+    color: #323130;
+    padding-bottom: 1.5rem;
+  }
 
-<link rel="stylesheet" type="text/css" href="{% static 'extra/css/slick.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'extra/css/slick-theme.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'extra/css/skdslider.css' %}"> 
+  .store-nav,
+  .store-hero,
+  .store-section,
+  .store-stat-card {
+    background: #fff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  .store-nav {
+    align-items: center;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: auto minmax(260px, 1fr) auto;
+    margin-bottom: 1rem;
+    padding: 0.9rem;
+  }
+
+  .store-brand {
+    align-items: center;
+    color: #111827;
+    display: inline-flex;
+    gap: 0.65rem;
+    text-decoration: none;
+  }
+
+  .store-brand:hover {
+    color: #006e7f;
+    text-decoration: none;
+  }
+
+  .store-brand span,
+  .store-stat-card i,
+  .category-card span {
+    align-items: center;
+    background: #eef7f8;
+    border-radius: 8px;
+    color: #006e7f;
+    display: inline-flex;
+    height: 42px;
+    justify-content: center;
+    width: 42px;
+  }
+
+  .store-search {
+    align-items: center;
+    background: #fafafa;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding: 0.35rem 0.45rem 0.35rem 0.85rem;
+  }
+
+  .store-search input {
+    background: transparent;
+    border: 0;
+    min-height: 38px;
+    outline: 0;
+    width: 100%;
+  }
+
+  .store-search button {
+    background: #006e7f;
+    border: 0;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: 700;
+    min-height: 38px;
+    padding: 0 1rem;
+  }
+
+  .store-actions,
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    justify-content: flex-end;
+  }
+
+  .cart-count {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    display: inline-block;
+    margin-left: 0.45rem;
+    min-width: 1.6rem;
+    padding: 0.1rem 0.45rem;
+  }
+
+  .store-hero {
+    align-items: center;
+    background: linear-gradient(135deg, #ffffff 0%, #eef7f8 56%, #f7fbff 100%);
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+  }
+
+  .store-kicker {
+    color: #006e7f;
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .store-hero h1 {
+    color: #111827;
+    font-size: 2rem;
+    margin: 0.25rem 0 0.6rem;
+    max-width: 760px;
+  }
+
+  .store-hero p {
+    color: #605e5c;
+    margin-bottom: 1rem;
+    max-width: 680px;
+  }
+
+  .store-hero-panel {
+    background: #fff;
+    border: 1px solid #d6eaee;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .store-hero-panel strong {
+    color: #111827;
+    display: block;
+    font-size: 2.5rem;
+    line-height: 1;
+    margin: 0.65rem 0 0.3rem;
+  }
+
+  .hero-meter {
+    background: #e5e7eb;
+    border-radius: 999px;
+    height: 0.65rem;
+    margin-top: 1rem;
+    overflow: hidden;
+  }
+
+  .hero-meter i {
+    background: linear-gradient(90deg, #006e7f, #107c10);
+    display: block;
+    height: 100%;
+  }
+
+  .store-stat-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 1rem;
+  }
+
+  .store-stat-card {
+    min-height: 138px;
+    overflow: hidden;
+    padding: 1rem;
+    position: relative;
+  }
+
+  .store-stat-card::before {
+    border-radius: 999px;
+    content: "";
+    height: 5px;
+    left: 1rem;
+    position: absolute;
+    right: 1rem;
+    top: 0;
+  }
+
+  .accent-teal::before { background: #006e7f; }
+  .accent-green::before { background: #107c10; }
+  .accent-amber::before { background: #ca5010; }
+  .accent-red::before { background: #a4262c; }
+
+  .store-stat-card span,
+  .store-stat-card small,
+  .product-author,
+  .product-rating small,
+  .seller-row small,
+  .stock-row small,
+  .category-card small {
+    color: #605e5c;
+  }
+
+  .store-stat-card strong {
+    color: #111827;
+    display: block;
+    font-size: 1.55rem;
+    line-height: 1.2;
+    margin-top: 0.45rem;
+  }
+
+  .store-section {
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .section-heading h2 {
+    color: #111827;
+    font-size: 1.15rem;
+    margin: 0.15rem 0 0;
+  }
+
+  .category-grid {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .category-card,
+  .seller-row,
+  .stock-row {
+    background: #fafafa;
+    border: 1px solid #edebe9;
+    border-radius: 8px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .category-card {
+    display: grid;
+    gap: 0.5rem;
+    min-height: 140px;
+    padding: 0.9rem;
+  }
+
+  .category-card:hover,
+  .seller-row:hover,
+  .stock-row:hover {
+    background: #eef7f8;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .product-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .product-card {
+    background: #fff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 180ms ease, transform 180ms ease;
+  }
+
+  .product-card:hover {
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .product-cover {
+    align-items: center;
+    background: #f3f4f6;
+    display: flex;
+    height: 250px;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .product-cover img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .cover-fallback {
+    align-items: center;
+    background: linear-gradient(135deg, #006e7f, #107c10);
+    color: #fff;
+    display: flex;
+    font-size: 4rem;
+    font-weight: 800;
+    height: 100%;
+    justify-content: center;
+    text-transform: uppercase;
+    width: 100%;
+  }
+
+  .stock-badge {
+    border-radius: 999px;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.75rem;
+  }
+
+  .stock-badge.success { background: #107c10; }
+  .stock-badge.warning { background: #ca5010; }
+  .stock-badge.danger { background: #a4262c; }
+
+  .product-body {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.9rem;
+  }
+
+  .product-title {
+    color: #111827;
+    font-weight: 800;
+    min-height: 2.6rem;
+    text-decoration: none;
+  }
+
+  .product-title:hover {
+    color: #006e7f;
+    text-decoration: none;
+  }
+
+  .checked {
+    color: #ca5010;
+  }
+
+  .product-footer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+  }
+
+  .product-footer strong {
+    color: #111827;
+    font-size: 1.05rem;
+  }
+
+  .product-footer .btn {
+    align-items: center;
+    display: inline-flex;
+    height: 38px;
+    justify-content: center;
+    min-width: 38px;
+    padding: 0;
+    width: 38px;
+  }
+
+  .store-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .seller-list,
+  .stock-list {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .seller-row,
+  .stock-row {
+    align-items: center;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    padding: 0.85rem;
+  }
+
+  .seller-rank,
+  .stock-row i {
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    color: #006e7f;
+    display: flex;
+    font-weight: 800;
+    height: 42px;
+    justify-content: center;
+    width: 42px;
+  }
+
+  .stock-row i {
+    color: #ca5010;
+  }
+
+  .empty-state {
+    background: #fafafa;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    color: #605e5c;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .store-toast {
+    background: #323130;
+    border-radius: 8px;
+    bottom: 1.25rem;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    color: #fff;
+    left: 50%;
+    min-width: 220px;
+    opacity: 0;
+    padding: 0.85rem 1rem;
+    position: fixed;
+    text-align: center;
+    transform: translate(-50%, 1rem);
+    transition: opacity 180ms ease, transform 180ms ease;
+    visibility: hidden;
+    z-index: 1080;
+  }
+
+  .store-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    visibility: visible;
+  }
+
+  @media (max-width: 1199px) {
+    .store-stat-grid,
+    .product-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .category-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .store-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .store-nav,
+    .store-hero,
+    .section-heading {
+      display: block;
+    }
+
+    .store-search,
+    .store-actions,
+    .hero-actions {
+      margin-top: 0.85rem;
+    }
+
+    .store-actions,
+    .hero-actions {
+      justify-content: flex-start;
+    }
+
+    .store-stat-grid,
+    .product-grid,
+    .category-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .product-cover {
+      height: 220px;
+    }
+  }
+</style>
 {% endblock custom_css %}
 
-{% block breadcrumb %}
-	
-{% endblock breadcrumb %}
-{% block main_content %}
-{% include 'bookstore/header.html' %}
-<section>{% include 'bookstore/category_list.html' %}</section>
-<section class="py-4">
-	<div class="container">
-		
-		<div class="container-fluid">
-			<div class="row justify-content-center">
-				
-				<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-					<div class="titleheader">
-						<h3 class="h2header text-center">New Published Books</h3>
-						<a href="#">See All</a>
-					</div>
-					<div class="regulara sliderzx col-sm-12 col-md-12 col-lg-12 col-xl-12 ">
-						{% for item in newbooks %}
-						<div class="book-wrapper text-center">
-							<div class="coverpage">
-								{% if item.coverpage %}
-								<img src="{{ item.coverpage.url }}" class=""/>
-								{% else %}
-								<div><h6> {{ item.title }} </h6></div>
-								{% endif %}
-							</div>
-							<a href="{% url 'store:book' id=item.id %}">{{ item.title|text_short }}</a>
-							<a href="#">{{ item.author }}</a>
-							<div class="rating">
-								{{ item.totalrating|averagerating:item.totalreview }}
-								<span class="totalrating">{{ item.totalreview|add:-1 }}</span>
-							</div>
-							<p> {{ item.price }}</p>
-							<button class="btn btn-secondary" id="addTocart" data-book-id="{{ item.id }}">
-									<i class="fa fa-shopping-cart"></i>Add to cart
-								</button>
-						</div>
-						{% endfor %}
-					</div>
-				</div>
-
-				<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-					<div class="titleheader">
-						<h3 class="h2header text-center">Top Selling Books</h3>
-					</div>
-					<div class="regulara sliderzx">
-						{% for p in newbooks %}
-						<div class="book-wrapper text-center">
-							<div class="coverpage">
-								{% if p.coverpage %}
-								<img src="{{ p.coverpage.url }}" />
-								{% endif %}
-							</div>
-							<a href="{% url 'store:book' id=p.id %}">{{ p.title|text_short }}</a>
-							<a href="#">{{ p.author }}</a>
-							<div class="rating">
-								{{ p.totalrating|averagerating:p.totalreview }}
-								<span class="totalrating">{{ p.totalreview|add:-1 }}</span>
-							</div>
-							<p> {{ p.price }}</p>
-							<button class="btn btn-secondary" id="addTocart" data-book-id="{{ p.id }}">
-									<i class="fa fa-shopping-cart""></i>Add to cart
-								</button>
-						</div>
-						{% endfor %}
-					</div>
-				</div>
-			</div> 
-			</div>
-			
-			</div>
-			<div id="snackbar"></div>
-		</section>
-
-{% endblock main_content %}
-
 {% block custom_js %}
-	<script src="{% static 'extra/skdslider.min.js' %}"></script>
-	<script src="{% static '/jquery-touchspin/js/jquery.bootstrap-touchspin.min.js' %}"></script>
-	<script src="{% static '/extra/book-store.js' %}"></script>
+<script>
+  (function () {
+    function showToast(message) {
+      var toast = document.getElementById('snackbar');
+      if (!toast) {
+        return;
+      }
+      toast.textContent = message;
+      toast.className = 'store-toast show';
+      window.setTimeout(function () {
+        toast.className = 'store-toast';
+      }, 1400);
+    }
+
+    function updateCartCount() {
+      $.ajax({
+        url: "{% url 'cart:totalcart' %}",
+        success: function (data) {
+          $('#gettotalcart').html(data);
+        },
+        error: function () {
+          showToast('Cart total could not be refreshed.');
+        }
+      });
+    }
+
+    $('body').on('click', '#addTocart', function (event) {
+      event.preventDefault();
+      var button = $(this);
+      var id = button.attr('data-book-id');
+      if (!id || button.prop('disabled')) {
+        return;
+      }
+
+      button.prop('disabled', true).attr('aria-busy', 'true');
+      $.ajax({
+        url: "{% url 'cart:cart_add' bookid=0 %}".replace('/0', '/' + id),
+        data: { bookid: 1 },
+        success: function () {
+          showToast('Added to cart.');
+          updateCartCount();
+        },
+        error: function () {
+          showToast('Could not add this item to cart.');
+        },
+        complete: function () {
+          button.prop('disabled', false).removeAttr('aria-busy');
+        }
+      });
+    });
+  })();
+</script>
 {% endblock custom_js %}
