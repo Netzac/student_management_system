@@ -1,0 +1,3 @@
+56999 bytes written to file D:/Priv/Proj/student_management_system/_shots/05_add_student_teal.png
+[1852:31676:0607/080944.962:ERROR:chrome\browser\web_applications\os_integration\os_integration_manager.cc:258] Can't perform OS integration while the browser is shutting down.
+[1852:31676:0607/080945.031:ERROR:chrome\browser\web_applications\externally_managed_app_manager.cc:680] https://drive.google.com/drive/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21

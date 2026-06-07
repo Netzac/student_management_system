@@ -5,14 +5,16 @@
 
     <body class="hold-transition login-page bg-overlay ">
 <div class="login-box">
-  <div class="login-logo">
-    <a href="{% url 'login' %}" style="font-family:Lucida Handwriting;"><b>School Management System</b></a>
-  </div>
-  <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
       {% block login_form %}
-      <p class="login-box-msg">Sign in to jSchoolAnyWhere</p>
+      <div class="text-center mb-4">
+        <div class="m-login-badge">
+          <i data-lucide="graduation-cap"></i>
+        </div>
+        <h2 class="h2 font-weight-bold mb-1" style="color:#111827;">Welcome back</h2>
+        <p class="login-box-msg p-0 mb-0">Sign in to School Management System</p>
+      </div>
      
       <form action="{% url 'doLogin' %}" method="POST">
       {% csrf_token %}
@@ -20,7 +22,7 @@
           <input type="email" class="form-control" placeholder="Email" name="email">
           <div class="input-group-append">
             <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+              <i data-lucide="mail"></i>
             </div>
           </div>
         </div>
@@ -28,14 +30,14 @@
           <input type="password" class="form-control" placeholder="Password" name="password">
           <div class="input-group-append">
             <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+              <i data-lucide="lock"></i>
             </div>
           </div>
         </div>
 
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-            
+
           </div>
 
           <div class="col-12 text-center">
