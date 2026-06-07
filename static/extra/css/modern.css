@@ -1416,3 +1416,256 @@ input[type='radio']:focus-visible {
     width: 100%;
   }
 }
+
+/* ==========================================================================
+   DYNAMICS 365 FINISHING PASS
+   --------------------------------------------------------------------------
+   Final contrast and ergonomics layer requested in the modernization pass.
+   It is still additive: no backend logic, no schema, no Django view changes.
+   ========================================================================== */
+
+/* Button text must be readable everywhere. Coloured actions use white text;
+   neutral actions keep the Fluent/Dynamics neutral foreground by design. */
+.btn-primary,
+.btn-success,
+.btn-info,
+.btn-warning,
+.btn-danger,
+.btn-dark,
+.btn-teal,
+.btn[class*="bg-gradient"],
+.btn[class*="bg-"]:not(.btn-light):not(.btn-white):not(.btn-default),
+a.btn-primary,
+a.btn-success,
+a.btn-info,
+a.btn-warning,
+a.btn-danger,
+a.btn-dark,
+a.btn-teal {
+  color: #fff !important;
+}
+
+.btn-primary i,
+.btn-success i,
+.btn-info i,
+.btn-warning i,
+.btn-danger i,
+.btn-dark i,
+.btn-teal i,
+.btn[class*="bg-gradient"] i,
+.btn[class*="bg-"]:not(.btn-light):not(.btn-white):not(.btn-default) i {
+  color: inherit !important;
+}
+
+.btn-outline-primary {
+  border-color: var(--m-primary) !important;
+  color: var(--m-primary) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background: var(--m-primary) !important;
+  border-color: var(--m-primary) !important;
+  color: #fff !important;
+}
+
+.btn-outline-success:hover,
+.btn-outline-info:hover,
+.btn-outline-warning:hover,
+.btn-outline-danger:hover,
+.btn-outline-dark:hover {
+  color: #fff !important;
+}
+
+.btn-link {
+  color: var(--m-primary) !important;
+  min-width: 0;
+}
+
+/* Authoritative button palette: buttons are either Dynamics teal-blue actions
+   or white neutral controls with readable text. */
+.btn-primary,
+.btn-success,
+.btn-info,
+.btn-warning,
+.btn-danger,
+.btn-dark,
+.btn-teal,
+.btn[class*="bg-gradient"],
+.btn[class*="bg-"]:not(.btn-light):not(.btn-white):not(.btn-default) {
+  background: var(--m-primary) !important;
+  border-color: var(--m-primary) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+.btn-info:hover,
+.btn-warning:hover,
+.btn-danger:hover,
+.btn-dark:hover,
+.btn-teal:hover,
+.btn[class*="bg-gradient"]:hover,
+.btn[class*="bg-"]:not(.btn-light):not(.btn-white):not(.btn-default):hover {
+  background: var(--m-primary-dark) !important;
+  border-color: var(--m-primary-dark) !important;
+  color: #fff !important;
+}
+
+.btn-primary:active,
+.btn-success:active,
+.btn-info:active,
+.btn-warning:active,
+.btn-danger:active,
+.btn-dark:active,
+.btn-teal:active {
+  background: var(--m-primary-darker) !important;
+  border-color: var(--m-primary-darker) !important;
+  color: #fff !important;
+}
+
+.btn-secondary,
+.btn-default,
+.btn-light,
+.btn-white,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn-outline-info,
+.btn-outline-warning,
+.btn-outline-danger,
+.btn-outline-dark {
+  background: #fff !important;
+  border-color: var(--m-secondary-border) !important;
+  color: var(--m-text) !important;
+}
+
+.btn-secondary:hover,
+.btn-default:hover,
+.btn-light:hover,
+.btn-white:hover,
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-success:hover,
+.btn-outline-info:hover,
+.btn-outline-warning:hover,
+.btn-outline-danger:hover,
+.btn-outline-dark:hover {
+  background: var(--m-secondary-hover) !important;
+  border-color: var(--m-secondary-border) !important;
+  color: var(--m-primary-darker) !important;
+}
+
+/* Compact icon-only and DataTables buttons should not inherit wide action
+   sizing, which made some tool rows feel bulky. */
+.btn-sm,
+.btn-group-sm > .btn,
+.dataTables_wrapper .btn,
+.input-group-append .btn,
+.input-group-prepend .btn {
+  min-width: 0;
+}
+
+/* Dashboards: keep the app from reading as one colour while staying within
+   Dynamics/Fluent hues. */
+.small-box.bg-info {
+  background-image: linear-gradient(135deg, #006e7f 0%, #00a3ad 100%) !important;
+}
+.small-box.bg-success {
+  background-image: linear-gradient(135deg, #107c10 0%, #13a10e 100%) !important;
+}
+.small-box.bg-warning {
+  background-image: linear-gradient(135deg, #ca5010 0%, #ffb900 100%) !important;
+}
+.small-box.bg-danger {
+  background-image: linear-gradient(135deg, #a4262c 0%, #d13438 100%) !important;
+}
+.small-box.bg-primary {
+  background-image: linear-gradient(135deg, #004e8c 0%, #006e7f 100%) !important;
+}
+
+/* Sidebar scrollbar: the previous thumb was too close to the light sidebar.
+   Style both native scrollbars and OverlayScrollbars handles. */
+.main-sidebar .sidebar,
+.main-sidebar .os-viewport {
+  scrollbar-width: thin;
+  scrollbar-color: #006e7f #edebe9;
+}
+
+.main-sidebar .sidebar::-webkit-scrollbar,
+.main-sidebar .os-viewport::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-sidebar .sidebar::-webkit-scrollbar-track,
+.main-sidebar .os-viewport::-webkit-scrollbar-track {
+  background: #edebe9;
+  border-radius: 999px;
+}
+
+.main-sidebar .sidebar::-webkit-scrollbar-thumb,
+.main-sidebar .os-viewport::-webkit-scrollbar-thumb,
+.main-sidebar .os-scrollbar-vertical .os-scrollbar-handle {
+  background: #006e7f !important;
+  border: 2px solid #edebe9;
+  border-radius: 999px;
+}
+
+.main-sidebar .os-scrollbar-vertical:hover .os-scrollbar-handle {
+  background: #005769 !important;
+}
+
+/* Modal/forms: standard action placement, scrollable long forms, and sane
+   spacing for Django's generated paragraphs/lists inside AJAX fragments. */
+.modal-dialog-scrollable .modal-body {
+  max-height: calc(100vh - 12rem);
+  overflow-y: auto;
+}
+
+.modal .modal-footer,
+.modal .modal-sub-footer {
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  border-top: 1px solid var(--m-border);
+  padding: 1rem 1.5rem;
+}
+
+.modal .modal-sub-footer {
+  display: none;
+}
+
+.modal .modal-body form p {
+  margin-bottom: 1rem;
+}
+
+.modal .modal-body form p label {
+  margin-bottom: 0.35rem;
+}
+
+.modal .errorlist {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* Use a responsive two-column form layout only when fields are direct form
+   groups; this improves dense admin forms without disturbing inline widgets. */
+@media (min-width: 768px) {
+  .content form:not(.form-inline):not(.d-inline):not(.navbar-form):not([role="search"]) > .form-group,
+  .modal form > .form-group {
+    min-width: 0;
+  }
+
+  .content form:not(.form-inline):not(.d-inline):not(.navbar-form):not([role="search"]):has(> .form-group:nth-of-type(4)),
+  .modal form:has(> .form-group:nth-of-type(4)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .content form > .form-actions,
+  .content form > .modal-form-actions,
+  .modal form > .modal-form-actions,
+  .content form > button[type="submit"],
+  .modal form > button[type="submit"] {
+    grid-column: 1 / -1;
+  }
+}

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     "widget_tweaks",
     'crispy_forms',
+    'crispy_bootstrap4',
     'slick_reporting',
 
 
@@ -54,6 +55,9 @@ INSTALLED_APPS = [
     'cart',
     'school',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 SITE_ID = 1
 

@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from . import models, forms
-from django.db.models import Q
+from django.db.models import Count, Q, Sum
 
 from bookstore.models import Category,SubCategory,Book
 
@@ -30,15 +30,66 @@ def context_data(request):
 @login_required
 def home(request):
     context = context_data(request)
+    today = datetime.date.today()
+    due_soon_limit = today + datetime.timedelta(days=7)
+    active_categories = Category.objects.filter(delete_flag = 0, status = 1)
+    active_sub_categories = SubCategory.objects.filter(delete_flag = 0, status = 1)
+    active_books = Book.objects.filter(delete_flag = 0, status = 1)
+    borrow_transactions = models.Borrow.objects.select_related(
+        'student__admin', 'book', 'book__category'
+    )
+    pending_borrows = borrow_transactions.filter(status = 1)
+    returned_borrows = borrow_transactions.filter(status = 2)
+    overdue_borrows = pending_borrows.filter(return_date__lt = today)
+    due_soon_borrows = pending_borrows.filter(
+        return_date__gte = today,
+        return_date__lte = due_soon_limit,
+    )
+    total_stock = active_books.aggregate(total = Sum('stock'))['total'] or 0
+    checked_out = pending_borrows.count()
+    available_now = max(total_stock - checked_out, 0)
+
+    def percentage(part, total):
+        if not total:
+            return 0
+        return min(round((part / total) * 100), 100)
+
+    transactions_count = borrow_transactions.count()
+
     context['page'] = 'home'
-    context['page_title'] = 'Home'
-    context['categories'] = Category.objects.filter(delete_flag = 0, status = 1).all().count()
-    context['sub_categories'] = Category.objects.filter(delete_flag = 0, status = 1).all().count()
-   # context['students'] = models.Students.objects.filter(delete_flag = 0, status = 1).all().count()
-    context['books'] = Book.objects.filter(delete_flag = 0, status = 1).all().count()
-    context['pending'] = models.Borrow.objects.filter(status = 1).all().count()
-    context['pending'] = models.Borrow.objects.filter(status = 1).all().count()
-    context['transactions'] = models.Borrow.objects.all().count()
+    context['page_title'] = 'Library Dashboard'
+    context['today'] = today
+    context['categories'] = active_categories.count()
+    context['sub_categories'] = active_sub_categories.count()
+    context['students'] = models.Students.objects.filter(delete_flag = 0, status = 1).count()
+    context['books'] = active_books.count()
+    context['pending'] = checked_out
+    context['returned'] = returned_borrows.count()
+    context['overdue'] = overdue_borrows.count()
+    context['due_soon'] = due_soon_borrows.count()
+    context['transactions'] = transactions_count
+    context['total_stock'] = total_stock
+    context['available_now'] = available_now
+    context['checked_out_percent'] = percentage(checked_out, total_stock)
+    context['available_percent'] = percentage(available_now, total_stock)
+    context['returned_percent'] = percentage(context['returned'], transactions_count)
+    context['pending_percent'] = percentage(checked_out, transactions_count)
+    context['overdue_percent'] = percentage(context['overdue'], checked_out)
+    context['recent_borrows'] = borrow_transactions.order_by('-date_added')[:6]
+    context['recent_books'] = active_books.order_by('-date_created')[:5]
+    context['top_categories'] = list(
+        active_books.values('category__name')
+        .annotate(total = Count('id'))
+        .order_by('-total', 'category__name')[:5]
+    )
+    max_category_total = max([item['total'] for item in context['top_categories']] or [0])
+    for item in context['top_categories']:
+        item['percent'] = percentage(item['total'], max_category_total)
+    context['popular_books'] = list(
+        active_books.annotate(borrow_total = Count('book_id_fk'))
+        .filter(borrow_total__gt = 0)
+        .order_by('-borrow_total', 'title')[:5]
+    )
 
     return render(request, 'library/home.html', context)
 
@@ -348,4 +399,3 @@ def delete_borrow(request, pk = None):
             resp['msg'] = "Deleting Transaction Failed"
 
     return HttpResponse(json.dumps(resp), content_type="application/json")
-

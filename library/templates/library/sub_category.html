@@ -60,7 +60,7 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="dropdown">
-                                        <button class="btn btn-light btn-sm rounded-0 border dropdown-toggle" type="button" id="abtn{{cat.pk}}" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button class="btn btn-light btn-sm rounded-0 border dropdown-toggle" type="button" id="abtn{{cat.pk}}" data-toggle="dropdown" aria-expanded="false">
                                           Action
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="abtn{{cat.pk}}">
@@ -84,8 +84,6 @@
 
  {% block custom_js %}
  <script src="{% static '/extra/extras.js' %}"></script>
-<script src="{% static '/extra/popper.min.js' %}"></script>
-<script src="{% static '/extra/bootstrap.min.js' %}"></script>
 <script>
     $(function() {
         $('#create_new').click(function() {

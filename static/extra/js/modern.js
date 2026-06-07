@@ -26,12 +26,14 @@
   /*      validation still fires first and will cancel a submit event).     */
   /*    - Opt out per-form with `data-no-loading`.                          */
   /* ---------------------------------------------------------------------- */
-  function wireFormLoadingStates() {
-    var forms = document.querySelectorAll('form');
+  function wireFormLoadingStates(scope) {
+    var root = scope || document;
+    var forms = root.querySelectorAll ? root.querySelectorAll('form') : [];
     Array.prototype.forEach.call(forms, function (form) {
-      if (form.hasAttribute('data-no-loading')) {
+      if (form.hasAttribute('data-no-loading') || form.dataset.mLoadingWired === 'true') {
         return;
       }
+      form.dataset.mLoadingWired = 'true';
       form.addEventListener('submit', function () {
         // If the form is invalid, the submit event won't fire, so reaching
         // here means the submission is genuinely proceeding.
@@ -167,12 +169,17 @@
     form.classList.add('m-form-shake');
   }
 
-  function enhanceForms() {
-    var fields = document.querySelectorAll(
+  function enhanceForms(scope) {
+    var root = scope || document;
+    var fields = root.querySelectorAll ? root.querySelectorAll(
       'input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), select, textarea'
-    );
+    ) : [];
 
     Array.prototype.forEach.call(fields, function (field, index) {
+      if (field.dataset.mEnhanced === 'true') {
+        return;
+      }
+      field.dataset.mEnhanced = 'true';
       ensureFieldId(field, index);
 
       var label = getFieldLabel(field);
@@ -200,8 +207,12 @@
       });
     });
 
-    var forms = document.querySelectorAll('form');
+    var forms = root.querySelectorAll ? root.querySelectorAll('form') : [];
     Array.prototype.forEach.call(forms, function (form) {
+      if (form.dataset.mValidationWired === 'true') {
+        return;
+      }
+      form.dataset.mValidationWired = 'true';
       form.addEventListener('invalid', function (event) {
         setFieldInvalid(event.target, true);
         shakeForm(form);
@@ -300,6 +311,84 @@
   }
 
   /* ---------------------------------------------------------------------- */
+  /* 7. Bootstrap 4 modal hygiene.                                          */
+  /*    Keeps AJAX popups usable even when fragments are injected inside    */
+  /*    transformed shells or a failed request leaves a stale backdrop.     */
+  /* ---------------------------------------------------------------------- */
+  function cleanupModalBackdrops() {
+    if (!window.jQuery) {
+      return;
+    }
+    var $ = window.jQuery;
+    if (!$('.modal.show').length) {
+      $('.modal-backdrop').remove();
+      $('body').removeClass('modal-open').css({
+        overflow: '',
+        paddingRight: ''
+      });
+    }
+  }
+
+  function ensureModalAtBody(modal) {
+    if (modal && modal.parentNode !== document.body) {
+      document.body.appendChild(modal);
+    }
+  }
+
+  function wireModalHygiene() {
+    if (!window.jQuery) {
+      return;
+    }
+    var $ = window.jQuery;
+
+    $(document).on('show.bs.modal', '.modal', function () {
+      ensureModalAtBody(this);
+    });
+
+    $(document).on('shown.bs.modal', '.modal', function () {
+      enhanceForms(this);
+      wireFormLoadingStates(this);
+    });
+
+    $(document).on('hidden.bs.modal', '.modal', cleanupModalBackdrops);
+
+    document.addEventListener('click', function (event) {
+      var closer = event.target.closest('[data-bs-dismiss="modal"]');
+      if (!closer) {
+        return;
+      }
+      event.preventDefault();
+      var modal = closer.closest('.modal');
+      if (modal) {
+        $(modal).modal('hide');
+      }
+    });
+  }
+
+  function observeAjaxFragments() {
+    if (!window.MutationObserver) {
+      return;
+    }
+
+    var observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        Array.prototype.forEach.call(mutation.addedNodes, function (node) {
+          if (node.nodeType !== 1) {
+            return;
+          }
+          enhanceForms(node);
+          wireFormLoadingStates(node);
+        });
+      });
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  /* ---------------------------------------------------------------------- */
   /* Init                                                                   */
   /* ---------------------------------------------------------------------- */
   function init() {
@@ -308,6 +397,8 @@
     enhanceForms();
     autoDismissAlerts();
     loadLucide();
+    wireModalHygiene();
+    observeAjaxFragments();
     // Public, namespaced API (no bare globals).
     window.SMSModern = { toast: toast };
   }

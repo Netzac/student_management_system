@@ -41,6 +41,16 @@ def admin_home(request):
     subject_count = Subjects.objects.all().count()
     course_count = Courses.objects.all().count()
     staff_count = Staffs.objects.all().count()
+    active_student_count = Students.objects.filter(status='1').count()
+    inactive_student_count = Students.objects.filter(status='2').count()
+    completed_student_count = Students.completed.count()
+    active_staff_count = Staffs.objects.filter(status='1').count()
+    pending_student_leave_count = LeaveReportStudent.objects.filter(leave_status=0).count()
+    pending_staff_leave_count = LeaveReportStaff.objects.filter(leave_status=0).count()
+    pending_feedback_count = (
+        FeedBackStudent.objects.filter(feedback_reply='').count()
+        + FeedBackStaffs.objects.filter(feedback_reply='').count()
+    )
 
     # Total Subjects and students in Each Course
     course_all = Courses.objects.all()
@@ -110,15 +120,35 @@ def admin_home(request):
     gender_count.extend(extra)
 
     print("Gender_distr:", gender_count)
+    recent_students = Students.objects.select_related('admin', 'course_id').order_by('-created_at')[:5]
+    recent_staff = Staffs.objects.select_related('admin', 'role').order_by('-created_at')[:5]
+    total_people_count = all_student_count + staff_count
+    student_share = round((all_student_count / total_people_count) * 100) if total_people_count else 0
+    active_student_rate = round((active_student_count / all_student_count) * 100) if all_student_count else 0
+    active_staff_rate = round((active_staff_count / staff_count) * 100) if staff_count else 0
 
     context={
         "all_student_count": all_student_count,
         "subject_count": subject_count,
         "course_count": course_count,
         "staff_count": staff_count,
+        "active_student_count": active_student_count,
+        "inactive_student_count": inactive_student_count,
+        "completed_student_count": completed_student_count,
+        "active_staff_count": active_staff_count,
+        "pending_student_leave_count": pending_student_leave_count,
+        "pending_staff_leave_count": pending_staff_leave_count,
+        "pending_feedback_count": pending_feedback_count,
+        "student_share": student_share,
+        "active_student_rate": active_student_rate,
+        "active_staff_rate": active_staff_rate,
+        "recent_students": recent_students,
+        "recent_staff": recent_staff,
         "course_name_list": course_name_list,
         "subject_count_list": subject_count_list,
         "student_count_list_in_course": student_count_list_in_course,
+        "course_name_list_json": json.dumps(course_name_list),
+        "student_count_list_in_course_json": json.dumps(student_count_list_in_course),
         "subject_list": subject_list,
         "student_count_list_in_subject": student_count_list_in_subject,
         "staff_attendance_present_list": staff_attendance_present_list,
@@ -127,8 +157,13 @@ def admin_home(request):
         "student_attendance_present_list": student_attendance_present_list,
         "student_attendance_leave_list": student_attendance_leave_list,
         "student_name_list": student_name_list,
+        "student_attendance_present_list_json": json.dumps(student_attendance_present_list),
+        "student_attendance_leave_list_json": json.dumps(student_attendance_leave_list),
+        "student_name_list_json": json.dumps(student_name_list),
         "gender_list":gender_list,
-        "gender_list_count":gender_count
+        "gender_list_count":gender_count,
+        "gender_list_json": json.dumps(gender_list),
+        "gender_list_count_json": json.dumps(gender_count),
     }
     return render(request, "hod_template/home_content.html", context)
 

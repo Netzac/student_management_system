@@ -423,11 +423,21 @@ from django.db.models import Sum,Count
 # from functools import reduce
 # from queryset_sequence import QuerySetSequence
 
+def _percentage(part: int, whole: int) -> int:
+    if not whole:
+        return 0
+    return round((part / whole) * 100)
+
+
+def _money(value: int) -> int:
+    return value if value else 0
+
+
 def dashboard(request):
 
     rs = Student.objects.all()
     rs_count =rs.count()
-    rs_invoices_unfiltered = Invoice.objects.all().order_by('class_for')
+    rs_invoices_unfiltered = Invoice.objects.select_related('class_for', 'student', 'student__admin').all().order_by('class_for')
     rs_invoices = rs_invoices_unfiltered.values_list('id' ,flat =True)
     rs_receipts = Receipt.objects.filter(invoice__in = rs_invoices)
 
@@ -442,37 +452,74 @@ def dashboard(request):
     rs_recipts_amt = rs_recipts_amt if rs_recipts_amt else 0
     
     rs_arrears = {}
-    rs_fully_paid ={}
-    cls_labels = Courses.objects.all().values_list('course_name', flat=True)
-    key = 0
+    rs_fully_paid = {}
+    class_balance_totals = {}
+    class_paid_totals = {}
+    total_billed = 0
+    cls_all = Courses.objects.all()
+    cls_labels = cls_all.values_list('course_name', flat=True)
     for inv in rs_invoices_unfiltered:
-        key = str(inv.class_for.id)
-        bal =inv.balance()
-        if bal!=0:
-            rs_arrears.update({key:rs_arrears.get(key,0)+1})
+        key = inv.class_for.id
+        bal = inv.balance()
+        paid = inv.total_amount_paid()
+        payable = inv.total_amount_payable()
+        total_billed += payable
+        class_balance_totals[key] = class_balance_totals.get(key, 0) + bal
+        class_paid_totals[key] = class_paid_totals.get(key, 0) + paid
+        if bal != 0:
+            rs_arrears.update({key: rs_arrears.get(key, 0) + 1})
             #cls_labels.add(inv.class_for.course_name)
-        elif bal==0:
-            rs_fully_paid.update({key:rs_arrears.get(key,0)+1})
+        elif bal == 0:
+            rs_fully_paid.update({key: rs_fully_paid.get(key, 0) + 1})
             #cls_labels.add(inv.class_for.course_name)
 
 
    
       
        
-    arrears_list =list(rs_arrears.values())
+    arrears_list = [rs_arrears.get(cls.id, 0) for cls in cls_all]
+    fully_paid_list = [rs_fully_paid.get(cls.id, 0) for cls in cls_all]
     cls_list  = list(cls_labels)
+    class_summary = []
+    for cls in cls_all:
+        class_summary.append({
+            "name": cls.course_name,
+            "arrears_count": rs_arrears.get(cls.id, 0),
+            "fully_paid_count": rs_fully_paid.get(cls.id, 0),
+            "balance": class_balance_totals.get(cls.id, 0),
+            "paid": class_paid_totals.get(cls.id, 0),
+        })
+    class_summary = sorted(class_summary, key=lambda item: item["balance"], reverse=True)
+    top_arrears_classes = class_summary[:5]
+    recent_receipts = (
+        Receipt.objects.select_related('invoice__student__admin', 'invoice__class_for')
+        .filter(invoice__in=rs_invoices)
+        .order_by('-date_paid', '-id')[:5]
+    )
+    unpaid_students = max(rs_count - rs_receipts_count, 0)
+    collection_rate = _percentage(_money(rs_recipts_amt), total_billed)
 
     print('Arrears: ',arrears_list,cls_list )
     #rs_invoices_class = rs_invoices_unfiltered.values('student__course_id').annotate(cls_inv=Count('invoice_invoice_set.all()'))
 
     context={"total_students":rs_count,
              "paying_students" :rs_receipts_count,
-              "none_paying_students":rs_count-rs_receipts_count,
-              "total_arrears": rs_inv_item_amt-rs_recipts_amt,
+              "none_paying_students":unpaid_students,
+              "total_arrears": total_billed-rs_recipts_amt,
               "total_paid": rs_recipts_amt,
               "cls_labels": cls_list,
               "arrears":arrears_list,
-              "fully_paid":list(rs_fully_paid)}
+              "fully_paid": fully_paid_list,
+              "cls_labels_json": json.dumps(cls_list),
+              "arrears_json": json.dumps(arrears_list),
+              "fully_paid_json": json.dumps(fully_paid_list),
+              "invoice_count": rs_invoices_unfiltered.count(),
+              "receipt_count": rs_receipts.count(),
+              "total_billed": total_billed,
+              "collection_rate": collection_rate,
+              "top_arrears_classes": top_arrears_classes,
+              "recent_receipts": recent_receipts,
+              "class_summary": class_summary[:8]}
     return render(request,'student_account/dashboard.html',context)
 
 

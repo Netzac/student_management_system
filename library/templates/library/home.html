@@ -1,103 +1,505 @@
-{% extends 'hod_template/base_template.html' %} {% load humanize %} {% load customfilter %} 
-{% block main_content %}
+{% extends 'hod_template/base_template.html' %}
+{% load humanize %}
 
-<!--Section: Content-->
-<section class="">
-    <h2 class="fw-bolder"> Library Dashboard</h2>
-    <hr>
-    <div class="row justify-content-center">
-        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 px-1 pb-2">
-            <div class="card card-default rounded-0 shadow bg-success bg-gradient border-0 text-light">
-                <div class="card-body">
-                    <div class="container-fluid">
-                        <div class="row mx-0 w-100 align-items-center">
-                            <div class="col-3">
-                                <i class="fs-1 text-light fa fa-th-list"></i>
-                            </div>
-                            <div class="col-9">
-                                <h1 class="text-end">{{categories|intcomma}}</h2>
-                            </div>
-                           
-                            <div class="col-12 text-end"> <a href="{% url 'lib:category-page' %}" class="text-white"><b>Active Categories</b> <i class="fas fa-arrow-circle-right"></i></a></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-           
+{% block custom_css %}
+<style>
+  .library-dashboard {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .library-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.35rem;
+    border: 1px solid #d7e9ec;
+    border-radius: 8px;
+    background:
+      linear-gradient(135deg, rgba(0, 110, 127, 0.10), rgba(255, 255, 255, 0.92)),
+      #fff;
+    box-shadow: 0 8px 24px rgba(0, 63, 76, 0.08);
+  }
+
+  .library-hero h2 {
+    margin: 0;
+    color: #003e4d;
+    font-size: 1.45rem;
+    font-weight: 700;
+  }
+
+  .library-hero p {
+    max-width: 58rem;
+    margin: 0.35rem 0 0;
+    color: #605e5c;
+  }
+
+  .library-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .library-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .library-kpi,
+  .library-panel {
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .library-kpi {
+    padding: 1rem;
+    min-height: 126px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .library-kpi-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .library-kpi-label {
+    margin: 0;
+    color: #605e5c;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .library-kpi-value {
+    margin: 0.25rem 0 0;
+    color: #323130;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .library-kpi-icon {
+    width: 2.35rem;
+    height: 2.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: #006e7f;
+    background: #d6eaee;
+  }
+
+  .library-kpi-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #006e7f;
+    font-weight: 700;
+  }
+
+  .library-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 1rem;
+  }
+
+  .library-panel {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .library-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid #e1e4e8;
+  }
+
+  .library-panel-title {
+    margin: 0;
+    color: #323130;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .library-panel-body {
+    padding: 1rem 1.1rem;
+  }
+
+  .library-metric-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .library-mini-metric {
+    padding: 0.85rem;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    background: #faf9f8;
+  }
+
+  .library-mini-metric span {
+    display: block;
+    color: #605e5c;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .library-mini-metric strong {
+    display: block;
+    margin-top: 0.2rem;
+    color: #323130;
+    font-size: 1.45rem;
+    line-height: 1;
+  }
+
+  .library-progress {
+    height: 0.55rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #edebe9;
+  }
+
+  .library-progress > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #006e7f;
+  }
+
+  .library-list {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .library-list-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid #edebe9;
+  }
+
+  .library-list-item:last-child {
+    border-bottom: 0;
+  }
+
+  .library-list-title {
+    margin: 0;
+    color: #323130;
+    font-weight: 700;
+  }
+
+  .library-list-subtitle {
+    margin: 0.15rem 0 0;
+    color: #605e5c;
+    font-size: 0.86rem;
+  }
+
+  .library-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.22rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .library-status-pending {
+    color: #003e4d;
+    background: #d6eaee;
+  }
+
+  .library-status-returned {
+    color: #0b5a0b;
+    background: #dff6dd;
+  }
+
+  .library-status-overdue {
+    color: #7a1c20;
+    background: #fde7e9;
+  }
+
+  .library-empty {
+    margin: 0;
+    padding: 1rem;
+    border: 1px dashed #c8c6c4;
+    border-radius: 8px;
+    color: #605e5c;
+    background: #faf9f8;
+  }
+
+  @media (max-width: 991px) {
+    .library-hero,
+    .library-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .library-actions {
+      justify-content: flex-start;
+    }
+
+    .library-kpis {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 575px) {
+    .library-kpis,
+    .library-metric-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+<section class="library-dashboard">
+  <div class="library-hero">
+    <div>
+      <h2>Library Dashboard</h2>
+      <p>Monitor catalogue health, circulation activity, due dates, and stock coverage from one focused workspace.</p>
+    </div>
+    <div class="library-actions">
+      <a class="btn btn-primary" href="{% url 'lib:borrow-page' %}">
+        <i class="fas fa-plus mr-1"></i> New Borrow
+      </a>
+      <a class="btn btn-secondary" href="{% url 'lib:book-page' %}">
+        <i class="fas fa-book mr-1"></i> Manage Books
+      </a>
+      <a class="btn btn-secondary" href="{% url 'lib:borrow-page' %}">
+        <i class="fas fa-exchange-alt mr-1"></i> Transactions
+      </a>
+    </div>
+  </div>
+
+  <div class="library-kpis">
+    <article class="library-kpi">
+      <div class="library-kpi-top">
+        <div>
+          <p class="library-kpi-label">Active Books</p>
+          <p class="library-kpi-value">{{ books|intcomma }}</p>
         </div>
-        {% comment %}
-        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 px-1 pb-2">
-            <div class="card card-default rounded-0 shadow bg-gradient bg-dark bg-opacity-75 text-light">
-                <div class="card-body">
-                    <div class="container-fluid">
-                        <div class="row mx-0 w-100 align-items-center">
-                            <div class="col-3">
-                                <i class="fs-1 text-light fa fa-list"></i>
-                            </div>
-                            <div class="col-9">
-                                <h1 class="text-end">{{sub_categories|intcomma}}</h2>
-                            </div>
-                           <div class="col-12 text-end"> <a href="{% url 'lib:sub-category-page' %}" class="text-white"><b>Active Sub Categories</b> <i class="fas fa-arrow-circle-right"></i></a></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <span class="library-kpi-icon"><i class="fas fa-book"></i></span>
+      </div>
+      <a href="{% url 'lib:book-page' %}" class="library-kpi-link">Open catalogue <i class="fas fa-arrow-right"></i></a>
+    </article>
+
+    <article class="library-kpi">
+      <div class="library-kpi-top">
+        <div>
+          <p class="library-kpi-label">Checked Out</p>
+          <p class="library-kpi-value">{{ pending|intcomma }}</p>
         </div>
-       {%endcomment%}
-        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 px-1 pb-2">
-            <div class="card card-default rounded-0 shadow bg-gradient bg-warning bg-opacity-75 text-light">
-                <div class="card-body">
-                    <div class="container-fluid">
-                        <div class="row mx-0 w-100 align-items-center">
-                            <div class="col-3">
-                                <i class="fs-1 text-light fa fa-book"></i>
-                            </div>
-                            <div class="col-9">
-                                <h1 class="text-end">{{books|intcomma}}</h2>
-                            </div>
-                            <div class="col-12 text-end"> <a href="{% url 'lib:book-page' %}" class="text-white"><b>Active Books</b> <i class="fas fa-arrow-circle-right"></i></a></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <span class="library-kpi-icon"><i class="fas fa-book-reader"></i></span>
+      </div>
+      <a href="{% url 'lib:borrow-page' %}" class="library-kpi-link">Review borrows <i class="fas fa-arrow-right"></i></a>
+    </article>
+
+    <article class="library-kpi">
+      <div class="library-kpi-top">
+        <div>
+          <p class="library-kpi-label">Overdue</p>
+          <p class="library-kpi-value">{{ overdue|intcomma }}</p>
         </div>
-        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 px-1 pb-2">
-            <div class="card card-default rounded-0 shadow bg-gradient bg-secondary text-light">
-                <div class="card-body">
-                    <div class="container-fluid">
-                        <div class="row mx-0 w-100 align-items-center">
-                            <div class="col-3">
-                                <i class="fs-1 text-light fa fa-book-open"></i>
-                            </div>
-                            <div class="col-9">
-                                <h1 class="text-end">{{pending|intcomma}}</h2>
-                            </div>
-                            <div class="col-12 text-end"> <a href="{% url 'lib:borrow-page' %}" class="text-white"><b>Borrows</b> <i class="fas fa-arrow-circle-right"></i></a></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <span class="library-kpi-icon"><i class="fas fa-clock"></i></span>
+      </div>
+      <span class="library-list-subtitle">{{ due_soon|intcomma }} due within 7 days</span>
+    </article>
+
+    <article class="library-kpi">
+      <div class="library-kpi-top">
+        <div>
+          <p class="library-kpi-label">Available Stock</p>
+          <p class="library-kpi-value">{{ available_now|intcomma }}</p>
         </div>
-        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 px-1 pb-2">
-            <div class="card card-default rounded-0 shadow bg-gradient bg-light text-dark">
-                <div class="card-body">
-                    <div class="container-fluid">
-                        <div class="row mx-0 w-100 align-items-center">
-                            <div class="col-3">
-                                <i class="fs-1 text-light fa fa-book-open"></i>
-                            </div>
-                            <div class="col-9">
-                                <h1 class="text-end">{{transactions|intcomma}}</h2>
-                            </div>
-                            <div class="col-12 text-end"><b>Total Transactions</b></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <span class="library-kpi-icon"><i class="fas fa-layer-group"></i></span>
+      </div>
+      <div class="library-progress" aria-label="Available stock percentage">
+        <span style="width: {{ available_percent }}%"></span>
+      </div>
+    </article>
+  </div>
+
+  <div class="library-grid">
+    <article class="library-panel">
+      <div class="library-panel-header">
+        <h3 class="library-panel-title">Circulation Health</h3>
+        <a class="btn btn-sm btn-secondary" href="{% url 'lib:borrow-page' %}">View all</a>
+      </div>
+      <div class="library-panel-body">
+        <div class="library-metric-row">
+          <div class="library-mini-metric">
+            <span>Total Transactions</span>
+            <strong>{{ transactions|intcomma }}</strong>
+          </div>
+          <div class="library-mini-metric">
+            <span>Returned</span>
+            <strong>{{ returned|intcomma }}</strong>
+          </div>
+          <div class="library-mini-metric">
+            <span>Students</span>
+            <strong>{{ students|intcomma }}</strong>
+          </div>
         </div>
+
+        <div class="mt-4">
+          <div class="d-flex justify-content-between mb-1">
+            <strong>Returned rate</strong>
+            <span>{{ returned_percent }}%</span>
+          </div>
+          <div class="library-progress"><span style="width: {{ returned_percent }}%"></span></div>
+        </div>
+
+        <div class="mt-3">
+          <div class="d-flex justify-content-between mb-1">
+            <strong>Open circulation</strong>
+            <span>{{ pending_percent }}%</span>
+          </div>
+          <div class="library-progress"><span style="width: {{ pending_percent }}%"></span></div>
+        </div>
+
+        <div class="mt-3">
+          <div class="d-flex justify-content-between mb-1">
+            <strong>Overdue among open borrows</strong>
+            <span>{{ overdue_percent }}%</span>
+          </div>
+          <div class="library-progress"><span style="width: {{ overdue_percent }}%"></span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="library-panel">
+      <div class="library-panel-header">
+        <h3 class="library-panel-title">Catalogue Coverage</h3>
+        <a class="btn btn-sm btn-secondary" href="{% url 'lib:category-page' %}">Categories</a>
+      </div>
+      <div class="library-panel-body">
+        <div class="library-metric-row">
+          <div class="library-mini-metric">
+            <span>Categories</span>
+            <strong>{{ categories|intcomma }}</strong>
+          </div>
+          <div class="library-mini-metric">
+            <span>Sub Categories</span>
+            <strong>{{ sub_categories|intcomma }}</strong>
+          </div>
+          <div class="library-mini-metric">
+            <span>Total Stock</span>
+            <strong>{{ total_stock|intcomma }}</strong>
+          </div>
+        </div>
+
+        <ul class="library-list mt-3">
+          {% for category in top_categories %}
+          <li>
+            <div class="d-flex justify-content-between mb-1">
+              <strong>{{ category.category__name|default:"Uncategorised" }}</strong>
+              <span>{{ category.total|intcomma }}</span>
+            </div>
+            <div class="library-progress"><span style="width: {{ category.percent }}%"></span></div>
+          </li>
+          {% empty %}
+          <li><p class="library-empty">No active category data yet.</p></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </article>
+  </div>
+
+  <div class="library-grid">
+    <article class="library-panel">
+      <div class="library-panel-header">
+        <h3 class="library-panel-title">Recent Borrowing Activity</h3>
+        <a class="btn btn-sm btn-primary" href="{% url 'lib:borrow-page' %}">Record borrow</a>
+      </div>
+      <div class="library-panel-body">
+        <ul class="library-list">
+          {% for borrow in recent_borrows %}
+          <li class="library-list-item">
+            <div>
+              <p class="library-list-title">{{ borrow.book.title }}</p>
+              <p class="library-list-subtitle">
+                {{ borrow.student.admin.first_name }} {{ borrow.student.admin.last_name }}
+                · Due {{ borrow.return_date|date:"M d, Y" }}
+              </p>
+            </div>
+            {% if borrow.status == '2' %}
+            <span class="library-status library-status-returned">Returned</span>
+            {% elif borrow.return_date < today %}
+            <span class="library-status library-status-overdue">Overdue</span>
+            {% else %}
+            <span class="library-status library-status-pending">Pending</span>
+            {% endif %}
+          </li>
+          {% empty %}
+          <li><p class="library-empty">No borrowing transactions recorded yet.</p></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </article>
+
+    <article class="library-panel">
+      <div class="library-panel-header">
+        <h3 class="library-panel-title">Most Borrowed Titles</h3>
+        <a class="btn btn-sm btn-secondary" href="{% url 'lib:book-page' %}">Books</a>
+      </div>
+      <div class="library-panel-body">
+        <ul class="library-list">
+          {% for book in popular_books %}
+          <li class="library-list-item">
+            <div>
+              <p class="library-list-title">{{ book.title }}</p>
+              <p class="library-list-subtitle">{{ book.category.name }} · {{ book.author }}</p>
+            </div>
+            <span class="library-status library-status-pending">{{ book.borrow_total|intcomma }} borrows</span>
+          </li>
+          {% empty %}
+          <li><p class="library-empty">Borrowing history will appear here once books are issued.</p></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </article>
+  </div>
+
+  <article class="library-panel">
+    <div class="library-panel-header">
+      <h3 class="library-panel-title">Recently Added Books</h3>
+      <a class="btn btn-sm btn-secondary" href="{% url 'lib:book-page' %}">Add book</a>
+    </div>
+    <div class="library-panel-body">
+      <ul class="library-list">
+        {% for book in recent_books %}
+        <li class="library-list-item">
+          <div>
+            <p class="library-list-title">{{ book.title }}</p>
+            <p class="library-list-subtitle">{{ book.category.name }} · Published {{ book.date_published|date:"M d, Y" }}</p>
+          </div>
+          <span class="library-status library-status-pending">Stock {{ book.stock|intcomma }}</span>
+        </li>
+        {% empty %}
+        <li><p class="library-empty">No active books are available yet.</p></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </article>
 </section>
-</div> {% endblock main_content %} 
-{% block custom_js %}
-<script>
-</script>
-{% endblock custom_js %}
+{% endblock main_content %}
