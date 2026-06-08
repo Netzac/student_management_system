@@ -1,151 +1,178 @@
 {% extends 'hod_template/base_template.html' %}
+{% load static %}
 
 {% block page_title %}
     Edit {{ staff.admin }}
 {% endblock page_title %}
 
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'student_core/css/form_wizard.css' %}">
+{% endblock custom_css %}
+
 {% block main_content %}
 
-{% load static %}
-
 <section class="content">
-        <div class="container-fluid">
-
-            <div class="row justify-content-center">
-                <div class="col-md-10">
-                    <!-- general form elements -->
-                    <div class="card card-secondary">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card card-secondary">
                     <div class="card-header">
                         <h3 class="card-title">Edit Staff</h3>
                     </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
-                    <form role="form" method="POST" action="{% url 'edit_staff_save' %}" enctype="multipart/form-data">
-                        {% csrf_token %}
 
-                        
-                                {% comment %} Display Messages {% endcomment %}
-                                {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-                                {% endif %}
-                            
+                    <form class="m-form-in-card" role="form" method="POST" action="{% url 'edit_staff_save' %}" enctype="multipart/form-data" data-form-wizard>
+                        {% csrf_token %}
+                        <input type="hidden" name="staff_id" value="{{ staff.admin.id }}">
 
                         <div class="card-body">
-                            <div class="form-group">
-                                <label>Email address</label>
-                                <input type="email" class="form-control" name="email" value="{{ staff.admin.email }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Username</label>
-                                <input type="text" class="form-control" name="username" value="{{ staff.admin.username }}">
-                            </div>
-
-                            {% comment %} <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" class="form-control" name="password" value="{{ staff.admin.password }}">
-                            </div> {% endcomment %}
-
-                            <div class="form-group">
-                                <label>First Name</label>
-                                <input type="text" class="form-control" name="first_name" value="{{ staff.admin.first_name }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Last Name</label>
-                                <input type="text" class="form-control" name="last_name" value="{{ staff.admin.last_name }}">
-                                <input type="hidden" name="staff_id" value="{{ staff.admin.id }}" />
-                            </div>
-
-                            <div class="form-group">
-                                <label>Address</label>
-                                <textarea class="form-control" name="address">{{ staff.address }}</textarea>
-                            </div>
-
-                            <div class="form-row align-items-center">
-                                <div class="col-3">
-                                    <label class="" for="id_contact">Contact Number</label>
-                                    <input type="number" class="form-control" name="contact" placeholder="Contact Number" value="{{staff.contact_number}}" id="id_contact">
+                            {% if messages %}
+                                <div class="form-wizard__messages">
+                                    {% for message in messages %}
+                                        {% if message.tags == "error" %}
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                {{ message }}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        {% elif message.tags == "success" %}
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                {{ message }}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
-                               
-                                    <div class="col-3">
-                                        <label class="" for="id_accno">Account Number</label>
-                                        <input type="text" class="form-control" name="accno" placeholder="Account No" id="id_accno" value="{{staff.bank_acc_no}}">
-                                    </div>
-                                    <div class="col-3">
-                                        <label class="" for="id_bank">Bank</label>
-                                        <select class="form-control" name="bank" placeholder="Bank">
-                                            <option value={{staff.bank.id}}>{{staff.bank}} </option>
-                                            {% for bank in banks %}
-                                               
-                                                <option value="{{ bank.id }}">{{bank}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="col-3">
-                                        <label class="" for="id_ssno">Social Security No</label>
-                                        <input type="text" class="form-control" name="ssno" placeholder="Social Security No" id="id_ssno" value="{{staff.ss_no}}">
-                                    </div>
-                            </div>
+                            {% endif %}
 
-                          
+                            <div class="form-wizard">
+                                <ol class="form-wizard__steps" role="tablist">
+                                    <li>
+                                        <button type="button" class="form-wizard__step-button" data-step-index="0" role="tab">
+                                            <span class="form-wizard__step-number">1</span>
+                                            <span class="form-wizard__step-label">Profile</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="form-wizard__step-button" data-step-index="1" role="tab">
+                                            <span class="form-wizard__step-number">2</span>
+                                            <span class="form-wizard__step-label">Contact</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="form-wizard__step-button" data-step-index="2" role="tab">
+                                            <span class="form-wizard__step-number">3</span>
+                                            <span class="form-wizard__step-label">Work details</span>
+                                        </button>
+                                    </li>
+                                </ol>
 
-                            
-                            <div class="form-row align-items-center">
-                                <div class="col sm-6">
-                                    <label class="" for="id_bank">Role/Designation</label>
-                                    <select class="form-control" name="role" placeholder="Role">
-                                        <option value="{{staff.role_id}}">{{staff.role}}</option>
-                                        {% for role in roles %}
-                                           
-                                            <option value="{{ role.id }}">{{role}}</option>
-                                        {% endfor %}
-                                    </select>
+                                <section class="form-wizard__panel" role="tabpanel">
+                                    <div class="form-wizard__panel-header">
+                                        <h4 class="form-wizard__panel-title">Profile details</h4>
+                                    </div>
+                                    <div class="form-wizard__panel-body">
+                                        <div class="form-group">
+                                            <label for="id_first_name">First Name</label>
+                                            <input type="text" class="form-control" name="first_name" id="id_first_name" value="{{ staff.admin.first_name }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_last_name">Last Name</label>
+                                            <input type="text" class="form-control" name="last_name" id="id_last_name" value="{{ staff.admin.last_name }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_email">Email address</label>
+                                            <input type="email" class="form-control" name="email" id="id_email" value="{{ staff.admin.email }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_username">Username</label>
+                                            <input type="text" class="form-control" name="username" id="id_username" value="{{ staff.admin.username }}">
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="form-wizard__panel" role="tabpanel">
+                                    <div class="form-wizard__panel-header">
+                                        <h4 class="form-wizard__panel-title">Contact and bank details</h4>
+                                    </div>
+                                    <div class="form-wizard__panel-body">
+                                        <div class="form-group form-group--wide">
+                                            <label for="id_address">Address</label>
+                                            <textarea class="form-control" name="address" id="id_address">{{ staff.address }}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_contact">Contact Number</label>
+                                            <input type="number" class="form-control" name="contact" placeholder="Contact Number" value="{{ staff.contact_number }}" id="id_contact">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_accno">Account Number</label>
+                                            <input type="text" class="form-control" name="accno" placeholder="Account No" id="id_accno" value="{{ staff.bank_acc_no }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_bank">Bank</label>
+                                            <select class="form-control" name="bank" id="id_bank">
+                                                <option value="{{ staff.bank.id }}">{{ staff.bank }}</option>
+                                                {% for bank in banks %}
+                                                    <option value="{{ bank.id }}">{{ bank }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_ssno">Social Security No</label>
+                                            <input type="text" class="form-control" name="ssno" placeholder="Social Security No" id="id_ssno" value="{{ staff.ss_no }}">
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="form-wizard__panel" role="tabpanel">
+                                    <div class="form-wizard__panel-header">
+                                        <h4 class="form-wizard__panel-title">Work details</h4>
+                                    </div>
+                                    <div class="form-wizard__panel-body">
+                                        <div class="form-group">
+                                            <label for="id_role">Role/Designation</label>
+                                            <select class="form-control" name="role" id="id_role">
+                                                <option value="{{ staff.role_id }}">{{ staff.role }}</option>
+                                                {% for role in roles %}
+                                                    <option value="{{ role.id }}">{{ role }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group form-group--wide">
+                                            <label for="signature">Signature</label>
+                                            <input type="file" class="form-control" placeholder="Upload a signature" name="signature" id="signature">
+                                            {% if staff.signature %}
+                                                <small class="form-text text-muted">Current signature: {{ staff.signature.url }}</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <div class="form-wizard__actions">
+                                    <button type="button" class="btn btn-secondary form-wizard__previous">
+                                        <i class="fas fa-arrow-left"></i>
+                                        Previous
+                                    </button>
+                                    <button type="button" class="btn btn-primary form-wizard__next">
+                                        Next
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <button type="submit" class="btn btn-primary form-wizard__submit">Update Staff</button>
+                                    {% include 'cancel_button.html' %}
                                 </div>
-                                <div class="file-field input-field col sm-6">
-                                    <label for="signature">Signature</label>
-                                    <div class="file-path-wrapper col sm-6">
-                                    <input type="file" placeholder="Upload a signature" name="signature" ><a>{{staff.signature.url}}</a>
-                                    </div>
-                                </div>
                             </div>
-
-
-                        </div>
-                        <!-- /.card-body -->
-
-                        <div class="card-footer">
-                        <button type="submit" class="btn btn-success">Update Staff</button>
-                        {% include 'cancel_button.html'%}
                         </div>
                     </form>
-                    </div>
-                    <!-- /.card -->
-
                 </div>
             </div>
+        </div>
+    </div>
+</section>
 
-        </div><!-- /.container-fluid -->
-      </section>
+{% endblock main_content %}
 
-  {% endblock main_content %}
+{% block custom_js %}
+<script src="{% static 'student_core/js/form_wizard.js' %}"></script>
+{% endblock custom_js %}

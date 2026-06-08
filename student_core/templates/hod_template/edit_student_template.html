@@ -1,12 +1,15 @@
 {% extends 'hod_template/base_template.html' %}
+{% load static %}
 
 {% block page_title %}
     Edit Student: {{ username }} 
 {% endblock page_title %}
 
-{% block main_content %}
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'student_core/css/form_wizard.css' %}">
+{% endblock custom_css %}
 
-{% load static %}
+{% block main_content %}
 
 <section class="content">
    
@@ -35,3 +38,7 @@
       </section>
 
   {% endblock main_content %}
+
+  {% block custom_js %}
+  <script src="{% static 'student_core/js/form_wizard.js' %}"></script>
+  {% endblock custom_js %}

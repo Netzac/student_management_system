@@ -240,10 +240,14 @@ def manage_staff(request):
 
 def edit_staff(request, staff_id):
     staff = Staffs.objects.get(admin=staff_id)
+    banks = Bank.objects.all()
+    roles = Role.objects.all()
 
     context = {
         "staff": staff,
-        "id": staff_id
+        "id": staff_id,
+        "banks": banks,
+        "roles": roles,
     }
     return render(request, "hod_template/edit_staff_template.html", context)
 
