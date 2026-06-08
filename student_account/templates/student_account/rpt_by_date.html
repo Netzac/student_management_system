@@ -5,35 +5,65 @@
   <small>Bills Payment Report</small>
 {% endblock page_title %}
 
+{% block custom_css %}
+    <link rel="stylesheet" href="{% static 'student_account/css/reports.css' %}">
+{% endblock custom_css %}
+
 {% block main_content %}
 
+<div class="student-account-report">
+    <div class="student-account-report__header">
+        <div>
+            <div class="student-account-report__eyebrow">Student Accounts</div>
+            <h2 class="student-account-report__title">Bills Payment Report</h2>
+            <p class="student-account-report__subtitle">Review payments grouped by paid date.</p>
+        </div>
+        <div class="student-account-report__nav">
+            <a class="btn btn-primary" href="{% url 'report-by-range' %}">
+                <i class="fas fa-calendar-day"></i>
+                Date range
+            </a>
+            <a class="btn btn-secondary" href="{% url 'report-by-month' %}">
+                <i class="fas fa-calendar-alt"></i>
+                Monthly
+            </a>
+        </div>
+    </div>
+
 {% if form %}
-    <h4>Filters</h4>
-    
-    <form>
-        <div class="row justify-content-center bg-white">
-            <div class="col-sm-6 text-dark">
+    <div class="report-panel">
+        <div class="report-panel__header">
+            <h3 class="report-panel__title">Filters</h3>
+        </div>
+        <div class="report-panel__body">
+            <form class="report-filter-form m-form-in-card">
+                <div class="report-filter-grid">
+                    <div class="report-filter-fields">
                 {% crispy form form.get_crispy_helper %} 
                 {# {% include 'form_snippet.html' %} #}
-            </div>
+                    </div>
+                    <div class="report-actions">
+                        <button type="submit" class="btn btn-primary refreshReport">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                        <a class="btn btn-secondary" href="{% url 'report-by-range' %}">
+                            <i class="fas fa-undo"></i>
+                            Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="row justify-content-center mr-5 ml-1">
-            <div class="col-sm-3">
-                <input type="submit" value="Filter" class="btn btn-dark btn-lg btn-block refreshReport mt-2">
-            </div>
-            <div class="col-sm-3">
-
-                <a type="button" value="Reset" class="btn btn-success btn-lg btn-block mt-2  " href="{% url 'report-by-range' %}">Reset</a>
-            </div>
-
-        </div>
-    </form>
+    </div>
     
 {% endif %}
-    <h4 class="py-5">Results</h4>
-    <div class="card" id="{{ report_data.report_slug }}">
-        <div class="card-body">
-            <div class="chartContainer screenOnly">
+    <div class="report-panel" id="{{ report_data.report_slug }}">
+        <div class="report-panel__header">
+            <h3 class="report-panel__title">Results</h3>
+        </div>
+        <div class="report-panel__body">
+            <div class="chartContainer screenOnly report-chart-shell">
                 <div class="controls text-center">
                     <ul class="nav-charts list-inline">
 
@@ -68,6 +98,7 @@
             </div>
         </div>
     </div>
+</div>
 
 
 {% endblock %}

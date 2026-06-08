@@ -553,6 +553,58 @@ label .text-danger {
   }
 }
 
+/* Button and label alignment guardrail for legacy templates that mix `.btn`,
+   `bg-*`, and nested anchor markup. */
+.btn,
+button.btn,
+a.btn,
+input.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.btn-primary,
+.btn-success,
+.btn-info,
+.btn-warning,
+.btn-danger,
+.btn-dark,
+.btn-teal,
+.bg-primary.btn,
+.bg-success.btn,
+.bg-info.btn,
+.bg-warning.btn,
+.bg-danger.btn,
+.bg-dark.btn,
+button.bg-primary,
+button.bg-success,
+button.bg-info,
+button.bg-warning,
+button.bg-danger,
+button.bg-dark {
+  color: #fff !important;
+}
+
+button.bg-primary a,
+button.bg-success a,
+button.bg-info a,
+button.bg-warning a,
+button.bg-danger a,
+button.bg-dark a {
+  color: #fff !important;
+}
+
+.form-group label,
+.form-row label,
+.card-body label {
+  align-items: center;
+  min-height: 20px;
+}
+
 /* ==========================================================================
    MODERN SHELL  —  light Vercel/Linear sidebar + airy content + clean navbar.
    Loaded last, so these rules are authoritative over earlier sidebar tweaks.

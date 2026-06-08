@@ -1,0 +1,251 @@
+/* Student account reports: additive UI polish for Slick Reporting pages. */
+
+.student-account-report {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.student-account-report__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--m-border);
+  border-radius: var(--m-radius);
+  background: linear-gradient(135deg, #f7fbfc 0%, #ffffff 62%, #eef7f8 100%);
+}
+
+.student-account-report__eyebrow {
+  margin-bottom: 0.25rem;
+  color: var(--m-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.student-account-report__title {
+  margin: 0;
+  color: var(--m-text);
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.student-account-report__subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--m-text-secondary);
+}
+
+.student-account-report__nav {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.report-panel {
+  border: 1px solid var(--m-border);
+  border-radius: var(--m-radius);
+  background: #fff;
+  box-shadow: var(--m-shadow-sm);
+}
+
+.report-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--m-border);
+}
+
+.report-panel__title {
+  margin: 0;
+  color: var(--m-text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.report-panel__body {
+  padding: 1.25rem;
+}
+
+.report-filter-form {
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.report-filter-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.report-filter-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(14rem, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+
+.report-filter-fields .form-group {
+  margin-bottom: 0 !important;
+}
+
+.report-filter-fields label {
+  display: flex;
+  align-items: center;
+  min-height: 20px;
+  margin-bottom: 0.35rem;
+}
+
+.report-filter-fields .form-control,
+.report-filter-fields .custom-select,
+.report-filter-fields .select2-container {
+  width: 100% !important;
+}
+
+.report-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+
+.report-actions .btn {
+  min-width: 7rem;
+}
+
+.report-chart-shell {
+  min-height: 18rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--m-border);
+  border-radius: var(--m-radius-sm);
+  background: #fbfcfd;
+  overflow: hidden;
+}
+
+.report-chart-shell .controls {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--m-border);
+  background: #fff;
+}
+
+.report-chart-shell .nav-charts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.report-chart-shell .nav-charts li {
+  margin: 0 !important;
+}
+
+.report-chart-shell .nav-charts a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.25rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--m-border);
+  border-radius: var(--m-radius-sm);
+  background: #fff;
+  color: var(--m-text);
+  font-weight: 600;
+}
+
+.report-chart-shell .nav-charts a:hover,
+.report-chart-shell .nav-charts li.active a {
+  border-color: var(--m-primary);
+  background: var(--m-primary-tint-2);
+  color: var(--m-primary-darker);
+}
+
+.reportChart {
+  min-height: 15rem;
+  padding: 1rem;
+}
+
+.report-table {
+  border: 1px solid var(--m-border);
+  border-radius: var(--m-radius-sm);
+  overflow: hidden;
+}
+
+.report-table .table {
+  margin-bottom: 0;
+}
+
+.report-table .table thead th {
+  background: #f6f8fa;
+  color: var(--m-text);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.report-table .table td {
+  vertical-align: middle;
+}
+
+.report-table .dataTables_wrapper {
+  padding: 1rem;
+}
+
+.report-table .dataTables_wrapper .row:first-child,
+.report-table .dataTables_wrapper .row:last-child {
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .report-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-actions {
+    justify-content: stretch;
+  }
+
+  .report-actions .btn {
+    flex: 1 1 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-account-report__header {
+    flex-direction: column;
+  }
+
+  .student-account-report__nav {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .report-filter-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .student-account-report__header,
+  .report-panel__header,
+  .report-panel__body {
+    padding: 1rem;
+  }
+
+  .report-actions {
+    flex-direction: column;
+  }
+
+  .report-actions .btn {
+    width: 100%;
+  }
+}
