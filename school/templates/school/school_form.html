@@ -1,37 +1,176 @@
 {% extends 'hod_template/base_template.html' %}
-{% load humanize %}
+{% load static %}
+{% load widget_tweaks %}
+
 {% block page_title %}
    <i class="fas fa-school"></i> School Details
 {% endblock page_title %}
+
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'student_core/css/form_wizard.css' %}">
+{% endblock custom_css %}
+
+{% block breadcrumb %}
+<a class="btn btn-primary" href="{% url 'school-list' %}" role="button">School List</a>&nbsp;
+{% endblock breadcrumb %}
+
 {% block main_content %}
 {% include 'status_message.html' %}
+
 <section class="content">
-<div class="container-fluid">
-<div class="row justify-content-center bg-white pt-3 rounded-lg col-sm-12" style="opacity: 0.8;">
-  <div class="col-sm-8">
-    {% if not exists %}
-    <form action="" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
+    <div class="container-fluid">
+        <div class="row justify-content-center bg-light">
+            <div class="col-md-10">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ panel_title|default:"School Details" }}</h3>
+                    </div>
 
-      {% include 'form_snippet.html' %}
-      <div class="row justify-content-center col-sm-12 my-3">
-        <div class="col col-sm-6">
-        <input type="submit" class="btn btn-success" value="Save Details">
-        {% include 'cancel_button.html'%}
-      </div>
+                    {% if not exists %}
+                    <form class="m-form-in-card" role="form" method="POST" action="" enctype="multipart/form-data" data-form-wizard>
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="form-wizard">
+                                <ol class="form-wizard__steps" role="tablist">
+                                    <li>
+                                        <button type="button" class="form-wizard__step-button" data-step-index="0" role="tab">
+                                            <span class="form-wizard__step-number">1</span>
+                                            <span class="form-wizard__step-label">Identity</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="form-wizard__step-button" data-step-index="1" role="tab">
+                                            <span class="form-wizard__step-number">2</span>
+                                            <span class="form-wizard__step-label">Contact &amp; Branch</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="form-wizard__step-button" data-step-index="2" role="tab">
+                                            <span class="form-wizard__step-number">3</span>
+                                            <span class="form-wizard__step-label">Administration &amp; Branding</span>
+                                        </button>
+                                    </li>
+                                </ol>
+
+                                <section class="form-wizard__panel" role="tabpanel">
+                                    <div class="form-wizard__panel-header">
+                                        <h4 class="form-wizard__panel-title">School identity</h4>
+                                    </div>
+                                    <div class="form-wizard__panel-body">
+                                        <div class="form-group">
+                                            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                                            {{ form.name|add_class:"form-control" }}
+                                            {% for error in form.name.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.motto.id_for_label }}">{{ form.motto.label }}</label>
+                                            {{ form.motto|add_class:"form-control" }}
+                                            {% for error in form.motto.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                        <div class="form-group form-group--wide">
+                                            <label for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
+                                            {{ form.address|add_class:"form-control" }}
+                                            {% for error in form.address.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="form-wizard__panel" role="tabpanel">
+                                    <div class="form-wizard__panel-header">
+                                        <h4 class="form-wizard__panel-title">Contact &amp; branch</h4>
+                                    </div>
+                                    <div class="form-wizard__panel-body">
+                                        <div class="form-group">
+                                            <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+                                            {{ form.phone|add_class:"form-control" }}
+                                            {% for error in form.phone.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                                            {{ form.email|add_class:"form-control" }}
+                                            {% for error in form.email.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.branch.id_for_label }}">{{ form.branch.label }}</label>
+                                            {{ form.branch|add_class:"form-control" }}
+                                            {% for error in form.branch.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.bank.id_for_label }}">{{ form.bank.label }}</label>
+                                            {{ form.bank|add_class:"form-control" }}
+                                            {% for error in form.bank.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="form-wizard__panel" role="tabpanel">
+                                    <div class="form-wizard__panel-header">
+                                        <h4 class="form-wizard__panel-title">Administration &amp; branding</h4>
+                                    </div>
+                                    <div class="form-wizard__panel-body">
+                                        <div class="form-group">
+                                            <label for="{{ form.admin.id_for_label }}">{{ form.admin.label }}</label>
+                                            {{ form.admin|add_class:"form-control" }}
+                                            {% for error in form.admin.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                        <div class="form-group form-group--wide">
+                                            <label for="{{ form.adminSignature.id_for_label }}">{{ form.adminSignature.label }}</label>
+                                            {{ form.adminSignature|add_class:"form-control" }}
+                                            {% for error in form.adminSignature.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.logo.id_for_label }}">{{ form.logo.label }}</label>
+                                            {{ form.logo|add_class:"form-control" }}
+                                            {% for error in form.logo.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.seal.id_for_label }}">{{ form.seal.label }}</label>
+                                            {{ form.seal|add_class:"form-control" }}
+                                            {% for error in form.seal.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.school_id.id_for_label }}">{{ form.school_id.label }}</label>
+                                            {{ form.school_id|add_class:"form-control" }}
+                                            {% for error in form.school_id.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <div class="form-wizard__actions">
+                                    <button type="button" class="btn btn-secondary form-wizard__previous">
+                                        <i class="fas fa-arrow-left"></i>
+                                        Previous
+                                    </button>
+                                    <button type="button" class="btn btn-primary form-wizard__next">
+                                        Next
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <button type="submit" class="btn btn-success form-wizard__submit">Save Details</button>
+                                    {% include 'back_button.html' %}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    {% else %}
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                            <div class="col-sm-12">
+                                School Details Already Added!
+                                <a href="{% url 'school-update' exists.id %}" class="link">
+                                    <i class="fa fa-edit" title="Edit Record"></i> Edit Instead
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
-    </form>
-    {%else%}
-        <div class="row justify-content-center"><div class="sm-12">School Details Already Added!  <a href="{% url 'school-update' exists.id %}" class="link"><i class="fa fa-edit" title="Edit Record"></i>
-        Edit Instead</a> </div><div>
-    {%endif%}
-  </div>
-
-  
-</div>
-</div>
 </section>
 
-
-
 {% endblock main_content %}
+
+{% block custom_js %}
+<script src="{% static 'student_core/js/form_wizard.js' %}"></script>
+{% endblock custom_js %}
