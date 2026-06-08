@@ -20,27 +20,6 @@ jobs:
           known_hosts: 'placeholder_will_be_ignored'
           if_key_exists: replace
 
-      - name: Execute Remote SSH Deploy Commands
+      - name: Execute Background SSH Commands
         run: |
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.PA_USERNAME }}@ssh.pythonanywhere.com << 'EOF'
-            set -e
-            echo "--- Navigating to Project Root ---"
-            cd ~/student_management_system
-            
-            echo "--- Pulling latest code from GitHub ---"
-            git pull origin main
-            
-            echo "--- Activating Virtual Environment ---"
-            source ~/.virtualenvs/myenv/bin/activate
-            
-            echo "--- Running Migrations ---"
-            python manage.py migrate
-            
-            echo "--- Collecting Static Assets ---"
-            python manage.py collectstatic --noinput
-            
-            echo "--- Reloading Web App Server ---"
-            touch /var/www/${{ secrets.PA_USERNAME }}_pythonanywhere_com_wsgi.py
-            
-            echo "--- Deployment Finished Successfully! ---"
-          EOF
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.PA_USERNAME }}@ssh.pythonanywhere.com "bash -c 'echo \"=== START DEPLOY ===\" && cd ~/student_management_system && echo \"-> Pulling Git Code\" && git pull origin main && echo \"-> Activating Env\" && source ~/.virtualenvs/myenv/bin/activate && echo \"-> Running Migrations\" && python manage.py migrate && echo \"-> Collecting Static Files\" && python manage.py collectstatic --noinput && echo \"-> Reloading WSGI Server\" && touch /var/www/${{ secrets.PA_USERNAME }}_pythonanywhere_com_wsgi.py && echo \"=== DEPLOY SUCCESSFUL ===\"'"
