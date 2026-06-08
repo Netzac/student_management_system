@@ -22,7 +22,7 @@ jobs:
 
       - name: Execute Remote SSH Deploy Commands
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.PA_USERNAME }}@://pythonanywhere.com "
+          ssh -v -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.PA_USERNAME }}@://pythonanywhere.com "
             cd ~/student_management_system &&
             git pull origin main &&
             source ~/.virtualenvs/myenv/bin/activate &&
