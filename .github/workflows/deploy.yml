@@ -1,25 +1,32 @@
 name: CI/CD Deploy to PythonAnywhere
- 
+
 on:
   push:
     branches:
       - main
- 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
- 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
- 
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
- 
-      - name: Execute Deployment via API Console
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.PA_SSH_PRIVATE_KEY }}
+          known_hosts: 'placeholder_will_be_ignored'
+          if_key_exists: replace
+
+      - name: Execute Remote SSH Deploy Commands
         run: |
-          curl -f -H "Authorization: Token ${{ secrets.PA_API_TOKEN }}" \
-               -X POST "https://www.pythonanywhere.com/api/v0/user/${{ secrets.PA_USERNAME }}/consoles/" \
-               -d "executable=bash" \
-               -d "arguments=-c 'cd ~/student_management_system && git pull origin main && source ~/.virtualenvs/myenv/bin/activate && python manage.py migrate && python manage.py collectstatic --noinput && touch /var/www/${{ secrets.PA_USERNAME }}_pythonanywhere_com_wsgi.py'"
- 
+          ssh -o StrictHostKeyChecking=no ${{ secrets.PA_USERNAME }}@://pythonanywhere.com "
+            cd ~/student_management_system &&
+            git pull origin main &&
+            source ~/.virtualenvs/myenv/bin/activate &&
+            python manage.py migrate &&
+            python manage.py collectstatic --noinput &&
+            touch /var/www/${{ secrets.PA_USERNAME }}_pythonanywhere_com_wsgi.py
+          "
