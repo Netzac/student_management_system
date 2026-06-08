@@ -1,25 +1,25 @@
 name: CI/CD Deploy to PythonAnywhere
-
+ 
 on:
   push:
     branches:
       - main
-
+ 
 env:
-  # Resolves the Node deprecation warning by forcing a clean Node 24 execution environment
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-
+ 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+ 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
+ 
       - name: Execute Deployment via API Console
         run: |
-          curl -H "Authorization: Token ${{ secrets.PA_API_TOKEN }}" \
-               -X POST "https://pythonanywhere.com{{ secrets.PA_USERNAME }}/consoles/" \
+          curl -f -H "Authorization: Token ${{ secrets.PA_API_TOKEN }}" \
+               -X POST "https://www.pythonanywhere.com/api/v0/user/${{ secrets.PA_USERNAME }}/consoles/" \
                -d "executable=bash" \
                -d "arguments=-c 'cd ~/student_management_system && git pull origin main && source ~/.virtualenvs/myenv/bin/activate && python manage.py migrate && python manage.py collectstatic --noinput && touch /var/www/${{ secrets.PA_USERNAME }}_pythonanywhere_com_wsgi.py'"
+ 
