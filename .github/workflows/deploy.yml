@@ -22,4 +22,25 @@ jobs:
 
       - name: Execute Remote SSH Deploy Commands
         run: |
-          ssh -v -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.PA_USERNAME }}@ssh.pythonanywhere.com "cd ~/student_management_system && git pull origin main && source ~/.virtualenvs/myenv/bin/activate && python manage.py migrate && python manage.py collectstatic --noinput && touch /var/www/${{ secrets.PA_USERNAME }}_pythonanywhere_com_wsgi.py"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.PA_USERNAME }}@ssh.pythonanywhere.com << 'EOF'
+            set -e
+            echo "--- Navigating to Project Root ---"
+            cd ~/student_management_system
+            
+            echo "--- Pulling latest code from GitHub ---"
+            git pull origin main
+            
+            echo "--- Activating Virtual Environment ---"
+            source ~/.virtualenvs/myenv/bin/activate
+            
+            echo "--- Running Migrations ---"
+            python manage.py migrate
+            
+            echo "--- Collecting Static Assets ---"
+            python manage.py collectstatic --noinput
+            
+            echo "--- Reloading Web App Server ---"
+            touch /var/www/${{ secrets.PA_USERNAME }}_pythonanywhere_com_wsgi.py
+            
+            echo "--- Deployment Finished Successfully! ---"
+          EOF
