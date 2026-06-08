@@ -22,6 +22,7 @@ urlpatterns = [
     path('order/', include('order.urls')),
     path('cart/', include('cart.urls')),
     path('school/', include('school.urls')),
+    path('dashboard/sms/', include('sms.urls')),
 
     path('comments/', include('django_comments_xtd.urls')),
     path(r'jsi18n/',JavaScriptCatalog.as_view(),name='javascript-catalog')

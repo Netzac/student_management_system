@@ -1,8 +1,6 @@
 
 import os
 from dotenv import load_dotenv
-from numpy import False_
-
 
 load_dotenv()
 
@@ -54,6 +52,7 @@ INSTALLED_APPS = [
     'order',
     'cart',
     'school',
+    'sms',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
@@ -230,6 +229,19 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
+
+# SMS Configuration
+def _env_bool(key, default=False):
+    value = os.environ.get(key, str(default)).lower()
+    return value in ("true", "1", "yes", "on")
+
+SMS_ENABLED = _env_bool("SMS_ENABLED", default=False)
+SMS_USE_SANDBOX = _env_bool("SMS_USE_SANDBOX", default=True)
+TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID", "")
+TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN", "")
+TWILIO_PHONE_NUMBER = os.environ.get("TWILIO_PHONE_NUMBER", "")
+SCHOOL_NAME = os.environ.get("SCHOOL_NAME", "Our School")
+DEFAULT_COUNTRY_CODE = os.environ.get("DEFAULT_COUNTRY_CODE", "233")
 
 #For Custom USER
 AUTH_USER_MODEL = "student_core.CustomUser"

@@ -1,0 +1,394 @@
+{% extends 'hod_template/base_template.html' %}
+{% load static %}
+
+{% block page_title %}
+  Bulk SMS
+{% endblock page_title %}
+
+{% block breadcrumb %}
+  <a class="btn btn-sm btn-light" href="{% url 'sms-logs' %}">
+    <i class="fa fa-history mr-1"></i> SMS Logs
+  </a>
+{% endblock breadcrumb %}
+
+{% block custom_css %}
+<style>
+  .sms-bulk-page {
+    padding-bottom: 1.5rem;
+  }
+
+  .sms-page-hero {
+    align-items: center;
+    background: linear-gradient(135deg, #ffffff 0%, #eef7f8 58%, #e8f4ff 100%);
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .sms-page-hero h1 {
+    color: #111827;
+    font-size: 1.85rem;
+    margin: 0.2rem 0 0.35rem;
+  }
+
+  .sms-page-hero p {
+    color: #605e5c;
+    margin: 0;
+    max-width: 36rem;
+  }
+
+  .sms-kicker {
+    color: #006e7f;
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .sms-form-panel,
+  .sms-history-panel {
+    background: #fff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  .sms-form-panel .panel-heading,
+  .sms-history-panel .panel-heading {
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid #e1e4e8;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+  }
+
+  .sms-form-panel .panel-heading h2,
+  .sms-history-panel .panel-heading h2 {
+    color: #323130;
+    font-size: 1.05rem;
+    margin: 0;
+  }
+
+  .sms-form-panel .panel-body {
+    padding: 1.25rem;
+  }
+
+  .sms-form-panel .panel-footer {
+    background: #faf9f8;
+    border-top: 1px solid #e1e4e8;
+    border-radius: 0 0 8px 8px;
+    padding: 1rem 1.25rem;
+  }
+
+  .sms-recipient-preview {
+    align-items: center;
+    background: #eef7f8;
+    border: 1px solid #d6eaee;
+    border-radius: 6px;
+    color: #003e4d;
+    display: flex;
+    font-size: 0.92rem;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .sms-recipient-preview i {
+    color: #006e7f;
+  }
+
+  .sms-recipient-preview strong {
+    color: #006e7f;
+  }
+
+  .sms-form-panel .btn-send {
+    background: #006e7f;
+    border-color: #006e7f;
+    min-width: 140px;
+  }
+
+  .sms-form-panel .btn-send:hover {
+    background: #005769;
+    border-color: #005769;
+  }
+
+  .sms-form-panel .badge-info {
+    background: #006e7f;
+  }
+
+  .sms-history-panel .table thead th {
+    background: #faf9f8;
+    border-bottom: 1px solid #e1e4e8;
+    color: #605e5c;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+</style>
+{% endblock custom_css %}
+
+{% block fullcard %}
+<section class="content sms-bulk-page">
+  <div class="container-fluid">
+    <div class="sms-page-hero">
+      <div>
+        <span class="sms-kicker">Communications</span>
+        <h1>Send Bulk SMS</h1>
+        <p>Message guardians by class, individually, or across the whole school. All sends are logged automatically.</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-xl-7">
+        <div class="sms-form-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="sms-kicker">Compose</span>
+              <h2>New Message</h2>
+            </div>
+          </div>
+          <form method="post" id="bulk-sms-form">
+            {% csrf_token %}
+            <div class="panel-body">
+              <div class="form-group">
+                <label class="font-weight-semibold">Recipient Group</label>
+                <div class="custom-control custom-radio">
+                  <input class="custom-control-input" type="radio" name="recipient_group"
+                         id="group_all" value="all_guardians" checked>
+                  <label class="custom-control-label" for="group_all">
+                    All guardians with phone numbers
+                    <span class="badge badge-info" id="count-all">{{ all_guardian_count }}</span>
+                  </label>
+                </div>
+                <div class="custom-control custom-radio mt-2">
+                  <input class="custom-control-input" type="radio" name="recipient_group"
+                         id="group_class" value="by_class">
+                  <label class="custom-control-label" for="group_class">By class</label>
+                </div>
+                <select name="class_id" id="class_id" class="form-control mt-2" disabled>
+                  <option value="">-- Select class --</option>
+                  {% for cls in classes %}
+                    <option value="{{ cls.id }}">{{ cls.course_name }}</option>
+                  {% endfor %}
+                </select>
+                <div class="custom-control custom-radio mt-3">
+                  <input class="custom-control-input" type="radio" name="recipient_group"
+                         id="group_individual" value="individual">
+                  <label class="custom-control-label" for="group_individual">
+                    Individual students
+                  </label>
+                </div>
+                <select name="student_ids" id="student_ids" class="form-control mt-2" multiple disabled>
+                  {% for student in students %}
+                    <option value="{{ student.id }}"
+                            data-phone="{{ student.parent_contact_number|default:'' }}">
+                      {{ student }} — {{ student.parent_first_name }} {{ student.parent_last_name }}
+                      {% if student.parent_contact_number %}({{ student.parent_contact_number }}){% else %}(no phone){% endif %}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group mb-0">
+                <label for="message" class="font-weight-semibold">Message</label>
+                <textarea name="message" id="message" class="form-control" rows="5"
+                          maxlength="640" placeholder="Type your message here..."></textarea>
+                <small class="form-text text-muted">
+                  <span id="char-count">0</span> / 160 characters
+                  <span id="sms-parts-warning" class="text-warning d-none">
+                    — Message exceeds 160 chars (will use multiple SMS credits)
+                  </span>
+                </small>
+              </div>
+
+              <div class="sms-recipient-preview mt-3">
+                <i class="fas fa-users"></i>
+                <span><strong id="recipient-preview">0</strong> guardian(s) will receive this message.</span>
+              </div>
+            </div>
+            <div class="panel-footer">
+              <button type="submit" class="btn btn-send text-white" id="send-btn">
+                <i class="fa fa-paper-plane mr-1"></i> Send SMS
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+      <div class="col-12 col-xl-10">
+        <div class="sms-history-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="sms-kicker">Activity</span>
+              <h2>Recent Bulk SMS History</h2>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Recipient</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for log in recent_logs %}
+                <tr>
+                  <td>{{ log.created_at|date:"Y-m-d H:i" }}</td>
+                  <td>{{ log.recipient_name }}</td>
+                  <td>{{ log.recipient_phone }}</td>
+                  <td>
+                    {% if log.status == 'sent' %}
+                      <span class="badge badge-success">Sent</span>
+                    {% elif log.status == 'failed' %}
+                      <span class="badge badge-danger">Failed</span>
+                    {% else %}
+                      <span class="badge badge-secondary">Skipped</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ log.message|truncatechars:80 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-4">No bulk SMS sent yet.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if messages %}
+  {% for message in messages %}
+    <span class="django-flash-message d-none" data-tags="{{ message.tags }}">{{ message }}</span>
+  {% endfor %}
+{% endif %}
+{{ class_phone_counts|json_script:"class-phone-counts" }}
+{% endblock fullcard %}
+
+{% block custom_js %}
+<script>
+(function () {
+  const groupRadios = document.querySelectorAll('input[name="recipient_group"]');
+  const classSelect = document.getElementById('class_id');
+  const studentSelect = document.getElementById('student_ids');
+  const messageField = document.getElementById('message');
+  const charCount = document.getElementById('char-count');
+  const smsWarning = document.getElementById('sms-parts-warning');
+  const recipientPreview = document.getElementById('recipient-preview');
+  const countAll = parseInt(document.getElementById('count-all').textContent, 10) || 0;
+  const classPhoneCounts = JSON.parse(document.getElementById('class-phone-counts').textContent);
+
+  function toast(message, type) {
+    if (window.SMSModern && typeof window.SMSModern.toast === 'function') {
+      window.SMSModern.toast(message, type);
+      return;
+    }
+    window.alert(message);
+  }
+
+  function mapMessageType(tags) {
+    if (tags.indexOf('error') !== -1) return 'error';
+    if (tags.indexOf('success') !== -1) return 'success';
+    if (tags.indexOf('warning') !== -1) return 'warning';
+    return 'info';
+  }
+
+  document.querySelectorAll('.django-flash-message').forEach(function (el) {
+    toast(el.textContent.trim(), mapMessageType(el.dataset.tags || ''));
+  });
+
+  if (window.jQuery && jQuery.fn.select2) {
+    jQuery(studentSelect).select2({ placeholder: 'Search students...', width: '100%' });
+  }
+
+  function getSelectedGroup() {
+    const checked = document.querySelector('input[name="recipient_group"]:checked');
+    return checked ? checked.value : 'all_guardians';
+  }
+
+  function updateFieldStates() {
+    const group = getSelectedGroup();
+    classSelect.disabled = group !== 'by_class';
+    studentSelect.disabled = group !== 'individual';
+    if (window.jQuery && jQuery.fn.select2) {
+      jQuery(studentSelect).prop('disabled', group !== 'individual').trigger('change.select2');
+    }
+    updateRecipientCount();
+  }
+
+  function countIndividualWithPhone() {
+    let count = 0;
+    Array.from(studentSelect.selectedOptions).forEach(function (opt) {
+      if ((opt.dataset.phone || '').trim()) count++;
+    });
+    return count;
+  }
+
+  function updateRecipientCount() {
+    const group = getSelectedGroup();
+    let count = 0;
+    if (group === 'all_guardians') {
+      count = countAll;
+    } else if (group === 'by_class') {
+      const classId = classSelect.value;
+      count = classId ? (classPhoneCounts[classId] || 0) : 0;
+    } else if (group === 'individual') {
+      count = countIndividualWithPhone();
+    }
+    recipientPreview.textContent = count;
+  }
+
+  function updateCharCount() {
+    const len = messageField.value.length;
+    charCount.textContent = len;
+    smsWarning.classList.toggle('d-none', len <= 160);
+  }
+
+  groupRadios.forEach(function (radio) {
+    radio.addEventListener('change', updateFieldStates);
+  });
+  classSelect.addEventListener('change', updateRecipientCount);
+  studentSelect.addEventListener('change', updateRecipientCount);
+  messageField.addEventListener('input', updateCharCount);
+
+  document.getElementById('bulk-sms-form').addEventListener('submit', function (e) {
+    const count = parseInt(recipientPreview.textContent, 10);
+    if (count === 0) {
+      e.preventDefault();
+      toast('No recipients with phone numbers selected.', 'warning');
+      return;
+    }
+    if (!messageField.value.trim()) {
+      e.preventDefault();
+      toast('Please enter a message.', 'warning');
+      return;
+    }
+    if (!window.confirm('Send SMS to ' + count + ' recipient(s)?')) {
+      e.preventDefault();
+    }
+  });
+
+  updateFieldStates();
+  updateCharCount();
+})();
+</script>
+{% endblock custom_js %}
