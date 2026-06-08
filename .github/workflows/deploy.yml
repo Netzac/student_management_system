@@ -1,0 +1,24 @@
+name: CI/CD Deploy to PythonAnywhere
+
+on:
+  push:
+    branches:
+      - main  # Change to 'master' if your default GitHub branch is named master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy & Reload WebApp
+        uses: umuttopalak/pythonanywhere-deploy-action@v1.1.0
+        with:
+          host: '://pythonanywhere.com' # Use '://pythonanywhere.com' if you have an EU account
+          username: ${{ secrets.PA_USERNAME }}
+          api_token: ${{ secrets.PA_API_TOKEN }}
+          domain_name: ${{ secrets.PA_DOMAIN_NAME }}
+          # Step chain to pull code, run migrations, collect static, and clear server caches
+          post_deploy_cmd: 'source ~/.virtualenvs/myenv/bin/activate && cd ~/student_management_system && python manage.py migrate && python manage.py collectstatic --noinput'
