@@ -3,7 +3,11 @@ name: CI/CD Deploy to PythonAnywhere
 on:
   push:
     branches:
-      - main  # Change to 'master' if your default GitHub branch is named master
+      - main
+
+env:
+  # Resolves the Node deprecation warning by forcing a clean Node 24 execution environment
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   deploy:
@@ -13,12 +17,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Deploy & Reload WebApp
-        uses: umuttopalak/pythonanywhere-deploy-action@v1.1.0
-        with:
-          host: '://pythonanywhere.com' # Use '://pythonanywhere.com' if you have an EU account
-          username: ${{ secrets.PA_USERNAME }}
-          api_token: ${{ secrets.PA_API_TOKEN }}
-          domain_name: ${{ secrets.PA_DOMAIN_NAME }}
-          # Step chain to pull code, run migrations, collect static, and clear server caches
-          post_deploy_cmd: 'source ~/.virtualenvs/myenv/bin/activate && cd ~/student_management_system && python manage.py migrate && python manage.py collectstatic --noinput'
+      - name: Execute Deployment via API Console
+        run: |
+          curl -H "Authorization: Token ${{ secrets.PA_API_TOKEN }}" \
+               -X POST "https://pythonanywhere.com{{ secrets.PA_USERNAME }}/consoles/" \
+               -d "executable=bash" \
+               -d "arguments=-c 'cd ~/student_management_system && git pull origin main && source ~/.virtualenvs/myenv/bin/activate && python manage.py migrate && python manage.py collectstatic --noinput && touch /var/www/${{ secrets.PA_USERNAME }}_pythonanywhere_com_wsgi.py'"
