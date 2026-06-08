@@ -1,223 +1,231 @@
 {% extends 'hod_template/base_template.html' %}
+{% load static %}
 
 {% block page_title %}
     Registration Panel
 {% endblock page_title %}
 
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'student_core/css/form_wizard.css' %}">
+{% endblock custom_css %}
 
 {% block breadcrumb %}
 {% if user.user_type == '1' %}
-<a class="btn btn-primary" href="{% url 'manage_staff' %}" role="button"> Manage Staff</a>&nbsp;
+<a class="btn btn-primary" href="{% url 'manage_staff' %}" role="button">Manage Staff</a>&nbsp;
 {% endif %}
-<a class="btn btn-success" href="#" onclick="window.print()" style="text-align:right; float:right;color:white"><strong>Get PDF Copy</strong></a></a>
-<!-- <a class="btn btn-primary" href="{% url 'bulk-invoice' %}"><i
-    class="fas fa-upload"></i> Bulk Invoice</a> -->
+<a class="btn btn-success" href="#" onclick="window.print()" style="text-align:right; float:right;color:white"><strong>Get PDF Copy</strong></a>
 {% endblock breadcrumb %}
 
 {% block main_content %}
 
-{% load static %}
-
 <section class="content">
     {% include 'status_message.html' %}
-        <div class="container-fluid ">
-
-            <div class="row justify-content-center bg-light">
-                <div class="col-md-10">
-                    <!-- general form elements -->
-                    <div class="card card-secondary">
+    <div class="container-fluid">
+        <div class="row justify-content-center bg-light">
+            <div class="col-md-10">
+                <div class="card card-secondary">
                     <div class="card-header">
                         <h3 class="card-title">Staff Registration Form</h3>
                     </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
-                    <form role="form" method="POST" action="{% url 'add_staff_save' %}" enctype="multipart/form-data">
+
+                    <form class="m-form-in-card" role="form" method="POST" action="{% url 'add_staff_save' %}" enctype="multipart/form-data" data-form-wizard>
                         {% csrf_token %}
-
-                        
-                              
-                            
-
                         <div class="card-body">
-                            <div class="form-row align-items-center">
-                                <div class="col-6">
-                                    <label class="sr-only" for="id_fname">First Name</label>
-                                    <input type="text" class="form-control" name="first_name" placeholder="First Name" id="id_fname">
-                                </div>
+                            <div class="form-wizard">
+                                <ol class="form-wizard__steps" role="tablist">
+                                    <li>
+                                        <button type="button" class="form-wizard__step-button" data-step-index="0" role="tab">
+                                            <span class="form-wizard__step-number">1</span>
+                                            <span class="form-wizard__step-label">Profile</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="form-wizard__step-button" data-step-index="1" role="tab">
+                                            <span class="form-wizard__step-number">2</span>
+                                            <span class="form-wizard__step-label">Account</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="form-wizard__step-button" data-step-index="2" role="tab">
+                                            <span class="form-wizard__step-number">3</span>
+                                            <span class="form-wizard__step-label">Work details</span>
+                                        </button>
+                                    </li>
+                                </ol>
 
-                                <div class="col-6">
-                                    <label class="sr-only" for="id_lname">Last Name</label>
-                                    <input type="text" class="form-control" name="last_name" placeholder="Last Name" id="id_lname">
+                                <section class="form-wizard__panel" role="tabpanel">
+                                    <div class="form-wizard__panel-header">
+                                        <h4 class="form-wizard__panel-title">Profile details</h4>
+                                    </div>
+                                    <div class="form-wizard__panel-body">
+                                        <div class="form-group">
+                                            <label for="id_fname">First Name</label>
+                                            <input type="text" class="form-control" name="first_name" placeholder="First Name" id="id_fname">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_lname">Last Name</label>
+                                            <input type="text" class="form-control" name="last_name" placeholder="Last Name" id="id_lname">
+                                        </div>
+                                        <div class="form-group form-group--wide">
+                                            <label for="id_address">Address</label>
+                                            <textarea class="form-control" name="address" placeholder="Address" id="id_address"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_gender">Gender</label>
+                                            <select class="form-control" name="gender" id="id_gender">
+                                                <option value="0">Select Gender</option>
+                                                {% for gender in genders %}
+                                                    <option value="{{ gender.id }}">{{ gender.gender_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="form-wizard__panel" role="tabpanel">
+                                    <div class="form-wizard__panel-header">
+                                        <h4 class="form-wizard__panel-title">Account details</h4>
+                                    </div>
+                                    <div class="form-wizard__panel-body">
+                                        <div class="form-group">
+                                            <label for="id_email">Email address</label>
+                                            <input type="email" class="form-control" name="email" placeholder="Email" id="id_email">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_username">Username</label>
+                                            <input type="text" class="form-control" name="username" placeholder="Username" id="id_username">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_password">Password</label>
+                                            <input type="password" class="form-control" name="password" placeholder="Password" id="id_password">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_contact">Contact Number</label>
+                                            <input type="number" class="form-control" name="contact" placeholder="Contact Number" id="id_contact">
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="form-wizard__panel" role="tabpanel">
+                                    <div class="form-wizard__panel-header">
+                                        <h4 class="form-wizard__panel-title">Work and payroll details</h4>
+                                    </div>
+                                    <div class="form-wizard__panel-body">
+                                        <div class="form-group">
+                                            <label for="id_accno">Account Number</label>
+                                            <input type="text" class="form-control" name="accno" placeholder="Account No" id="id_accno">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_bank">Bank</label>
+                                            <select class="form-control" name="bank" id="id_bank">
+                                                <option value="0">Bank Name</option>
+                                                {% for bank in banks %}
+                                                    <option value="{{ bank.id }}">{{ bank }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_ssno">Social Security No</label>
+                                            <input type="text" class="form-control" name="ssno" placeholder="Social Security No" id="id_ssno">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_role">Role/Designation</label>
+                                            <select class="form-control" name="role" id="id_role">
+                                                <option value="0">Role</option>
+                                                {% for role in roles %}
+                                                    <option value="{{ role.id }}">{{ role }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group form-group--wide">
+                                            <label for="signature">Signature</label>
+                                            <input type="file" class="form-control" placeholder="Upload a signature" name="signature" id="signature">
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <div class="form-wizard__actions">
+                                    <button type="button" class="btn btn-secondary form-wizard__previous">
+                                        <i class="fas fa-arrow-left"></i>
+                                        Previous
+                                    </button>
+                                    <button type="button" class="btn btn-primary form-wizard__next">
+                                        Next
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <button type="submit" class="btn btn-primary form-wizard__submit">Save Staff</button>
+                                    {% include 'back_button.html' %}
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label>Address</label>
-                                <textarea class="form-control" name="address" placeholder="Address"></textarea>
-                            </div>
-                            <div class="form-row align-items-center">
-                                <div class="col-3 my-4">
-                                    <label class="sr-only" for="id_gender">Gender</label>
-                                    <select class="form-control" name="gender" placeholder="Gender">
-                                        <option value="0">Select Gender </option>
-                                        {% for gender in genders %}
-                                           
-                                            <option value="{{ gender.id }}">{{ gender.gender_name}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="col-3">
-                                    <label class="sr-only" for="id_email">Email address</label>
-                                    <input type="email" class="form-control" name="email" placeholder="Email" id="id_email">
-                                </div>
-                               
-                                    <div class="col-3">
-                                        <label class="sr-only" for="id_username">Username</label>
-                                        <input type="text" class="form-control" name="username" placeholder="Username" id="id_username">
-                                    </div>
-                                    <div class="col-3">
-                                        <label class="sr-only" for="id_password">Password</label>
-                                        <input type="password" class="form-control" name="password" placeholder="Password">
-                                    </div>
-                                    
-                            </div>
-
-                            <div class="form-row align-items-center">
-                                <div class="col-3">
-                                    <label class="sr-only" for="id_contact">Contact Number</label>
-                                    <input type="number" class="form-control" name="contact" placeholder="Contact Number" id="id_contact">
-                                </div>
-                               
-                                    <div class="col-3">
-                                        <label class="sr-only" for="id_accno">Account Number</label>
-                                        <input type="text" class="form-control" name="accno" placeholder="Account No" id="id_accno">
-                                    </div>
-                                    <div class="col-3">
-                                        <label class="sr-only" for="id_bank">Bank</label>
-                                        <select class="form-control" name="bank" placeholder="Bank">
-                                            <option value="0">Bank Name </option>
-                                            {% for bank in banks %}
-                                               
-                                                <option value="{{ bank.id }}">{{bank}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="col-3">
-                                        <label class="sr-only" for="id_ssno">Social Security No</label>
-                                        <input type="text" class="form-control" name="ssno" placeholder="Social Security No" id="id_ssno">
-                                    </div>
-                            </div>
-
-                          
-
-                            
-                            <div class="form-row align-items-center">
-                                <div class="col sm-6">
-                                    <label class="sr-only" for="id_bank">Role/Designation</label>
-                                    <select class="form-control" name="role" placeholder="Role">
-                                        <option value="0">Role </option>
-                                        {% for role in roles %}
-                                           
-                                            <option value="{{ role.id }}">{{role}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="file-field input-field col sm-6">
-                                    <label for="signature">Signature</label>
-                                    <div class="file-path-wrapper col sm-6">
-                                    <input type="file" placeholder="Upload a signature" name="signature">
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <!-- /.card-body -->
-
-                        <div class="card-footer">
-                        <button type="submit" class="btn btn-dark">Save</button>
-                        {% include 'back_button.html'%}
                         </div>
                     </form>
-                    </div>
-                    <!-- /.card -->
-
                 </div>
             </div>
+        </div>
+    </div>
+</section>
 
-        </div><!-- /.container-fluid -->
-      </section>
+{% endblock main_content %}
 
-  {% endblock main_content %}
+{% block custom_js %}
+<script src="{% static 'student_core/js/form_wizard.js' %}"></script>
+<script>
+    $(document).ready(function(){
+        $("#id_email").keyup(function(){
+            var email = $(this).val();
 
-    {% block custom_js %}
-    {% comment %} Checking if email and username already exists or not usin Ajax {% endcomment %}
-
-    <script>
-        $(document).ready(function(){
-            // keyup event will be triggered when user leaves keyboard
-            $("#id_email").keyup(function(){
-                var email = $(this).val();
-
-                if(email!=""){
-                    $.ajax({
-                        url : '{% url 'check_email_exist' %}',
-                        type : 'POST',
-                        data : {email:email}
-                    })
-                    .done(function(response){
-                        //console.log(response);
-
-                        if(response == "True"){
-                            $(".email_error").remove();
-                            $("<span class='email_error' style='color: red; padding: 5px; font-weight: bold;'> Email Not Available. </span>").insertAfter("#id_email")
-                        }
-                        else{
-                            $(".email_error").remove();
-                            $("<span class='email_error' style='color: green; padding: 5px; font-weight: bold;'> Email Available. </span>").insertAfter("#id_email")
-                        }
-                    })
-
-                    .fail(function(){
-                        console.log("Failed");
-                    })
-                }
-                else{
-                    $(".email_error").remove();
-                }
-                
-            })
-
-            $("#id_username").keyup(function(){
-                var username = $(this).val();
-                
-                if(username!=""){
-                    $.ajax({
-                        url : '{% url 'check_username_exist' %}',
-                        type : 'POST',
-                        data : {username:username}
-                    })
-                    .done(function(response){
-                        //console.log(response);
-
-                        if(response == "True"){
-                            $(".username_error").remove();
-                            $("<span class='username_error' style='color: red; padding: 5px; font-weight: bold;'> Username Not Available. </span>").insertAfter("#id_username")
-                        }
-                        else{
-                            $(".username_error").remove();
-                            $("<span class='username_error' style='color: green; padding: 5px; font-weight: bold;'> Username Available. </span>").insertAfter("#id_username")
-                        }
-                    })
-
-                    .fail(function(){
-                        console.log("Failed");
-                    })
-                }
-                else{
-                    $(".username_error").remove();
-                }
-                
-            })
+            if(email!=""){
+                $.ajax({
+                    url : '{% url 'check_email_exist' %}',
+                    type : 'POST',
+                    data : {email:email}
+                })
+                .done(function(response){
+                    if(response == "True"){
+                        $(".email_error").remove();
+                        $("<span class='email_error' style='color: red; padding: 5px; font-weight: bold;'> Email Not Available. </span>").insertAfter("#id_email")
+                    }
+                    else{
+                        $(".email_error").remove();
+                        $("<span class='email_error' style='color: green; padding: 5px; font-weight: bold;'> Email Available. </span>").insertAfter("#id_email")
+                    }
+                })
+                .fail(function(){
+                    console.log("Failed");
+                })
+            }
+            else{
+                $(".email_error").remove();
+            }
         })
-    </script>
 
-  {% endblock custom_js %}
+        $("#id_username").keyup(function(){
+            var username = $(this).val();
+
+            if(username!=""){
+                $.ajax({
+                    url : '{% url 'check_username_exist' %}',
+                    type : 'POST',
+                    data : {username:username}
+                })
+                .done(function(response){
+                    if(response == "True"){
+                        $(".username_error").remove();
+                        $("<span class='username_error' style='color: red; padding: 5px; font-weight: bold;'> Username Not Available. </span>").insertAfter("#id_username")
+                    }
+                    else{
+                        $(".username_error").remove();
+                        $("<span class='username_error' style='color: green; padding: 5px; font-weight: bold;'> Username Available. </span>").insertAfter("#id_username")
+                    }
+                })
+                .fail(function(){
+                    console.log("Failed");
+                })
+            }
+            else{
+                $(".username_error").remove();
+            }
+        })
+    })
+</script>
+{% endblock custom_js %}

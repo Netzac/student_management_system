@@ -553,6 +553,86 @@ label .text-danger {
   }
 }
 
+/* Final cascade winner: all normal buttons keep white text. */
+.btn:not(.btn-tool):not(.btn-link),
+a.btn:not(.btn-tool):not(.btn-link),
+button.btn:not(.btn-tool):not(.btn-link),
+input.btn:not(.btn-tool):not(.btn-link) {
+  color: #fff !important;
+}
+
+.btn-secondary:not(.btn-tool),
+.btn-default:not(.btn-tool),
+.btn-light:not(.btn-tool),
+.btn-white:not(.btn-tool),
+.btn-outline-primary:not(.btn-tool),
+.btn-outline-secondary:not(.btn-tool),
+.btn-outline-success:not(.btn-tool),
+.btn-outline-info:not(.btn-tool),
+.btn-outline-warning:not(.btn-tool),
+.btn-outline-danger:not(.btn-tool),
+.btn-outline-dark:not(.btn-tool) {
+  background: var(--m-primary) !important;
+  border-color: var(--m-primary) !important;
+  color: #fff !important;
+}
+
+.btn-secondary:not(.btn-tool):hover,
+.btn-default:not(.btn-tool):hover,
+.btn-light:not(.btn-tool):hover,
+.btn-white:not(.btn-tool):hover,
+.btn-outline-primary:not(.btn-tool):hover,
+.btn-outline-secondary:not(.btn-tool):hover,
+.btn-outline-success:not(.btn-tool):hover,
+.btn-outline-info:not(.btn-tool):hover,
+.btn-outline-warning:not(.btn-tool):hover,
+.btn-outline-danger:not(.btn-tool):hover,
+.btn-outline-dark:not(.btn-tool):hover {
+  background: var(--m-primary-dark) !important;
+  border-color: var(--m-primary-dark) !important;
+  color: #fff !important;
+}
+
+/* Final button contrast rule: normal action buttons use white text everywhere. */
+.btn:not(.btn-tool):not(.btn-link),
+a.btn:not(.btn-tool):not(.btn-link),
+button.btn:not(.btn-tool):not(.btn-link),
+input.btn:not(.btn-tool):not(.btn-link) {
+  color: #fff !important;
+}
+
+.btn-secondary:not(.btn-tool),
+.btn-default:not(.btn-tool),
+.btn-light:not(.btn-tool),
+.btn-white:not(.btn-tool),
+.btn-outline-primary:not(.btn-tool),
+.btn-outline-secondary:not(.btn-tool),
+.btn-outline-success:not(.btn-tool),
+.btn-outline-info:not(.btn-tool),
+.btn-outline-warning:not(.btn-tool),
+.btn-outline-danger:not(.btn-tool),
+.btn-outline-dark:not(.btn-tool) {
+  background: var(--m-primary) !important;
+  border-color: var(--m-primary) !important;
+  color: #fff !important;
+}
+
+.btn-secondary:not(.btn-tool):hover,
+.btn-default:not(.btn-tool):hover,
+.btn-light:not(.btn-tool):hover,
+.btn-white:not(.btn-tool):hover,
+.btn-outline-primary:not(.btn-tool):hover,
+.btn-outline-secondary:not(.btn-tool):hover,
+.btn-outline-success:not(.btn-tool):hover,
+.btn-outline-info:not(.btn-tool):hover,
+.btn-outline-warning:not(.btn-tool):hover,
+.btn-outline-danger:not(.btn-tool):hover,
+.btn-outline-dark:not(.btn-tool):hover {
+  background: var(--m-primary-dark) !important;
+  border-color: var(--m-primary-dark) !important;
+  color: #fff !important;
+}
+
 /* Button and label alignment guardrail for legacy templates that mix `.btn`,
    `bg-*`, and nested anchor markup. */
 .btn,
@@ -1720,4 +1800,44 @@ a.btn-teal {
   .modal form > button[type="submit"] {
     grid-column: 1 / -1;
   }
+}
+
+/* Final cascade winner: all normal buttons keep white text. */
+.btn:not(.btn-tool):not(.btn-link),
+a.btn:not(.btn-tool):not(.btn-link),
+button.btn:not(.btn-tool):not(.btn-link),
+input.btn:not(.btn-tool):not(.btn-link) {
+  color: #fff !important;
+}
+
+.btn-secondary:not(.btn-tool),
+.btn-default:not(.btn-tool),
+.btn-light:not(.btn-tool),
+.btn-white:not(.btn-tool),
+.btn-outline-primary:not(.btn-tool),
+.btn-outline-secondary:not(.btn-tool),
+.btn-outline-success:not(.btn-tool),
+.btn-outline-info:not(.btn-tool),
+.btn-outline-warning:not(.btn-tool),
+.btn-outline-danger:not(.btn-tool),
+.btn-outline-dark:not(.btn-tool) {
+  background: var(--m-primary) !important;
+  border-color: var(--m-primary) !important;
+  color: #fff !important;
+}
+
+.btn-secondary:not(.btn-tool):hover,
+.btn-default:not(.btn-tool):hover,
+.btn-light:not(.btn-tool):hover,
+.btn-white:not(.btn-tool):hover,
+.btn-outline-primary:not(.btn-tool):hover,
+.btn-outline-secondary:not(.btn-tool):hover,
+.btn-outline-success:not(.btn-tool):hover,
+.btn-outline-info:not(.btn-tool):hover,
+.btn-outline-warning:not(.btn-tool):hover,
+.btn-outline-danger:not(.btn-tool):hover,
+.btn-outline-dark:not(.btn-tool):hover {
+  background: var(--m-primary-dark) !important;
+  border-color: var(--m-primary-dark) !important;
+  color: #fff !important;
 }

@@ -1,65 +1,121 @@
 {% load widget_tweaks %}
-            <form role="form" method="POST" action="{{ action_path }}" enctype="multipart/form-data">
-                        {% csrf_token %}
-                       <div class="bg-info"> {{ form.errors }} </div>
-                        
-                                {% comment %} Display Messages {% endcomment %}
-                                {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-                                {% endif %}
 
-                        <div class="card border-success pl-3 bg-white pt-3">
-                            
-                            {% comment %} Adding Form with All inputs Here {% endcomment %}
+<form class="m-form-in-card" role="form" method="POST" action="{{ action_path }}" enctype="multipart/form-data" data-form-wizard>
+    {% csrf_token %}
 
-                            {% for field in form %}
-                                <div class="form-group">
-                                    <div class="row bg-danger">
-                                        {{ form.non_field_errors }}
-                                        {{ field.errors }}
-                                      
-                                    </div>
-                                    <div class="row justify-content-center col-sm-12">
-                                        <div class="col-sm-10 mb-0 mt-0">
-                                            {%if field.label != "" %}
-                                            {{ field.label_tag}} 
-                                            {% endif %}
-                                            {{ field}} 
-                                        </div>
-                                       
-                                    </div>
+    {% if form.errors %}
+        <div class="alert alert-danger form-wizard__errors">
+            {{ form.errors }}
+        </div>
+    {% endif %}
 
-                                </div>
-                            {% endfor %%}
+    {% if messages %}
+        <div class="form-wizard__messages">
+            {% for message in messages %}
+                {% if message.tags == "error" %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% elif message.tags == "success" %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 
-                            
+    <div class="form-wizard">
+        <ol class="form-wizard__steps" role="tablist">
+            <li>
+                <button type="button" class="form-wizard__step-button" data-step-index="0" role="tab">
+                    <span class="form-wizard__step-number">1</span>
+                    <span class="form-wizard__step-label">Student</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="form-wizard__step-button" data-step-index="1" role="tab">
+                    <span class="form-wizard__step-number">2</span>
+                    <span class="form-wizard__step-label">Academic</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="form-wizard__step-button" data-step-index="2" role="tab">
+                    <span class="form-wizard__step-number">3</span>
+                    <span class="form-wizard__step-label">Parent</span>
+                </button>
+            </li>
+        </ol>
 
-
+        <section class="form-wizard__panel" role="tabpanel">
+            <div class="form-wizard__panel-header">
+                <h4 class="form-wizard__panel-title">Student details</h4>
+            </div>
+            <div class="form-wizard__panel-body">
+                {% for field in form %}
+                    {% if field.name == "first_name" or field.name == "last_name" or field.name == "address" or field.name == "dob" or field.name == "username" or field.name == "email" or field.name == "password" %}
+                        <div class="form-group{% if field.name == 'address' %} form-group--wide{% endif %}">
+                            {{ form.non_field_errors }}
+                            {{ field.errors }}
+                            {% if field.label != "" %}{{ field.label_tag }}{% endif %}
+                            {{ field|add_class:"form-control" }}
                         </div>
-                        <!-- /.card-body -->
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
 
-                        <div class="card-footer">
-                        <button type="submit" class="btn btn-dark">{{ button_text }}</button>
-                        {% include 'back_button.html'%}
+        <section class="form-wizard__panel" role="tabpanel">
+            <div class="form-wizard__panel-header">
+                <h4 class="form-wizard__panel-title">Academic details</h4>
+            </div>
+            <div class="form-wizard__panel-body">
+                {% for field in form %}
+                    {% if field.name == "course_id" or field.name == "gender_id" or field.name == "session_year_id" or field.name == "profile_pic" %}
+                        <div class="form-group">
+                            {{ field.errors }}
+                            {% if field.label != "" %}{{ field.label_tag }}{% endif %}
+                            {{ field|add_class:"form-control" }}
                         </div>
-                    </form>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="form-wizard__panel" role="tabpanel">
+            <div class="form-wizard__panel-header">
+                <h4 class="form-wizard__panel-title">Parent details</h4>
+            </div>
+            <div class="form-wizard__panel-body">
+                {% for field in form %}
+                    {% if field.name == "parent_first_name" or field.name == "parent_last_name" or field.name == "parent_email" or field.name == "parent_contact_number" or field.name == "parent_occupation" %}
+                        <div class="form-group">
+                            {{ field.errors }}
+                            {% if field.label != "" %}{{ field.label_tag }}{% endif %}
+                            {{ field|add_class:"form-control" }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+
+        <div class="form-wizard__actions">
+            <button type="button" class="btn btn-secondary form-wizard__previous">
+                <i class="fas fa-arrow-left"></i>
+                Previous
+            </button>
+            <button type="button" class="btn btn-primary form-wizard__next">
+                Next
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <button type="submit" class="btn btn-primary form-wizard__submit">{{ button_text }}</button>
+            {% include 'back_button.html' %}
+        </div>
+    </div>
+</form>

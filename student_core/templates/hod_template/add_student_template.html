@@ -1,8 +1,13 @@
 {% extends 'hod_template/base_template.html' %}
+{% load static %}
 
 {% block page_title %}
  Registration Panel
 {% endblock page_title %}
+
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'student_core/css/form_wizard.css' %}">
+{% endblock custom_css %}
 
 {% block breadcrumb %}
 {% if user.user_type == '1' %}
@@ -15,7 +20,6 @@
 
 {% block main_content %}
 
-{% load static %}
 <section class="content">
 
         <div class="container-fluid">
@@ -45,6 +49,7 @@
   {% endblock main_content %}
 
   {% block custom_js %}
+    <script src="{% static 'student_core/js/form_wizard.js' %}"></script>
     {% comment %} Checking if email and username already exists or not usin Ajax {% endcomment %}
 
     <script>
