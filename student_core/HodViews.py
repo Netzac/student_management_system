@@ -1016,12 +1016,21 @@ def admin_get_attendance_dates(request):
     session_model = SessionYearModel.objects.get(id=session_year)
 
     # students = Students.objects.filter(course_id=subject_model.course_id, session_year_id=session_model)
-    attendance = Attendance.objects.filter(course_id=cls_id, session_year_id=session_year).distinct('attendance_date')
+    # NOTE: QuerySet.distinct(*fields) (DISTINCT ON) is PostgreSQL-only and
+    # raises NotSupportedError on this SQLite backend, so we dedupe by
+    # attendance_date in Python instead (one row per distinct date).
+    attendance = Attendance.objects.filter(
+        course_id=cls_id, session_year_id=session_year
+    ).order_by("attendance_date")
 
     # Only Passing Student Id and Student Name Only
     list_data = []
+    seen_dates = set()
 
     for attendance_single in attendance:
+        if attendance_single.attendance_date in seen_dates:
+            continue
+        seen_dates.add(attendance_single.attendance_date)
         data_small={"id":attendance_single.id, "attendance_date":str(attendance_single.attendance_date), "session_year_id":attendance_single.session_year_id.id}
         list_data.append(data_small)
 
