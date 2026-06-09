@@ -4,130 +4,212 @@
     Attendance Data Page
 {% endblock page_title %}
 
+{% block custom_css %}
+<style>
+    /* ===== Microsoft Dynamics 365 / Fluent themed attendance report ===== */
+    :root {
+        --d365-primary: #005b70;     /* deep teal command-bar */
+        --d365-accent:  #038387;     /* Fluent teal-blue accent */
+        --d365-accent-hover: #026d71;
+        --d365-bg:      #faf9f8;      /* Fluent neutralLighterAlt */
+        --d365-surface: #ffffff;
+        --d365-border:  #edebe9;     /* neutralLight */
+        --d365-border-strong: #c8c6c4;
+        --d365-text:    #201f1e;     /* neutralPrimary */
+        --d365-text-2:  #605e5c;     /* neutralSecondary */
+        --d365-success: #107c10;
+        --d365-danger:  #a4262c;
+    }
+
+    .d365-shell { background: var(--d365-bg); border-radius: 4px; }
+
+    /* Command bar */
+    .d365-commandbar {
+        background: var(--d365-primary); color: #fff;
+        padding: .85rem 1.5rem; border-radius: 4px 4px 0 0;
+        display: flex; align-items: center; gap: .6rem;
+    }
+    .d365-commandbar h3 { margin: 0; font-size: 1.1rem; font-weight: 600; letter-spacing: .2px; }
+    .d365-commandbar i { font-size: 1.15rem; }
+
+    /* Stepper */
+    .d365-steps { display: flex; gap: .25rem; padding: 1rem 1.5rem 0; flex-wrap: wrap; }
+    .d365-step { display: flex; align-items: center; gap: .55rem; color: var(--d365-text-2); font-size: .85rem; font-weight: 600; }
+    .d365-step__num {
+        width: 26px; height: 26px; border-radius: 50%; display: inline-flex;
+        align-items: center; justify-content: center; font-size: .8rem;
+        background: #fff; border: 2px solid var(--d365-border-strong); color: var(--d365-text-2);
+    }
+    .d365-step.is-active .d365-step__num { background: var(--d365-accent); border-color: var(--d365-accent); color: #fff; }
+    .d365-step.is-active { color: var(--d365-text); }
+    .d365-step.is-complete .d365-step__num { background: var(--d365-primary); border-color: var(--d365-primary); color: #fff; }
+    .d365-step.is-complete { color: var(--d365-text); }
+    .d365-step__sep { flex: 1 1 24px; height: 2px; background: var(--d365-border); min-width: 16px; align-self: center; transition: background-color .2s; }
+    .d365-step__sep.is-filled { background: var(--d365-accent); }
+
+    /* Card surfaces */
+    .d365-section { background: var(--d365-surface); border: 1px solid var(--d365-border); border-radius: 4px; margin: 1rem 1.5rem; }
+    .d365-section__head { padding: .75rem 1.1rem; border-bottom: 1px solid var(--d365-border); font-weight: 600; color: var(--d365-text); font-size: .95rem; display: flex; align-items: center; gap: .5rem; }
+    .d365-section__head i { color: var(--d365-accent); }
+    .d365-section__body { padding: 1.1rem; }
+
+    /* Fluent fields */
+    .d365-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.1rem; }
+    .d365-field label { display: block; font-weight: 600; color: var(--d365-text); font-size: .85rem; margin-bottom: .35rem; }
+    .d365-field select, .d365-field .form-control {
+        width: 100%; border: 1px solid var(--d365-border-strong); border-radius: 2px;
+        padding: .5rem .7rem; font-size: .92rem; color: var(--d365-text); background: #fff;
+        transition: border-color .12s, box-shadow .12s;
+    }
+    .d365-field select:focus, .d365-field .form-control:focus {
+        outline: none; border-color: var(--d365-accent); box-shadow: 0 0 0 1px var(--d365-accent);
+    }
+
+    /* Buttons (Fluent) */
+    .d365-btn { border-radius: 2px; font-weight: 600; font-size: .9rem; padding: .5rem 1.1rem; display: inline-flex; align-items: center; gap: .45rem; border: 1px solid transparent; transition: background-color .12s, border-color .12s; }
+    .d365-btn--primary { background: var(--d365-accent); color: #fff; }
+    .d365-btn--primary:hover { background: var(--d365-accent-hover); color: #fff; }
+    .d365-btn--default { background: #fff; color: var(--d365-text); border-color: var(--d365-border-strong); }
+    .d365-btn--default:hover { background: #f3f2f1; color: var(--d365-text); }
+
+    .d365-actions { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; padding: 0 1.5rem 1rem; }
+
+    /* Inline alerts */
+    .d365-alert { border-radius: 2px; padding: .65rem .9rem; font-size: .88rem; margin: 0 1.5rem 1rem; border-left: 4px solid; }
+    .d365-alert--danger { background: #fdf3f4; border-color: var(--d365-danger); color: var(--d365-danger); }
+    .d365-alert--success { background: #f1faf1; border-color: var(--d365-success); color: var(--d365-success); }
+
+    /* Results table */
+    #student_data { padding: 0 1.5rem 1.5rem; }
+    #student_data table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--d365-border); }
+    #student_data thead th { background: #f3f2f1; color: var(--d365-text-2); text-transform: uppercase; font-size: .75rem; letter-spacing: .4px; padding: .7rem 1rem; text-align: left; border-bottom: 1px solid var(--d365-border); }
+    #student_data tbody td { padding: .65rem 1rem; border-bottom: 1px solid var(--d365-border); color: var(--d365-text); }
+    #student_data tbody tr:hover { background: #f8f7f6; }
+    /* status pill styled via JS-added text; capitalize + colorize true/false */
+    #student_data td:last-child { font-weight: 600; }
+
+    @media (max-width: 576px) {
+        .d365-section, .d365-alert, .d365-actions, #student_data { margin-left: 0; margin-right: 0; padding-left: 1rem; padding-right: 1rem; }
+        .d365-actions { padding-left: 1rem; }
+    }
+</style>
+{% endblock custom_css %}
+
 {% block main_content %}
 
 {% load static %}
 
 <section class="content">
-        <div class="container-fluid">
+    <div class="container-fluid py-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+                <div class="d365-shell">
 
-            <div class="row bg-secondary">
-                <div class="col-md-12">
-                    <!-- general form elements -->
-                    <div class="card card-secondary">
-                    <div class="card-header">
-                        <h3 class="card-title">View Attendance</h3>
+                    <div class="d365-commandbar">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>Attendance Report</h3>
                     </div>
-                    <!-- /.card-header -->
 
-                                {% comment %} Display Messages {% endcomment %}
-                                {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
+                    <!-- Stepper -->
+                    <div class="d365-steps" id="att_steps">
+                        <div class="d365-step is-active" data-step="1"><span class="d365-step__num">1</span> Select class &amp; session</div>
+                        <span class="d365-step__sep"></span>
+                        <div class="d365-step" data-step="2"><span class="d365-step__num">2</span> Choose date</div>
+                        <span class="d365-step__sep"></span>
+                        <div class="d365-step" data-step="3"><span class="d365-step__num">3</span> View records</div>
+                    </div>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <div class="d365-alert d365-alert--danger">{{ message }}</div>
+                            {% elif message.tags == "success" %}
+                                <div class="d365-alert d365-alert--success">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Step 1: filters -->
+                    <div class="d365-section">
+                        <div class="d365-section__head"><i class="fas fa-filter"></i> Filter criteria</div>
+                        <div class="d365-section__body">
+                            <div class="d365-grid">
+                                <div class="d365-field">
+                                    <label for="cls">Class</label>
+                                    <select class="form-control" name="cls" id="cls">
+                                        {% for cls in classes %}
+                                            <option value="{{ cls.id }}">{{ cls.course_name }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                                </div>
-                                {% endif %}
-                            
-
-                        <div class="card-body">
-                           
-                            <div class="form-group">
-                                <label class="text-dark">Class </label>
-                                <select class="form-control" name="cls" id="cls">
-                                    {% for cls in classes %}
-                                        <option value="{{ cls.id }}">{{cls.course_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="text-dark">Session Year </label>
-                                <select class="form-control" name="session_year_id" id="session_year_id">
-                                    {% for session_year in session_years %}
-                                        <option value="{{ session_year.id }}">{{ session_year.session_start_year }} to {{ session_year.session_end_year }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-
-                        </div>
-                        <!-- /.card-body -->
-
-                        <div class="card-footer card-secondary">
-                            <button type="button" class="btn btn-secondary" id="fetch_attendance">Fetch Attendance Date</button>
-                        </div>
-
-                        <div class="card-footer">
-                            <div class="form-group bg-white" id="attendance_block" style="display:none;">
-                                    <label>Attendance Date </label>
-                                    <select class="form-control" name="attendance_date" id="attendance_date">
-                                        
+                                <div class="d365-field">
+                                    <label for="session_year_id">Session Year</label>
+                                    <select class="form-control" name="session_year_id" id="session_year_id">
+                                        {% for session_year in session_years %}
+                                            <option value="{{ session_year.id }}">{{ session_year.session_start_year }} to {{ session_year.session_end_year }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="form-group">
-                                <div class="alert alert-danger" id="error_attendance" style="display:none;">
-
-                                </div>
-
-                                <div class="alert alert-success" id="success_attendance" style="display:none;">
-                                    
-                                </div>
-                            </div>
-
-                            <div class="card-footer" id="fetch_student_block" style="display:none;">
-
-                                <button type="button" class="btn btn-dark" id="fetch_student">Fetch Student Data</button>
-                                {% include 'cancel_button.html'%}
-                            </div>
-                            
-                            <!-- /.card-body -->
-
-                            {% comment %} <div class="card-footer">
-                                <button type="button" class="btn btn-primary" id="save_student">Save Data</button>
-                            </div> {% endcomment %}
-
                         </div>
-
-                        {% comment %} Displaying Students Here {% endcomment %}
-
-                        <div class="card-footer" id="student_data">
-                        </div> 
-
                     </div>
-                    <!-- /.card -->
+
+                    <div class="d365-actions">
+                        <button type="button" class="d365-btn d365-btn--primary" id="fetch_attendance">
+                            <i class="far fa-calendar-alt"></i> Fetch Attendance Dates
+                        </button>
+                    </div>
+
+                    <!-- Inline status -->
+                    <div class="d365-alert d365-alert--danger" id="error_attendance" style="display:none;"></div>
+                    <div class="d365-alert d365-alert--success" id="success_attendance" style="display:none;"></div>
+
+                    <!-- Step 2: date + fetch students -->
+                    <div class="d365-section" id="attendance_block" style="display:none;">
+                        <div class="d365-section__head"><i class="far fa-calendar-check"></i> Recorded dates</div>
+                        <div class="d365-section__body">
+                            <div class="d365-field">
+                                <label for="attendance_date">Attendance Date</label>
+                                <select class="form-control" name="attendance_date" id="attendance_date"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d365-actions" id="fetch_student_block" style="display:none;">
+                        <button type="button" class="d365-btn d365-btn--primary" id="fetch_student">
+                            <i class="fas fa-users"></i> Fetch Student Data
+                        </button>
+                        {% include 'cancel_button.html' %}
+                    </div>
+
+                    <!-- Step 3: results -->
+                    <div id="student_data"></div>
 
                 </div>
             </div>
+        </div>
+    </div>
+</section>
 
-        </div><!-- /.container-fluid -->
-      </section>
-
-  {% endblock main_content %}
+{% endblock main_content %}
 
 {% block custom_js %}
 
 <script>
     $(document).ready(function(){
-        
+
+        // Advance the Dynamics-style stepper. `active` = current step (1-3).
+        function setAttStep(active){
+            $("#att_steps .d365-step").each(function(){
+                var n = parseInt($(this).data("step"), 10);
+                $(this).toggleClass("is-active", n === active);
+                $(this).toggleClass("is-complete", n < active);
+            });
+            // Fill the connectors up to (but not including) the active step.
+            $("#att_steps .d365-step__sep").each(function(i){
+                $(this).toggleClass("is-filled", (i + 1) < active);
+            });
+        }
 
         //Fetching Attendance Date
 
@@ -143,7 +225,7 @@
                     data:{cls:cls, session_year_id:session_year_id},
                 })
 
-                
+
                 .done(function(response){
                     var json_data = JSON.parse(response);
                     if(json_data.length>0)
@@ -158,6 +240,7 @@
                         $("#attendance_block").show();
                         $("#fetch_student_block").show();
                         $("#attendance_date").html(html_data);
+                        setAttStep(2);
                         //console.log(response)
                         //alert("Something")
                     }
@@ -168,8 +251,10 @@
                         $("#attendance_block").hide();
                         $("#fetch_student_block").hide();
                         $("#attendance_date")="" //Empty the Date Dropdown also
+                        $("#student_data").html("");
+                        setAttStep(1);
                     }
-                    
+
                 })
 
                 .fail(function(){
@@ -177,9 +262,10 @@
                     $("#error_attendance").html("");
                     $("#fetch_student_block").hide();
                     $("#attendance_block").hide();
+                    setAttStep(1);
                 });
 
-                
+
         })
 
         // Now Working on Fetch Student after attendance date selected
@@ -197,7 +283,7 @@
                 data:{attendance_date:attendance_date},
             })
 
-            
+
             // .done(function(response){
             //     var json_data=JSON.parse(response);
             //     //console.log(json_data)
@@ -210,7 +296,7 @@
             //         div_data+="<div class='col-lg-3'><div class='form-check'>";
 
             //         div_data+="<label class='form-check-label'>"+ json_data[key]['name']+" </label> ";
-                    
+
             //         // Displaying Present and Absent
 
             //         if(json_data[key]['status'])
@@ -222,12 +308,12 @@
             //             div_data+="<b>[ Absent ]</b>";
             //         }
             //         //Displaying Present and Absent Ends Here
-                    
+
 
             //         div_data+="</div></div> ";
             //     }
             //     div_data+="</div></div>";
-                
+
             //     $("#student_data").html(div_data);
 
             // })
@@ -247,8 +333,9 @@
                     div_data+="</div></div> ";
                 }
                 div_data+="</tbody></table></div>";
-                
+
                 $("#student_data").html(div_data);
+                setAttStep(3);
 
             })
             .fail(function(){

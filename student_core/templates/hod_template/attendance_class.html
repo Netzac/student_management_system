@@ -4,99 +4,220 @@
     {{cls.course_name}} Attendance Sheet
 {% endblock page_title %}
 
+{% block custom_css %}
+<style>
+    /* ---------- Attendance sheet layout ---------- */
+    .att-card { border: none; border-radius: 14px; box-shadow: 0 6px 24px rgba(15, 23, 42, .08); overflow: hidden; }
+    .att-card__header {
+        background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+        color: #fff; padding: 1.1rem 1.5rem;
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem;
+    }
+    .att-card__title { margin: 0; font-size: 1.15rem; font-weight: 600; display: flex; align-items: center; gap: .5rem; }
+    .att-count-badge {
+        background: rgba(255, 255, 255, .2); color: #fff; font-weight: 600;
+        padding: .3rem .85rem; border-radius: 999px; font-size: .85rem;
+    }
+
+    /* Date control row */
+    .att-controls {
+        display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1rem;
+        padding: 1.25rem 1.5rem; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
+    }
+    .att-field { display: flex; flex-direction: column; gap: .35rem; }
+    .att-field label { font-weight: 600; color: #334155; margin: 0; font-size: .9rem; }
+    .att-field input[type="date"] {
+        border: 1px solid #cbd5e1; border-radius: 10px; padding: .55rem .9rem;
+        font-size: .95rem; min-width: 220px; transition: border-color .15s, box-shadow .15s;
+    }
+    .att-field input[type="date"]:focus {
+        outline: none; border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13, 148, 136, .18);
+    }
+    .att-field__hint { font-size: .78rem; color: #64748b; }
+
+    /* Table */
+    .att-table { margin: 0; }
+    .att-table thead th {
+        background: #f1f5f9; color: #475569; text-transform: uppercase;
+        font-size: .78rem; letter-spacing: .5px; border-bottom: 2px solid #e2e8f0; padding: .9rem 1rem;
+    }
+    .att-table tbody td { vertical-align: middle; padding: .8rem 1rem; }
+    .att-table tbody tr:nth-child(even) { background: #f8fafc; }
+    .att-table tbody tr:hover { background: #f0fdfa; }
+    .att-student { font-weight: 600; color: #1e293b; text-align: left; }
+
+    /* ---------- Present / Absent toggle ---------- */
+    .att-toggle { gap: .5rem; }
+    .att-btn {
+        --att-color: #6c757d;
+        --att-tint: rgba(108, 117, 125, .12);
+        display: inline-flex; align-items: center; gap: .45rem;
+        min-width: 130px; justify-content: center;
+        font-weight: 700; font-size: .9rem; letter-spacing: .2px;
+        border: 2px solid var(--att-color);
+        color: var(--att-color);
+        background: var(--att-tint);          /* tinted fill so the label is readable at rest */
+        border-radius: 999px !important;
+        padding: .5rem 1.15rem;
+        transition: transform .12s ease, box-shadow .15s ease, background-color .15s ease, color .15s ease;
+    }
+    .att-btn i { font-size: 1.05rem; }
+
+    /* Teal blue = Present */
+    .att-btn--present { --att-color: #0d9488; --att-tint: rgba(13, 148, 136, .12); }
+    /* Contrasting coral/red = Absent */
+    .att-btn--absent  { --att-color: #ef4444; --att-tint: rgba(239, 68, 68, .12); }
+
+    .att-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+        background: color-mix(in srgb, var(--att-color) 20%, #fff);
+    }
+
+    /* Selected: solid fill + glow */
+    .att-toggle .att-btn.active,
+    .att-toggle .btn.active.att-btn {
+        background: var(--att-color); color: #fff;
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--att-color) 22%, transparent);
+    }
+    .att-btn.active i { transform: scale(1.12); }
+
+    .att-btn:focus, .att-btn:focus-within {
+        outline: none;
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--att-color) 30%, transparent);
+    }
+    .att-btn > input[type="radio"] { position: absolute; clip: rect(0,0,0,0); pointer-events: none; }
+
+    /* Footer actions */
+    .att-card__footer {
+        display: flex; justify-content: flex-end; align-items: center; gap: .75rem;
+        padding: 1.1rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0;
+    }
+    .att-btn-submit {
+        background: #0d9488; border: none; color: #fff; font-weight: 600;
+        padding: .6rem 1.6rem; border-radius: 10px; display: inline-flex; align-items: center; gap: .5rem;
+        transition: background-color .15s, transform .12s, box-shadow .15s;
+    }
+    .att-btn-submit:hover { background: #0f766e; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 148, 136, .3); color: #fff; }
+
+    .att-empty { text-align: center; padding: 3rem 1rem; color: #64748b; }
+    .att-empty i { font-size: 2.5rem; color: #cbd5e1; margin-bottom: .75rem; }
+
+    @media (max-width: 576px) {
+        .att-btn { min-width: 0; flex: 1; }
+        .att-card__footer { flex-direction: column-reverse; align-items: stretch; }
+    }
+</style>
+{% endblock custom_css %}
+
 {% block main_content %}
 {% include 'status_message.html' %}
-{% if cls.students_set.all %}
 {% load static %}
 
 <section class="content">
-        <div class="container-fluid">
+    <div class="container-fluid py-3">
 
-           
-            
-            {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-            {% endif %}
-
-            <div class="row">
-
-                <div class="col-md-12">
-                    <!-- general form elements -->
-                    <form action="{% url 'take_attendance' cls.id %}" method="post">
-                        {% csrf_token %}
-                        <label for="date">Enter Date: </label>
-                        <input type="date" name="date" id="attendancedate" value="{% now 'Y-m-d' %}">
-                        <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Class Attendace Sheet</h3>
-
-                        <!-- /.card-header -->
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                <th>Student Name</th>
-                                <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for s in cls.students_set.all  %}
-                                <tr>
-                                <td>{{s}}</td>
-                                <td>
-                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            
-                                            <label class="btn btn-outline-success active">
-                                                <input type="radio" name={{s.id}} id="option1" autocomplete="off" value="present" checked> Present
-                                            </label>
-            
-                                            <label class="btn btn-outline-danger">
-                                                <input type="radio" name={{s.id}} id="option2" autocomplete="off" value="absent"> Absent
-                                            </label>
-                                    </div>
-                                </td>
-                                </tr>
-                            {% endfor %}
-                                
-                            </tbody>
-                            </table>
-                        </div>     <!-- /.card-body -->
-                        </div> <!-- /.card -->
-                        <input class="btn btn-success" type="submit" value="Submit">
-                        {% include 'cancel_button.html'%}
-                    </form>
+        {% if messages %}
+        <div class="row">
+            <div class="col-12">
+                {% for message in messages %}
+                {% if message.tags == "error" %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
+                {% elif message.tags == "success" %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                {% endif %}
+                {% endfor %}
             </div>
+        </div>
+        {% endif %}
 
-        </div><!-- /.container-fluid -->
-      </section>
-      {% else %}
-      <p>No students in Class</p>
-  {% endif %}
-  {% endblock main_content %}
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+                <form action="{% url 'take_attendance' cls.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="card att-card">
 
-  {% block custom_js %}
-    <script>
-      //document.getElementById('attendancedate').value = new Date();
-    </script>
-  {% endblock %}
+                        <div class="att-card__header">
+                            <h3 class="att-card__title">
+                                <i class="fas fa-clipboard-check"></i>
+                                {{ cls.course_name }} &mdash; Attendance Sheet
+                            </h3>
+                            {% if cls.students_set.all %}
+                            <span class="att-count-badge">
+                                <i class="fas fa-user-graduate mr-1"></i>{{ cls.students_set.all|length }} student{{ cls.students_set.all|length|pluralize }}
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        {% if cls.students_set.all %}
+                        <div class="att-controls">
+                            <div class="att-field">
+                                <label for="attendancedate"><i class="far fa-calendar-alt mr-1"></i>Attendance Date</label>
+                                <input type="date" name="date" id="attendancedate" value="{% now 'Y-m-d' %}" required>
+                                <span class="att-field__hint">Select the date this attendance applies to.</span>
+                            </div>
+                        </div>
+
+                        <div class="card-body table-responsive p-0">
+                            <table class="table att-table text-center" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left">Student Name</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for s in cls.students_set.all %}
+                                    <tr>
+                                        <td class="att-student">{{ s }}</td>
+                                        <td>
+                                            <div class="btn-group btn-group-toggle att-toggle" data-toggle="buttons">
+                                                <label class="btn att-btn att-btn--present active">
+                                                    <input type="radio" name={{s.id}} id="option1" autocomplete="off" value="present" checked>
+                                                    <i class="fas fa-check-circle"></i> Present
+                                                </label>
+                                                <label class="btn att-btn att-btn--absent">
+                                                    <input type="radio" name={{s.id}} id="option2" autocomplete="off" value="absent">
+                                                    <i class="fas fa-times-circle"></i> Absent
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="att-card__footer">
+                            {% include 'cancel_button.html' %}
+                            <button class="btn att-btn-submit" type="submit">
+                                <i class="fas fa-save"></i> Submit Attendance
+                            </button>
+                        </div>
+                        {% else %}
+                        <div class="att-empty">
+                            <i class="fas fa-user-slash d-block"></i>
+                            <p class="mb-0">No students are enrolled in this class yet.</p>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    //document.getElementById('attendancedate').value = new Date();
+</script>
+{% endblock %}

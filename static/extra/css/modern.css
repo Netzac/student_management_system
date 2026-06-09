@@ -118,14 +118,29 @@ a:hover { color: var(--m-primary-dark); }
 .card .card-header .card-title {
   font-weight: 600;
 }
-/* keep AdminLTE's coloured card accents but soften them */
+/* Coloured card headers → light Fluent surface with dark text */
 .card.card-primary:not(.card-outline) > .card-header,
 .card.card-info:not(.card-outline) > .card-header,
 .card.card-danger:not(.card-outline) > .card-header,
 .card.card-success:not(.card-outline) > .card-header,
-.card.card-warning:not(.card-outline) > .card-header {
+.card.card-warning:not(.card-outline) > .card-header,
+.card.card-secondary:not(.card-outline) > .card-header,
+.card.card-dark:not(.card-outline) > .card-header {
+  background: #fff !important;
+  background-image: none !important;
   border-top-left-radius: var(--m-radius);
   border-top-right-radius: var(--m-radius);
+  border-bottom: 1px solid var(--m-border);
+  color: var(--m-text) !important;
+}
+.card.card-primary:not(.card-outline) > .card-header .card-title,
+.card.card-info:not(.card-outline) > .card-header .card-title,
+.card.card-danger:not(.card-outline) > .card-header .card-title,
+.card.card-success:not(.card-outline) > .card-header .card-title,
+.card.card-warning:not(.card-outline) > .card-header .card-title,
+.card.card-secondary:not(.card-outline) > .card-header .card-title,
+.card.card-dark:not(.card-outline) > .card-header .card-title {
+  color: var(--m-text) !important;
 }
 
 /* --------------------------------------------------------------- Stat tiles */
@@ -401,7 +416,14 @@ label .text-danger {
 .bg-success { background-color: var(--m-success) !important; }
 .bg-warning { background-color: var(--m-warning) !important; color: #fff !important; }
 .bg-danger  { background-color: var(--m-danger) !important; }
-.bg-secondary, .bg-teal { background-color: var(--m-secondary) !important; }
+.bg-secondary, .bg-teal {
+  background-color: var(--m-surface) !important;
+  color: var(--m-text) !important;
+}
+.bg-dark {
+  background-color: var(--m-surface) !important;
+  color: var(--m-text) !important;
+}
 
 .text-primary { color: var(--m-primary) !important; }
 .text-info    { color: var(--m-info) !important; }
@@ -892,12 +914,35 @@ body.hold-transition { background-color: var(--m-surface); }
 .small-box:hover { transform: translateY(-2px); box-shadow: var(--m-shadow-md); }
 .small-box:hover .icon > i { transform: scale(1.05); }
 
-/* Tables — clean Fluent grid lines */
-.table thead th {
+/* Tables — clean Fluent grid lines, light headers */
+.table thead th,
+.table thead td,
+.table .thead-light th,
+.table .thead-light td,
+thead.thead-light th,
+thead.thead-light td,
+thead.bg-secondary th,
+thead.bg-secondary td,
+thead.thead-secondary th,
+thead.thead-secondary td,
+.table thead.bg-secondary th,
+.table thead.thead-secondary th,
+.table thead.bg-secondary,
+.table thead.thead-secondary {
+  background-color: #faf9f8 !important;
+  background-image: none !important;
   border-bottom: 1px solid var(--m-border-strong);
   border-top: none;
-  color: var(--m-text-secondary);
+  color: var(--m-text-secondary) !important;
   text-transform: none;
+  font-weight: 600;
+}
+.table-dark thead th,
+.table-dark thead td,
+.table.table-dark thead th {
+  background-color: #faf9f8 !important;
+  color: var(--m-text-secondary) !important;
+  border-color: var(--m-border) !important;
 }
 .table td, .table th { border-top: 1px solid var(--m-border); }
 .table-hover tbody tr:hover { background-color: var(--m-primary-tint-2); }
@@ -953,24 +998,34 @@ body.hold-transition { background-color: var(--m-surface); }
   box-shadow: var(--m-shadow-hover);
   overflow: hidden;
 }
-.modal-header.bg-primary {
-  background-image: var(--m-grad-primary) !important;
-  border-bottom: none;
+.modal-header,
+.modal-header.bg-primary,
+.modal-header.bg-info,
+.modal-header.bg-success,
+.modal-header.bg-warning,
+.modal-header.bg-danger,
+.modal-header.bg-dark,
+.modal-header.bg-secondary {
+  background: #fff !important;
+  background-image: none !important;
+  border-bottom: 1px solid var(--m-border);
   padding: 1rem 1.5rem;
+  color: var(--m-text) !important;
 }
 .modal-header .modal-title {
   font-weight: 600;
   letter-spacing: -0.01em;
   display: flex;
   align-items: center;
+  color: var(--m-text) !important;
 }
 .modal-header .close {
-  color: #fff;
+  color: var(--m-text-secondary);
   opacity: 0.85;
   text-shadow: none;
   transition: opacity var(--m-transition), transform var(--m-transition);
 }
-.modal-header .close:hover { opacity: 1; transform: rotate(90deg); }
+.modal-header .close:hover { opacity: 1; transform: rotate(90deg); color: var(--m-text); }
 .modal-body { padding: 1.5rem; }
 
 /* Gentle, transform-free entrance for the form content (safe: opacity only). */
@@ -1840,4 +1895,66 @@ input.btn:not(.btn-tool):not(.btn-link) {
   background: var(--m-primary-dark) !important;
   border-color: var(--m-primary-dark) !important;
   color: #fff !important;
+}
+
+/* ==========================================================================
+   LIGHT HEADERS  —  table & form section headers (legacy dark patterns)
+   ========================================================================== */
+
+/* Section / form row headers that used bg-secondary or bg-dark */
+.row.bg-secondary,
+.row.bg-dark,
+div.bg-secondary:not(.badge):not(.btn):not(.small-box),
+div.bg-dark:not(.badge):not(.btn):not(.small-box):not(.modal-backdrop),
+section.bg-secondary,
+section.bg-dark {
+  background-color: #faf9f8 !important;
+  background-image: none !important;
+  color: var(--m-text) !important;
+}
+
+.row.bg-secondary h1,
+.row.bg-secondary h2,
+.row.bg-secondary h3,
+.row.bg-secondary h4,
+.row.bg-secondary h5,
+.row.bg-secondary p,
+.row.bg-dark h1,
+.row.bg-dark h2,
+.row.bg-dark h3,
+.row.bg-dark h4,
+.row.bg-dark h5,
+.row.bg-dark p,
+div.bg-secondary h5,
+div.bg-secondary p {
+  color: var(--m-text) !important;
+}
+
+/* Card toolbars that used dark fills */
+.card-tools.bg-dark,
+.card-header.bg-dark,
+.card-header.bg-secondary {
+  background: transparent !important;
+  color: var(--m-text) !important;
+}
+
+.card-tools.bg-dark .btn-tool,
+.card-tools.bg-dark a,
+button.bg-secondary a {
+  color: var(--m-primary) !important;
+}
+
+/* DataTables header row */
+table.dataTable thead th,
+table.dataTable thead td {
+  background-color: #faf9f8 !important;
+  color: var(--m-text-secondary) !important;
+  border-bottom: 1px solid var(--m-border-strong) !important;
+}
+
+/* List group headers on dark strips */
+.list-group-item.bg-secondary,
+.list-item-group.bg-secondary {
+  background-color: #faf9f8 !important;
+  color: var(--m-text) !important;
 }

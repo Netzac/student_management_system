@@ -4,80 +4,139 @@
     Attendance Sheet
 {% endblock page_title %}
 
+{% block custom_css %}
+<style>
+    /* ===== Microsoft Dynamics 365 / Fluent — teal-blue theme ===== */
+    :root {
+        --d365-primary: #005b70;     /* deep teal command-bar */
+        --d365-accent:  #038387;     /* Fluent teal-blue accent */
+        --d365-accent-hover: #026d71;
+        --d365-bg:      #faf9f8;
+        --d365-surface: #ffffff;
+        --d365-border:  #edebe9;
+        --d365-border-strong: #c8c6c4;
+        --d365-text:    #201f1e;
+        --d365-text-2:  #605e5c;
+        --d365-success: #107c10;
+        --d365-danger:  #a4262c;
+    }
+
+    .d365-shell { background: var(--d365-bg); border-radius: 6px; }
+
+    .d365-commandbar {
+        background: var(--d365-primary); color: #fff;
+        padding: .9rem 1.5rem; border-radius: 6px 6px 0 0;
+        display: flex; align-items: center; gap: .6rem;
+    }
+    .d365-commandbar h3 { margin: 0; font-size: 1.12rem; font-weight: 600; letter-spacing: .2px; }
+    .d365-commandbar i { font-size: 1.15rem; }
+
+    .d365-intro { padding: 1rem 1.5rem .25rem; color: var(--d365-text-2); font-size: .9rem; }
+
+    .class-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem; padding: 1.25rem 1.5rem 1.75rem;
+    }
+
+    .class-tile {
+        position: relative; display: flex; flex-direction: column;
+        background: var(--d365-surface); border: 1px solid var(--d365-border);
+        border-radius: 8px; padding: 1.1rem 1.1rem 1.25rem; overflow: hidden;
+        transition: transform .14s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+    .class-tile::before {
+        content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+        background: var(--d365-accent); opacity: .85;
+    }
+    .class-tile:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(0, 91, 112, .16);
+        border-color: var(--d365-accent);
+    }
+
+    .class-tile__icon {
+        width: 46px; height: 46px; border-radius: 10px; margin-bottom: .85rem;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: rgba(3, 131, 135, .12); color: var(--d365-accent); font-size: 1.25rem;
+    }
+    .class-tile__name { font-size: 1.05rem; font-weight: 600; color: var(--d365-text); margin: 0 0 .3rem; }
+    .class-tile__meta { font-size: .82rem; color: var(--d365-text-2); display: flex; align-items: center; gap: .35rem; margin-bottom: 1rem; }
+    .class-tile__meta i { color: var(--d365-accent); }
+
+    .class-tile__btn {
+        margin-top: auto; align-self: flex-start;
+        background: var(--d365-accent); color: #fff; border: none;
+        font-weight: 600; font-size: .9rem; border-radius: 4px;
+        padding: .55rem 1.1rem; display: inline-flex; align-items: center; gap: .5rem;
+        transition: background-color .14s, gap .14s; text-decoration: none;
+    }
+    .class-tile__btn:hover { background: var(--d365-accent-hover); color: #fff; gap: .75rem; text-decoration: none; }
+
+    .class-empty { text-align: center; padding: 3rem 1rem; color: var(--d365-text-2); }
+    .class-empty i { font-size: 2.75rem; color: var(--d365-border-strong); margin-bottom: .75rem; display: block; }
+
+    .d365-alert { border-radius: 2px; padding: .65rem .9rem; font-size: .9rem; margin-bottom: 1rem; border-left: 4px solid; }
+    .d365-alert--danger { background: #fdf3f4; border-color: var(--d365-danger); color: var(--d365-danger); }
+    .d365-alert--success { background: #f1faf1; border-color: var(--d365-success); color: var(--d365-success); }
+</style>
+{% endblock custom_css %}
+
 {% block main_content %}
 
 {% load static %}
 
 <section class="content">
-        <div class="container-fluid">
+    <div class="container-fluid py-3">
 
-           
-            
-            {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-            {% endif %}
+        {% if messages %}
+        <div class="row"><div class="col-12">
+            {% for message in messages %}
+                {% if message.tags == "error" %}
+                    <div class="d365-alert d365-alert--danger">{{ message }}</div>
+                {% elif message.tags == "success" %}
+                    <div class="d365-alert d365-alert--success">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+        </div></div>
+        {% endif %}
 
-            <div class="row">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8 col-xl-6">
+                <div class="d365-shell">
 
-                <div class="col-md-12">
-                    <!-- general form elements -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Class Attendance Sheet </h3>
-                        </div> <!--header end-->
-                        <!-- /.card-header -->
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                <th>Class</th>
-                                <th>Attendance Sheet</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if classes %}
-                                <tr>
-                                    <td>{{ classes.course_name }}</td>
-                                    <td>
-                                            <a class="btn btn-primary" href="{% url 'attendance_class' classes.id %}" role="button">Enter Attendance</a>
-                                           {% comment %} <!-- <a class="btn btn-danger" href="{% url 't_student' %}">View Students</a> --> {% endcomment %}
-                                    </td>
-                                </tr>
-                                {% else %}
-                                        <p>No Class Assigned To You Yet</p>
-                                {% endif %}
-                                
-                            </tbody>
-                            </table>
+                    <div class="d365-commandbar">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h3>Take Attendance &mdash; Your Class</h3>
+                    </div>
+
+                    <p class="d365-intro">Open your assigned class to mark students present or absent.</p>
+
+                    <div class="class-grid">
+                        {% if classes %}
+                        <div class="class-tile">
+                            <span class="class-tile__icon"><i class="fas fa-chalkboard"></i></span>
+                            <h4 class="class-tile__name">{{ classes.course_name }}</h4>
+                            <div class="class-tile__meta">
+                                <i class="fas fa-user-graduate"></i>
+                                {{ classes.students_set.all|length }} student{{ classes.students_set.all|length|pluralize }}
+                            </div>
+                            <a class="class-tile__btn" href="{% url 'attendance_class' classes.id %}" role="button">
+                                <i class="fas fa-pen-to-square"></i> Enter Attendance
+                            </a>
                         </div>
-                        <!-- /.card-body -->
+                        {% else %}
+                        <div class="class-empty" style="grid-column: 1 / -1;">
+                            <i class="fas fa-folder-open"></i>
+                            <p class="mb-0">No class assigned to you yet.</p>
                         </div>
-                    <!-- /.card -->
+                        {% endif %}
+                    </div>
 
                 </div>
             </div>
+        </div>
 
-        </div><!-- /.container-fluid -->
-      </section>
+    </div>
+</section>
 
-  {% endblock main_content %}
+{% endblock main_content %}
