@@ -9,87 +9,99 @@
 {% load static %}
 
 <section class="content">
-        <div class="container-fluid">
-
-            <div class="row justify-content-center">
-                <div class="col-sm-10">
-                    <!-- general form elements -->
-                    <div class="card card-secondary">
-                    <div class="card-header">
-                        <h3 class="card-title">Update Profile</h3>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card" style="border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);">
+                    <div class="card-header" style="background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%); border-radius: 12px 12px 0 0; padding: 1.5rem;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                                <i class="fas fa-user-edit text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="card-title text-white font-bold text-xl m-0">Update Profile</h3>
+                                <p class="text-white/80 text-sm mt-1 m-0">Manage your account details</p>
+                            </div>
+                        </div>
                     </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
                     <form role="form" method="POST" action="{% url 'admin_profile_update' %}">
                         {% csrf_token %}
-
                         
-                                {% comment %} Display Messages {% endcomment %}
-                                {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
+                        {% if messages %}
+                        <div class="px-6 pt-6">
+                            {% for message in messages %}
+                            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show rounded-lg border-0" role="alert" style="padding: 1rem 1.25rem;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle text-danger{% else %}fa-check-circle text-success{% endif %}"></i>
+                                    {{ message }}
                                 </div>
-                                </div>
-                                {% endif %}
-                            
-
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label>Username </label>
-                                <input type="text" class="form-control" name="username" value="{{ user.username }}" disabled="disabled">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
-
-                            <div class="form-group">
-                                <label>Email </label>
-                                <input type="text" class="form-control" name="email" value="{{ user.email }}" disabled="disabled">
-                            </div>
-
-                            <div class="form-group">
-                                <label>First Name </label>
-                                <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Last Name </label>
-                                <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Password </label>
-                                <input type="text" class="form-control" name="password" placeholder="Leave empty to keep old password.">
-                            </div>
-
+                            {% endfor %}
                         </div>
-                        <!-- /.card-body -->
+                        {% endif %}
 
-                        <div class="card-footer">
-                        <button type="submit" class="btn btn-secondary">Update Profile</button>
+                        <div class="card-body" style="padding: 2rem;">
+                            <div class="mb-5">
+                                <label class="block text-sm font-semibold text-gray-800 mb-2">Username</label>
+                                <input type="text" class="form-control" name="username" value="{{ user.username }}" disabled style="background-color: #f3f4f6; border: 1px solid #e5e7eb; padding: 0.75rem 1rem;">
+                            </div>
+
+                            <div class="mb-5">
+                                <label class="block text-sm font-semibold text-gray-800 mb-2">Email</label>
+                                <input type="text" class="form-control" name="email" value="{{ user.email }}" disabled style="background-color: #f3f4f6; border: 1px solid #e5e7eb; padding: 0.75rem 1rem;">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-800 mb-2">First Name</label>
+                                    <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}" style="padding: 0.75rem 1rem;">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-800 mb-2">Last Name</label>
+                                    <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}" style="padding: 0.75rem 1rem;">
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="block text-sm font-semibold text-gray-800 mb-2">Password</label>
+                                <input type="password" class="form-control" name="password" placeholder="Leave blank to keep old password" style="padding: 0.75rem 1rem;">
+                                <p class="text-xs text-gray-500 mt-2">Leave blank to keep your current password</p>
+                            </div>
+                        </div>
+
+                        <div class="card-footer" style="background: #fafaf9; border-top: 1px solid #e5e7eb; padding: 1.5rem 2rem; border-radius: 0 0 12px 12px;">
+                            <div class="d-flex justify-end gap-3">
+                                <button type="submit" class="btn" style="background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%); border: none; color: white; padding: 0.75rem 2rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                                    <i class="fas fa-save mr-2"></i>Update Profile
+                                </button>
+                            </div>
                         </div>
                     </form>
-                    </div>
-                    <!-- /.card -->
-
                 </div>
             </div>
+        </div>
+    </div>
+</section>
 
-        </div><!-- /.container-fluid -->
-      </section>
+<style>
+    .grid { display: grid; }
+    .grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+    @media (min-width: 768px) {
+        .md\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+    }
+    .gap-3 { gap: 0.75rem; }
+    .gap-5 { gap: 1.25rem; }
+    .justify-end { justify-content: flex-end; }
+    .w-12 { width: 3rem; }
+    .h-12 { height: 3rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .d-flex { display: flex; }
+    .align-items-center { align-items: center; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0, 110, 127, 0.35); }
+    .form-control:focus { border-color: #006e7f !important; box-shadow: 0 0 0 3px rgba(0, 110, 127, 0.1) !important; }
+</style>
 
-  {% endblock main_content %}
+{% endblock main_content %}

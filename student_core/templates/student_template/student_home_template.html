@@ -4,211 +4,321 @@
     Student Home
 {% endblock page_title %}
 
-{% block main_content %}
+{% block fullcard %}
+<section class="content dashboard-shell student-dashboard">
+  <div class="container-fluid">
+    <div class="dashboard-hero">
+      <div>
+        <span class="dashboard-kicker">Student overview</span>
+        <h1>Welcome back, {{ user.first_name }}!</h1>
+        <p>Track your attendance, view your schedule, and stay on top of your academic progress.</p>
+      </div>
+      <div class="dashboard-actions">
+        <a href="{% url 'student_view_attendance' %}" class="btn btn-primary">
+          <i class="fas fa-calendar-check mr-2"></i>View Attendance
+        </a>
+        <a href="{% url 'student_view_result' %}" class="btn btn-light">
+          <i class="fas fa-graduation-cap mr-2"></i>View Results
+        </a>
+      </div>
+    </div>
 
-{% load static %}
+    <div class="dashboard-stat-grid">
+      <a href="{% url 'student_view_attendance' %}" class="dashboard-stat-card accent-teal">
+        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        <span>Total Attendance</span>
+        <strong>{{ total_attendance }}</strong>
+        <small>All recorded attendance days</small>
+      </a>
+      <a href="{% url 'student_view_attendance' %}" class="dashboard-stat-card accent-green">
+        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+        <span>Present</span>
+        <strong>{{ attendance_present }}</strong>
+        <small>Days you were present</small>
+      </a>
+      <a href="{% url 'student_view_attendance' %}" class="dashboard-stat-card accent-red">
+        <div class="stat-icon"><i class="fas fa-calendar-times"></i></div>
+        <span>Absent</span>
+        <strong>{{ attendance_absent }}</strong>
+        <small>Days you were absent</small>
+      </a>
+      <div class="dashboard-stat-card accent-amber">
+        <div class="stat-icon"><i class="fas fa-book"></i></div>
+        <span>Total Subjects</span>
+        <strong>{{ total_subjects }}</strong>
+        <small>Subjects you are enrolled in</small>
+      </div>
+    </div>
 
-<section class="content">
-        <div class="container-fluid">
+    <div class="dashboard-grid">
+      <article class="dashboard-panel chart-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="dashboard-kicker">Attendance</span>
+            <h2>Attendance Overview</h2>
+          </div>
+          <a href="{% url 'student_view_attendance' %}" class="btn btn-sm btn-light">View details</a>
+        </div>
+        <div class="chart-frame">
+          <canvas id="pieChart"></canvas>
+        </div>
+      </article>
 
-            {% comment %} Boxes Section Starts {% endcomment %}
-            <div class="row">
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>{{ total_attendance }}</h3>
+      <article class="dashboard-panel chart-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="dashboard-kicker">Subjects</span>
+            <h2>Attendance by Subject</h2>
+          </div>
+        </div>
+        <div class="chart-frame">
+          <canvas id="barChart"></canvas>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+{% endblock fullcard %}
 
-                        <p>Total Attendance</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-stats-bars"></i>
-                    </div>
-                    <a href="{% url 'student_view_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-                <!-- ./col -->
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3>{{ attendance_absent }}</h3>
+{% block custom_css %}
+<style>
+  .dashboard-shell { padding-bottom: 1.5rem; }
 
-                        <p>Absent</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-stats-bars"></i>
-                    </div>
-                    <a href="{% url 'student_view_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-                <!-- ./col -->
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-warning">
-                    <div class="inner">
-                        <h3>{{ attendance_present }}</h3>
+  .dashboard-hero {
+    align-items: center;
+    background: linear-gradient(135deg, #ffffff 0%, #eef7f8 56%, #f7fbff 100%);
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding: 1.5rem;
+  }
 
-                        <p>Present</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-stats-bars"></i>
-                    </div>
-                    <a href="{% url 'student_view_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-                <!-- ./col -->
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-danger">
-                    <div class="inner">
-                        <h3>{{ total_subjects }}</h3>
+  .dashboard-hero h1 {
+    color: #111827;
+    font-size: 1.85rem;
+    margin: 0.2rem 0 0.35rem;
+  }
 
-                        <p>Total Subjects</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-pie-graph"></i>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-                <!-- ./col -->
-                </div>
-            {% comment %} Boxes Section Ends {% endcomment %}
+  .dashboard-hero p {
+    color: #605e5c;
+    margin: 0;
+  }
 
-            <div class="row">
-                <div class="col-lg-6">
-                    <!-- PIE CHART -->
-                    <div class="card card-danger">
-                    <div class="card-header">
-                        <h3 class="card-title">Total Attendance Chart</h3>
+  .dashboard-kicker {
+    color: #006e7f;
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
 
-                        <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                    </div>
-                    <!-- /.card-body -->
-                    </div>
-                    <!-- /.card -->
-                </div>
+  .dashboard-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    justify-content: flex-end;
+  }
 
-                <div class="col-lg-6">
-                    <!-- BAR CHART -->
-                    <div class="card card-success">
-                    <div class="card-header">
-                        <h3 class="card-title">Attendance Statistics by Subjects</h3>
+  .dashboard-stat-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 1rem;
+  }
 
-                        <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart">
-                        <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                        </div>
-                    </div>
-                    <!-- /.card-body -->
-                    </div>
-                    <!-- /.card -->
-                </div>
-            </div>
+  .dashboard-stat-card,
+  .dashboard-panel {
+    background: #fff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  }
 
-        </div><!-- /.container-fluid -->
-      </section>
+  .dashboard-stat-card {
+    color: inherit;
+    min-height: 142px;
+    overflow: hidden;
+    padding: 1rem;
+    position: relative;
+    text-decoration: none;
+  }
 
-  {% endblock main_content %}
+  .dashboard-stat-card:hover {
+    color: inherit;
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
 
-  {% block custom_js %}
-    <script>
-       $(document).ready(function(){
-           //Code for Pie Chart
-            var pieData        = {
-            labels: [
-                'ABSENT', 
-                'PRESENT', 
-            ],
-            datasets: [
-                {
-                data: [{{ attendance_absent }}, {{ attendance_present }}],
-                backgroundColor : ['#f56954', '#00a65a'],
-                }
-            ]
-            }
-           //Code for Pie Chart
-            var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-            var pieData        = pieData;
-            var pieOptions     = {
-            maintainAspectRatio : false,
-            responsive : true,
-            }
-            //Create pie or douhnut chart
-            // You can switch between pie and douhnut using the method below.
-            var pieChart = new Chart(pieChartCanvas, {
-            type: 'pie',
-            data: pieData,
-            options: pieOptions      
-            })
+  .dashboard-stat-card::before {
+    border-radius: 999px;
+    content: "";
+    height: 5px;
+    left: 1rem;
+    position: absolute;
+    right: 1rem;
+    top: 0;
+  }
 
-            //Code for Bar Chart
-            var subjects = {{ subject_name|safe }}
-            var data_present = {{ data_present }}
-            var data_absent = {{ data_absent }}
+  .accent-teal::before { background: #006e7f; }
+  .accent-green::before { background: #107c10; }
+  .accent-amber::before { background: #ca5010; }
+  .accent-red::before { background: #a4262c; }
 
-            //Dataset for Bar Chart
-            var areaChartData = {
-            labels  : subjects,
-            datasets: [
-                {
-                label               : 'Present in Class',
-                backgroundColor     : 'rgba(60,141,188,0.9)',
-                borderColor         : 'rgba(60,141,188,0.8)',
-                pointRadius          : false,
-                pointColor          : '#3b8bba',
-                pointStrokeColor    : 'rgba(60,141,188,1)',
-                pointHighlightFill  : '#fff',
-                pointHighlightStroke: 'rgba(60,141,188,1)',
-                data                : data_present
-                },
-                {
-                label               : 'Absent in Class',
-                backgroundColor     : 'rgba(210, 214, 222, 1)',
-                borderColor         : 'rgba(210, 214, 222, 1)',
-                pointRadius         : false,
-                pointColor          : 'rgba(210, 214, 222, 1)',
-                pointStrokeColor    : '#c1c7d1',
-                pointHighlightFill  : '#fff',
-                pointHighlightStroke: 'rgba(220,220,220,1)',
-                data                : data_absent
-                },
-            ]
-            }
+  .stat-icon {
+    align-items: center;
+    background: #eef7f8;
+    border-radius: 8px;
+    color: #006e7f;
+    display: flex;
+    height: 42px;
+    justify-content: center;
+    margin-bottom: 0.85rem;
+    width: 42px;
+  }
 
+  .dashboard-stat-card span,
+  .dashboard-stat-card small {
+    color: #605e5c;
+  }
 
-            var barChartCanvas = $('#barChart').get(0).getContext('2d')
-            var barChartData = jQuery.extend(true, {}, areaChartData)
-            var temp1 = areaChartData.datasets[0]
-            barChartData.datasets[0] = temp1
+  .dashboard-stat-card strong {
+    color: #111827;
+    display: block;
+    font-size: 1.55rem;
+    line-height: 1.2;
+    margin: 0.15rem 0;
+  }
 
-            var barChartOptions = {
-            responsive              : true,
-            maintainAspectRatio     : false,
-            datasetFill             : false
-            }
+  .dashboard-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 1rem;
+  }
 
-            var barChart = new Chart(barChartCanvas, {
-            type: 'bar', 
-            data: barChartData,
-            options: barChartOptions
-            })
+  .dashboard-panel { padding: 1rem; }
 
+  .panel-heading {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
 
-       })
-    </script>
-  {% endblock custom_js %}
+  .panel-heading h2 {
+    color: #111827;
+    font-size: 1.1rem;
+    margin: 0.1rem 0 0;
+  }
+
+  .chart-frame {
+    height: 315px;
+    position: relative;
+  }
+
+  @media (max-width: 1199px) {
+    .dashboard-stat-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .dashboard-hero,
+    .panel-heading {
+      display: block;
+    }
+
+    .dashboard-actions {
+      justify-content: flex-start;
+      margin-top: 1rem;
+    }
+
+    .dashboard-stat-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock custom_css %}
+
+{% block custom_js %}
+<script>
+  (function () {
+    if (typeof Chart === 'undefined') {
+      return;
+    }
+
+    var subjects = {{ subject_name|safe }};
+    var data_present = {{ data_present }};
+    var data_absent = {{ data_absent }};
+
+    function buildChart(id, config) {
+      var canvas = document.getElementById(id);
+      if (!canvas) {
+        return;
+      }
+      new Chart(canvas.getContext('2d'), config);
+    }
+
+    buildChart('pieChart', {
+      type: 'doughnut',
+      data: {
+        labels: ['Absent', 'Present'],
+        datasets: [{
+          data: [{{ attendance_absent }}, {{ attendance_present }}],
+          backgroundColor: ['#a4262c', '#006e7f']
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: { position: 'bottom', labels: { boxWidth: 12, fontColor: '#323130' } },
+        cutoutPercentage: 62
+      }
+    });
+
+    buildChart('barChart', {
+      type: 'bar',
+      data: {
+        labels: subjects,
+        datasets: [
+          {
+            label: 'Present in Class',
+            data: data_present,
+            backgroundColor: 'rgba(0, 110, 127, 0.82)',
+            borderColor: '#006e7f',
+            borderWidth: 1
+          },
+          {
+            label: 'Absent in Class',
+            data: data_absent,
+            backgroundColor: 'rgba(164, 38, 44, 0.78)',
+            borderColor: '#a4262c',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: { position: 'bottom', labels: { boxWidth: 12, fontColor: '#323130' } },
+        scales: {
+          xAxes: [{ gridLines: { display: false }, ticks: { fontColor: '#605e5c' } }],
+          yAxes: [{
+            ticks: { beginAtZero: true, precision: 0, fontColor: '#605e5c' },
+            gridLines: { color: 'rgba(96, 94, 92, 0.14)' }
+          }]
+        }
+      }
+    });
+  })();
+</script>
+{% endblock custom_js %}
