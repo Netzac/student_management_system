@@ -655,6 +655,77 @@ input.btn:not(.btn-tool):not(.btn-link) {
   color: #fff !important;
 }
 
+/* Autocomplete Dropdown */
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 9999;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.autocomplete-item {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background-color: var(--m-primary-tint-2);
+}
+
+.autocomplete-type-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  min-width: 60px;
+  text-align: center;
+}
+
+.autocomplete-type-Student {
+  background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%);
+}
+
+.autocomplete-type-Staff {
+  background: linear-gradient(135deg, #107c10 0%, #0a5c0a 100%);
+}
+
+.autocomplete-type-Subject {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+}
+
+.autocomplete-type-Class {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.autocomplete-type-Book {
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+}
+
+.autocomplete-type-Menu {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+}
+
+.autocomplete-text {
+    flex-grow: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: #323130;
+}
+
 /* Button and label alignment guardrail for legacy templates that mix `.btn`,
    `bg-*`, and nested anchor markup. */
 .btn,
@@ -1957,4 +2028,85 @@ table.dataTable thead td {
 .list-item-group.bg-secondary {
   background-color: #faf9f8 !important;
   color: var(--m-text) !important;
+}
+
+/* ==========================================================================
+   MICROSOFT DYNAMICS 365 STYLE SEARCH BAR
+   ========================================================================== */
+.navbar-search-wrapper {
+  flex-grow: 1;
+  max-width: 700px;
+  margin: 0 1rem;
+}
+
+.navbar-search-wrapper .input-group {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid #e1e4e8;
+  transition: box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar-search-wrapper .input-group:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: #cbd0d9;
+}
+
+.navbar-search-wrapper .input-group-prepend {
+  background-color: #faf9f8;
+}
+
+.navbar-search-wrapper .input-group-prepend .input-group-text {
+  background: transparent;
+  border: none;
+  color: #5a5a5a;
+  font-size: 1.1rem;
+  padding: 0 1rem;
+}
+
+.navbar-search-wrapper .form-control {
+  border: none !important;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  box-shadow: none !important;
+  height: auto;
+  min-height: 48px;
+}
+
+.navbar-search-wrapper .form-control:focus {
+  background-color: #fff;
+}
+
+.navbar-search-wrapper .input-group-append .btn {
+  background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border-radius: 0 8px 8px 0;
+  transition: filter 0.18s cubic-bezier(0.4, 0, 0.2, 1), transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: auto;
+}
+
+.navbar-search-wrapper .input-group-append .btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.navbar-search-wrapper .input-group-append .btn:active {
+  transform: translateY(0);
+  filter: brightness(0.98);
+}
+
+/* Mobile-friendly search bar */
+@media (max-width: 992px) {
+  .navbar-search-wrapper {
+    margin: 0.5rem 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .main-header.navbar {
+    flex-wrap: wrap;
+  }
 }

@@ -1,0 +1,132 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    <i class="fas fa-database"></i> {{ config.display_name }}
+{% endblock page_title %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+{% block main_content %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary">
+                        <div class="card-header" style="background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%);">
+                            <h3 class="card-title">
+                                <a href="{% url 'datahub:dashboard' %}" class="text-white hover:text-gray-200 mr-2">
+                                    <i class="fas fa-arrow-left"></i>
+                                </a>
+                                {{ config.display_name }}
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Actions -->
+                            <div class="flex flex-wrap gap-3 mb-6">
+                                {% if config.supports_export %}
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title mb-0">Export Data</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <form method="post" action="{% url 'datahub:export_start' config.slug %}">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    <label>Format</label>
+                                                    <select name="format" class="form-control">
+                                                        <option value="xlsx">Excel (.xlsx)</option>
+                                                        <option value="csv">CSV</option>
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-info">
+                                                    <i class="fas fa-download mr-1"></i> Export
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                {% if config.supports_import %}
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title mb-0">Import Data</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <a href="{% url 'datahub:import_template' config.slug %}" class="btn btn-default">
+                                                    <i class="fas fa-file-download mr-1"></i> Download Template
+                                                </a>
+                                            </div>
+                                            <form method="post" action="{% url 'datahub:import_start' config.slug %}" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    <label>File</label>
+                                                    <input type="file" name="import_file" class="form-control-file" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>If duplicates found</label>
+                                                    <select name="on_duplicate" class="form-control">
+                                                        <option value="skip">Skip them</option>
+                                                        <option value="overwrite">Overwrite them</option>
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="fas fa-upload mr-1"></i> Import
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Recent Jobs -->
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Recent Imports</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if recent_imports %}
+                                            <ul class="list-unstyled">
+                                                {% for job in recent_imports %}
+                                                    <li class="mb-2">
+                                                        <a href="{% url 'datahub:import_status' job.id %}" class="text-indigo-600 hover:underline">
+                                                            {{ job.created_at|date:"M d, Y H:i" }} - {{ job.status }}
+                                                        </a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p class="text-gray-500">No imports yet</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Recent Exports</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if recent_exports %}
+                                            <ul class="list-unstyled">
+                                                {% for job in recent_exports %}
+                                                    <li class="mb-2">
+                                                        <a href="{% url 'datahub:export_status' job.id %}" class="text-indigo-600 hover:underline">
+                                                            {{ job.created_at|date:"M d, Y H:i" }} - {{ job.status }}
+                                                        </a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p class="text-gray-500">No exports yet</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock main_content %}

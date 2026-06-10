@@ -1,0 +1,115 @@
+{% extends 'student_template/base_template.html' %}
+{% load widget_tweaks %}
+
+{% block page_title %}
+    {{ event.title }}
+{% endblock page_title %}
+
+{% block fullcard %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ event.title }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="text-muted text-uppercase small font-weight-bold">Start Date & Time</label>
+                                    <p class="mb-0"><strong>{{ event.start_date|date:"l, d M Y, H:i" }}</strong></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="text-muted text-uppercase small font-weight-bold">End Date & Time</label>
+                                    <p class="mb-0"><strong>{{ event.end_date|date:"l, d M Y, H:i" }}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        {% if event.location %}
+                            <div class="mb-3">
+                                <label class="text-muted text-uppercase small font-weight-bold">Location</label>
+                                <p class="mb-0">{{ event.location }}</p>
+                            </div>
+                        {% endif %}
+                        {% if event.description %}
+                            <div class="mb-3">
+                                <label class="text-muted text-uppercase small font-weight-bold">Description</label>
+                                <p class="mb-0">{{ event.description|linebreaks }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'student_event_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Events
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-check-square"></i> Your RSVP
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {% if rsvp %}
+                            <div class="mb-3">
+                                <label class="text-muted text-uppercase small font-weight-bold">Current Status</label>
+                                <p class="mb-0">
+                                    <span class="badge 
+                                        {% if rsvp.status == 'attending' %}bg-success
+                                        {% elif rsvp.status == 'maybe' %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ rsvp.get_status_display }}
+                                    </span>
+                                </p>
+                                {% if rsvp.message %}
+                                    <p class="text-muted small mt-2">{{ rsvp.message }}</p>
+                                {% endif %}
+                            </div>
+                            <hr>
+                        {% endif %}
+
+                        <form method="POST" class="m-form-in-card">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="form-group mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label font-weight-600">
+                                        {{ field.label }}
+                                        {% if field.field.required %}
+                                            <span class="text-danger">*</span>
+                                        {% endif %}
+                                    </label>
+                                    {% if field.errors %}
+                                        {% render_field field class+="form-control is-invalid" %}
+                                        <div class="invalid-feedback">
+                                            {% for error in field.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {% render_field field class+="form-control" %}
+                                    {% endif %}
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-save"></i> Save RSVP
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock fullcard %}

@@ -21,32 +21,41 @@
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
             <!-- Add icons to the links using the .nav-icon class
                 with font-awesome or any other icon font library -->
             
             <li class="nav-item">
               {% url 'staff_home' as staff_home %}
               <a href="{{ staff_home }}" class="nav-link {% if request.path == staff_home %} active {% endif %}">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <i class="nav-icon fas fa-home"></i>
                 <p>
                   Home
                   {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
                 </p>
               </a>
             </li>
+            <li class="nav-item">
+              {% url 'staff_timetable_view' as staff_timetable_view %}
+              <a href="{{ staff_timetable_view }}" class="nav-link {% if request.path == staff_timetable_view %} active {% endif %}">
+                <i class="nav-icon fas fa-calendar-week"></i>
+                <p>
+                  My Timetable
+                </p>
+              </a>
+            </li>
 
               <!-- <li class="nav-header">Person Registry</li> -->
             <li class="nav-item has-treeview">
-                <a href="#"" class="nav-link"><i class="nav-icon fas fa-copy"></i>
+                <a href="#" class="nav-link"><i class="nav-icon fas fa-users"></i>
                   <p>Person Registry  <i class="fas fa-angle-left right"></i></p>
                 </a>
-                <ul class="nav nav-treeview">           
+                <ul class="nav nav-treeview" style="display: none;">           
                  
                   <li class="nav-item">
                     {% url 'staff_apply_leave' as staff_apply_leave %}
                     <a href="{{ staff_apply_leave }}" class="nav-link {% if request.path == staff_apply_leave %} active {% endif %}">
-                      <i class="nav-icon fas fa-envelope-open-text"></i>
+                      <i class="nav-icon fas fa-calendar-check"></i>
                       <p>
                         Your Leave Applications
                         {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
@@ -56,7 +65,7 @@
                   <li class="nav-item">
                     {% url 'staff_student_leave_view' as staff_student_leave_view %}
                     <a href="{{ staff_student_leave_view }}" class="nav-link {% if request.path == staff_student_leave_view %} active {% endif %}">
-                      <i class="nav-icon fas fa-th"></i>
+                      <i class="nav-icon fas fa-calendar-check"></i>
                       <p>
                         Students Leave Apps.
                       </p>
@@ -66,7 +75,7 @@
                   <li class="nav-item">
                     {% url 'staff_feedback' as staff_feedback %}
                     <a href="{{ staff_feedback }}" class="nav-link {% if request.path == staff_feedback %} active {% endif %}">
-                      <i class="nav-icon fas fa-comments"></i>
+                      <i class="nav-icon fas fa-inbox"></i>
                       <p>
                         Messages
                         {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
@@ -78,15 +87,15 @@
             </li>
              <!-- <li class="nav-header">Students Result</li> -->
             <li class="nav-item has-treeview">
-              <a href="#"" class="nav-link"><i class="nav-icon fas fa-copy"></i>
+              <a href="#" class="nav-link"><i class="nav-icon fas fa-chart-line"></i>
                 <p>Students Results  <i class="fas fa-angle-left right"></i></p>
               </a>
-              <ul class="nav nav-treeview">   
+              <ul class="nav nav-treeview" style="display: none;">   
                 
                 <li class="nav-item">
                   {% url 'ex-result-class' as ex_result_class %}
                   <a href="{{ ex_result_class }}" class="nav-link {% if request.path == ex_result_class %} active {% endif %}">
-                    <i class="nav-icon fas fa-running"></i>
+                    <i class="nav-icon fas fa-pencil-alt"></i>
                     <p>
                      Class Exercise Entry
                     </p>
@@ -96,7 +105,7 @@
                 <li class="nav-item">
                   {% url 'select-result-class' as select_result_class %}
                   <a href="{{ select_result_class }}" class="nav-link {% if request.path == select_result_class %} active {% endif %}">
-                    <i class="nav-icon fas fa-money-bill-alt"></i>
+                    <i class="nav-icon fas fa-file-alt"></i>
                     <p>
                      Exam Results Entry
                     </p>
@@ -108,7 +117,7 @@
                   <a href="{{ select_cdi_class }}" class="nav-link {% if request.path == select_cdi_class %} active {% endif %}">
                     <i class="nav-icon fas fa-thumbs-up"></i>
                     <p>
-                     Conduct Interest... Entry
+                     Conduct Interest Entry
                     </p>
                   </a>
                 </li>
@@ -116,7 +125,7 @@
                 <li class="nav-item">
                   {% url 'find-result' as find_result %}
                   <a href="{{ find_result }}" class="nav-link {% if request.path == find_result %} active {% endif %}">
-                    <i class="nav-icon fas fa-list-alt"></i>
+                    <i class="nav-icon fas fa-file-contract"></i>
                     <p>
                       Term Reports
                     </p>
@@ -126,14 +135,14 @@
            </li>
              <!-- <li class="nav-header">Students Assignment</li> -->
            <li class="nav-item has-treeview">
-            <a href="#"" class="nav-link"><i class="nav-icon fas fa-copy"></i>
+            <a href="#" class="nav-link"><i class="nav-icon fas fa-tasks"></i>
               <p>Students Assignments  <i class="fas fa-angle-left right"></i></p>
             </a>
-            <ul class="nav nav-treeview">     
+            <ul class="nav nav-treeview" style="display: none;">     
               <li class="nav-item">
                 {% url 'dashboard' as assignments_dashboard %}
                 <a href="{{ assignments_dashboard }}" class="nav-link {% if request.path == assignments_dashboard %} active {% endif %}">
-                  <i class="nav-icon fas fa-tasks"></i>
+                  <i class="nav-icon fas fa-clipboard-list"></i>
                   <p>
                     Assignments Dashboard
                   </p>
@@ -145,14 +154,14 @@
 
            <!-- Attendance Sheet-->
            <li class="nav-item has-treeview">
-            <a href="#"" class="nav-link"><i class="nav-icon fas fa-copy"></i>
+            <a href="#" class="nav-link"><i class="nav-icon fas fa-clipboard-check"></i>
               <p>Attendance Module  <i class="fas fa-angle-left right"></i></p>
             </a>
-            <ul class="nav nav-treeview">     
+            <ul class="nav nav-treeview" style="display: none;">     
               <li class="nav-item">
                 {% url 'attendance' as attendance %}
                 <a href="{{ attendance }}" class="nav-link {% if request.path == attendance %} active {% endif %}">
-                  <i class="nav-icon fas fa-tasks"></i>
+                  <i class="nav-icon fas fa-list-check"></i>
                   <p>
                     Attendance Sheet
                   </p>
@@ -172,25 +181,24 @@
         </li>
 
           
-
-
+            
 
             <li class="nav-header">Other Departments</li>
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-copy"></i>
+                <i class="nav-icon fas fa-book"></i>
                 <p>
                   Library
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview" style="display: none;">
                 <li class="nav-item">
                    {% url 'lib:dashboard' as dashboard %} 
                   <a href="{{ dashboard }}" class="nav-link {% if request.path == dashboard %} active {% endif %}">
-                    <i class="nav-icon fas fa-bars"></i>
+                    <i class="nav-icon fas fa-clipboard-list"></i>
                     <p>
-                      Libary dashboard
+                      Library Dashboard
                     </p>
                   </a>
                 </li>
@@ -200,17 +208,17 @@
               <!-- Book Store-->
               <li class="nav-item has-treeview">
                 <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-copy"></i>
+                  <i class="nav-icon fas fa-shopping-cart"></i>
                   <p>
                     Book Store
                     <i class="fas fa-angle-left right"></i>
                   </p>
                 </a>
-                <ul class="nav nav-treeview">
+                <ul class="nav nav-treeview" style="display: none;">
                   <li class="nav-item">
                     {% url 'store:index' as dashboard %}
                     <a href="{{ dashboard }}" class="nav-link {% if request.path == dashboard %} active {% endif %}">
-                      <i class="nav-icon fas fa-bars"></i>
+                      <i class="nav-icon fas fa-store"></i>
                       <p>
                         Store Place
                       </p>
@@ -219,7 +227,7 @@
                   <li class="nav-item">
                     {% url 'store:requireditem-class' as requiredclass %}
                     <a href="{{ requiredclass }}" class="nav-link {% if request.path == requiredclass %} active {% endif %}">
-                      <i class="nav-icon fas fa-bars"></i>
+                      <i class="nav-icon fas fa-box"></i>
                       <p>
                        Class Requirements
                       </p>
@@ -228,7 +236,7 @@
                   <li class="nav-item">
                     {% url 'store:requireditem-list' as requirements %}
                     <a href="{{ requirements }}" class="nav-link {% if request.path == requirements %} active {% endif %}">
-                      <i class="nav-icon fas fa-bars"></i>
+                      <i class="nav-icon fas fa-list"></i>
                       <p>
                         Requirements Lists
                       </p>

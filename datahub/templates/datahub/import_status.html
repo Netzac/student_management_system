@@ -1,0 +1,76 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    <i class="fas fa-upload"></i> Import Status
+{% endblock page_title %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+{% block main_content %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                {{ job.entity_display }} - {{ job.get_status_display }}
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Summary -->
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                                <div class="p-3 border rounded">
+                                    <p class="text-sm text-gray-500">Total</p>
+                                    <p class="text-2xl font-bold">{{ job.total_rows }}</p>
+                                </div>
+                                <div class="p-3 border rounded bg-green-50">
+                                    <p class="text-sm text-gray-500">Imported</p>
+                                    <p class="text-2xl font-bold text-green-700">{{ job.imported_rows }}</p>
+                                </div>
+                                <div class="p-3 border rounded bg-yellow-50">
+                                    <p class="text-sm text-gray-500">Skipped</p>
+                                    <p class="text-2xl font-bold text-yellow-700">{{ job.skipped_rows }}</p>
+                                </div>
+                                <div class="p-3 border rounded bg-red-50">
+                                    <p class="text-sm text-gray-500">Errors</p>
+                                    <p class="text-2xl font-bold text-red-700">{{ job.error_rows }}</p>
+                                </div>
+                                <div class="p-3 border rounded bg-blue-50">
+                                    <p class="text-sm text-gray-500">Duplicates</p>
+                                    <p class="text-2xl font-bold text-blue-700">{{ job.duplicate_rows }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Logs -->
+                            {% if logs %}
+                                <h4 class="mb-3 font-bold">Log Details</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 10%;">Row #</th>
+                                                <th style="width: 15%;">Level</th>
+                                                <th>Message</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for log in logs %}
+                                                <tr class="{% if log.level == 'ERROR' %}table-danger{% elif log.level == 'WARNING' %}table-warning{% endif %}">
+                                                    <td>{{ log.row_number|default:"-" }}</td>
+                                                    <td>{{ log.get_level_display }}</td>
+                                                    <td>{{ log.message }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock main_content %}

@@ -5,12 +5,14 @@ from django.core.files.storage import FileSystemStorage #To upload Profile Pictu
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
+from django.contrib.auth.decorators import login_required
 import json
 
 
 from student_core.models import (ClassTeacher, CustomUser, Staffs, Courses, Subjects, 
 Students, SessionYearModel, Attendance,
      AttendanceReport, LeaveReportStaff, FeedBackStaffs, StudentResult, LeaveReportStudent,
+     TimetableEntry, AcademicTerm, TimeSlot
 )
 
 
@@ -375,3 +377,39 @@ def staff_student_leave_view(request):
         "leaves": leaves
     }
     return render(request, 'staff_template/student_leave_view.html', context)
+
+@login_required
+def staff_timetable_view(request):
+    """View to display staff's timetable in a grid format"""
+    staff = Staffs.objects.get(admin=request.user.id)
+    session_years = SessionYearModel.objects.all()
+    terms = AcademicTerm.objects.all()
+    
+    selected_session = request.GET.get('session_year')
+    selected_term = request.GET.get('term')
+    
+    timetable_entries = TimetableEntry.objects.filter(staff=staff)
+    if selected_session:
+        timetable_entries = timetable_entries.filter(session_year_id=selected_session)
+    if selected_term:
+        timetable_entries = timetable_entries.filter(term_id=selected_term)
+    
+    # Organize entries by day
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    timetable_data = {day: [] for day in days}
+    for entry in timetable_entries:
+        timetable_data[entry.time_slot.day].append(entry)
+    
+    # Organize time slots
+    time_slots = TimeSlot.objects.all().order_by('day', 'start_time')
+    
+    context = {
+        'session_years': session_years,
+        'terms': terms,
+        'selected_session': selected_session,
+        'selected_term': selected_term,
+        'timetable_data': timetable_data,
+        'time_slots': time_slots,
+    }
+    
+    return render(request, 'staff_template/timetable_view.html', context)

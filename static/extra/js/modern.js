@@ -389,6 +389,109 @@
   }
 
   /* ---------------------------------------------------------------------- */
+  /* 8. Global Search Autocomplete.                                         */
+  /*    Adds typeahead suggestions for menu items, students, staff, etc.    */
+  /* ---------------------------------------------------------------------- */
+  function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  }
+
+  function renderSuggestions(dropdown, suggestions) {
+    if (suggestions.length === 0) {
+      dropdown.style.display = 'none';
+      return;
+    }
+    dropdown.innerHTML = suggestions.map((suggestion, index) => `
+      <div class="autocomplete-item" data-url="${suggestion.url}" data-index="${index}">
+        <span class="autocomplete-type-badge autocomplete-type-${suggestion.type}">${suggestion.type}</span>
+        <span class="autocomplete-text">${suggestion.text}</span>
+      </div>
+    `).join('');
+    dropdown.style.display = 'block';
+    currentIndex = -1;
+
+    // Add click listeners
+    document.querySelectorAll('.autocomplete-item').forEach(item => {
+      item.addEventListener('click', function() {
+        window.location.href = this.getAttribute('data-url');
+      });
+    });
+  }
+
+  let currentIndex = -1;
+
+  function wireAutocomplete() {
+    const searchInput = document.getElementById('global-search-input');
+    const dropdown = document.getElementById('autocomplete-dropdown');
+    if (!searchInput || !dropdown) {
+      return;
+    }
+
+    const fetchSuggestions = debounce(async function(query) {
+      if (query.length < 2) {
+        dropdown.style.display = 'none';
+        return;
+      }
+      try {
+        const response = await fetch('/search/autocomplete/?q=' + encodeURIComponent(query));
+        const data = await response.json();
+        renderSuggestions(dropdown, data.suggestions);
+      } catch (error) {
+        console.error('Autocomplete error:', error);
+      }
+    }, 300);
+
+    // Input event listener
+    searchInput.addEventListener('input', function() {
+      fetchSuggestions(this.value);
+    });
+
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', function(e) {
+      const items = dropdown.querySelectorAll('.autocomplete-item');
+      if (items.length === 0) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        currentIndex = (currentIndex + 1) % items.length;
+        updateActiveItem(items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        currentIndex = (currentIndex - 1 + items.length) % items.length;
+        updateActiveItem(items);
+      } else if (e.key === 'Enter') {
+        if (currentIndex >= 0) {
+          e.preventDefault();
+          items[currentIndex].click();
+        }
+      } else if (e.key === 'Escape') {
+        dropdown.style.display = 'none';
+      }
+    });
+
+    // Update active item styling
+    function updateActiveItem(items) {
+      items.forEach((item, index) => {
+        item.classList.toggle('active', index === currentIndex);
+      });
+      if (currentIndex >= 0) {
+        items[currentIndex].scrollIntoView({ block: 'nearest' });
+      }
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+  }
+
+  /* ---------------------------------------------------------------------- */
   /* Init                                                                   */
   /* ---------------------------------------------------------------------- */
   function init() {
@@ -399,6 +502,7 @@
     loadLucide();
     wireModalHygiene();
     observeAjaxFragments();
+    wireAutocomplete();
     // Public, namespaced API (no bare globals).
     window.SMSModern = { toast: toast };
   }

@@ -12,6 +12,7 @@ from .models import School
 class SchoolCreateView(LoginRequiredMixin, CreateView):
     model = School
     form_class = SchoolForm
+    success_url = reverse_lazy('admin_home')
 
     field_list = [
         'School Name', 'Motto', 'Phone','Email', 'Address', 'Branch','Administrator','Admin Signature',
@@ -21,9 +22,9 @@ class SchoolCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         exists = School.objects.first()
         context = super(SchoolCreateView, self).get_context_data(**kwargs)
-        context['main_page_title'] = 'School Creation'
-        context['panel_name'] = 'School'
-        context['panel_title'] = 'Create School'
+        context['main_page_title'] = 'Setup Wizard - School Details'
+        context['panel_name'] = 'Setup'
+        context['panel_title'] = 'School Setup Wizard'
         context['exists'] = exists
         return context
 

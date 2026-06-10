@@ -52,7 +52,7 @@
 
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed bg-white">
+<body class="hold-transition sidebar-mini layout-fixed bg-white sidebar-collapse">
   
   <div class="wrapper" >
     <div id="color-overlay"></div>
@@ -71,7 +71,33 @@
         </li>
       </ul>
 
-     <!-- <h4 style="margin-left: 10px; margin-top: 5px;">School Management System</h4> -->
+      <!-- Microsoft Dynamics 365 Style Search Bar -->
+      <div class="navbar-search-wrapper d-flex align-items-center">
+        <form class="w-100 d-flex align-items-center" action="{% url 'search:search' %}" method="get">
+          <div class="input-group" id="search-input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fas fa-search"></i>
+              </span>
+            </div>
+            <input 
+              class="form-control form-control-lg" 
+              type="search" 
+              name="q" 
+              id="global-search-input"
+              placeholder="Search for students, staff, subjects, books..." 
+              aria-label="Search"
+              autocomplete="off"
+            >
+            <div class="input-group-append">
+              <button class="btn" type="submit">
+                <i class="fas fa-search mr-1"></i> Search
+              </button>
+            </div>
+          </div>
+          <div id="autocomplete-dropdown" class="autocomplete-dropdown" style="display: none;"></div>
+        </form>
+      </div>
 
       <ul class="navbar-nav ml-auto">
       

@@ -350,4 +350,118 @@ def save_user_profile(sender, instance, **kwargs):
         instance.students.save()
     
 
+class Event(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    location = models.CharField(max_length=255, blank=True, null=True)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="events_created")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+    
+    class Meta:
+        ordering = ["-start_date"]
+    
+    def __str__(self):
+        return self.title
+
+
+class RSVP(models.Model):
+    STATUS_CHOICES = [
+        ('attending', 'Attending'),
+        ('maybe', 'Maybe'),
+        ('not_attending', 'Not Attending')
+    ]
+    id = models.AutoField(primary_key=True)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="rsvps")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="rsvps")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='attending')
+    message = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+    
+    class Meta:
+        ordering = ["-created_at"]
+        unique_together = ['event', 'user']
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.event.title} ({self.status})"
+    
+
+class ClassRoom(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    capacity = models.IntegerField(blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+
+    class Meta:
+        verbose_name = "Class Room"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class TimeSlot(models.Model):
+    DAY_CHOICES = [
+        ("Monday", "Monday"),
+        ("Tuesday", "Tuesday"),
+        ("Wednesday", "Wednesday"),
+        ("Thursday", "Thursday"),
+        ("Friday", "Friday"),
+        ("Saturday", "Saturday"),
+        ("Sunday", "Sunday"),
+    ]
+    
+    id = models.AutoField(primary_key=True)
+    day = models.CharField(max_length=20, choices=DAY_CHOICES)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ["day", "start_time"]
+        unique_together = ['day', 'start_time', 'end_time']
+
+    def __str__(self):
+        return f"{self.day} {self.start_time} - {self.end_time}"
+
+
+class TimetableEntry(models.Model):
+    STATUS_CHOICES = [
+        ("draft", "Draft"),
+        ("published", "Published"),
+    ]
+    
+    id = models.AutoField(primary_key=True)
+    session_year = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
+    term = models.ForeignKey(AcademicTerm, on_delete=models.CASCADE, blank=True, null=True)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subjects, on_delete=models.CASCADE)
+    staff = models.ForeignKey(Staffs, on_delete=models.CASCADE)
+    room = models.ForeignKey(ClassRoom, on_delete=models.CASCADE, blank=True, null=True)
+    time_slot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="draft")
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="timetable_entries_created")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ["-created_at"]
+        unique_together = ['session_year', 'term', 'course', 'time_slot']
+
+    def __str__(self):
+        return f"{self.course.course_name} - {self.subject.subject_name} ({self.time_slot})"
+    
+
 

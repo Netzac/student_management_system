@@ -1,11 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage #To upload Profile Picture
 from django.urls import reverse
 import datetime # To Parse input DateTime into Python Date Time Object
 
-from student_core.models import CustomUser, Staffs, Courses, Subjects, Students, Attendance, AttendanceReport, LeaveReportStudent, FeedBackStudent, StudentResult
+from student_core.models import CustomUser, Staffs, Courses, Subjects, Students, Attendance, AttendanceReport, LeaveReportStudent, FeedBackStudent, StudentResult, Event, RSVP, TimetableEntry, SessionYearModel, AcademicTerm, TimeSlot
+from school.models import School
+from .forms import RSVPForm
+from django.contrib.auth.decorators import login_required
 
 
 def student_home(request):
@@ -194,6 +197,96 @@ def student_view_result(request):
     return render(request, "student_template/student_view_result.html", context)
 
 
+@login_required
+def student_id_card(request):
+    student = Students.objects.get(admin=request.user.id)
+    school = School.objects.first()
+    context = {
+        'student': student,
+        'school': school,
+        'now': datetime.datetime.now()
+    }
+    return render(request, 'student_template/student_id_card.html', context)
+
+
+# Student Event Views
+@login_required
+def student_event_list(request):
+    events = Event.objects.all().order_by('-start_date')
+    # Get all user's RSVPs for quick lookup
+    user_rsvps = RSVP.objects.filter(user=request.user).values_list('event_id', flat=True)
+    # Create a dictionary of event_id: rsvp_status
+    user_rsvp_map = {rsvp.event_id: rsvp for rsvp in RSVP.objects.filter(user=request.user)}
+    context = {
+        'events': events,
+        'user_rsvp_map': user_rsvp_map
+    }
+    return render(request, 'student_template/event_list.html', context)
+
+
+@login_required
+def student_event_detail(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    # Get existing RSVP if any
+    existing_rsvp = RSVP.objects.filter(event=event, user=request.user).first()
+    
+    if request.method == 'POST':
+        form = RSVPForm(request.POST, instance=existing_rsvp)
+        if form.is_valid():
+            rsvp = form.save(commit=False)
+            rsvp.user = request.user
+            rsvp.event = event
+            rsvp.save()
+            messages.success(request, 'Your RSVP has been saved!')
+            return redirect('student_event_detail', pk=pk)
+    else:
+        form = RSVPForm(instance=existing_rsvp)
+    
+    context = {
+        'event': event,
+        'form': form,
+        'rsvp': existing_rsvp
+    }
+    return render(request, 'student_template/event_detail.html', context)
 
 
 
+
+
+
+
+@login_required
+def student_timetable_view(request):
+    """View to display student's timetable in a grid format"""
+    student = Students.objects.get(admin=request.user.id)
+    session_years = SessionYearModel.objects.all()
+    terms = AcademicTerm.objects.all()
+    
+    selected_session = request.GET.get('session_year')
+    selected_term = request.GET.get('term')
+    
+    timetable_entries = TimetableEntry.objects.filter(course=student.course_id)
+    if selected_session:
+        timetable_entries = timetable_entries.filter(session_year_id=selected_session)
+    if selected_term:
+        timetable_entries = timetable_entries.filter(term_id=selected_term)
+    
+    # Organize entries by day
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    timetable_data = {day: [] for day in days}
+    for entry in timetable_entries:
+        timetable_data[entry.time_slot.day].append(entry)
+    
+    # Organize time slots
+    time_slots = TimeSlot.objects.all().order_by('day', 'start_time')
+    
+    context = {
+        'session_years': session_years,
+        'terms': terms,
+        'selected_session': selected_session,
+        'selected_term': selected_term,
+        'timetable_data': timetable_data,
+        'time_slots': time_slots,
+    }
+    
+    return render(request, 'student_template/timetable_view.html', context)

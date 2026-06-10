@@ -1,0 +1,192 @@
+{% extends 'hod_template/base_template.html' %}
+{% load static %}
+
+{% block page_title %}
+    Search Results
+{% endblock page_title %}
+
+{% block main_content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%);">
+                        <h3 class="card-title text-white font-bold text-xl">
+                            {% if search_query %}
+                                Search Results for "{{ search_query }}"
+                            {% else %}
+                                Search the System
+                            {% endif %}
+                        </h3>
+                    </div>
+
+                    <div class="card-body">
+                        {% if not search_query %}
+                            <p class="text-center text-muted">Please enter a search term in the navbar above.</p>
+                        {% else %}
+                            {% if results.menu_items %}
+                                <div class="mb-6">
+                                    <h4 class="mb-3 text-teal-800 font-semibold">Menu Items ({{ results.menu_items|length }})</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {% for item in results.menu_items %}
+                                            <a href="{% url item.url_name %}" class="block p-4 bg-white border border-gray-200 rounded-lg hover:shadow-lg hover:border-teal-500 transition-all">
+                                                <h5 class="font-semibold text-gray-800">{{ item.text }}</h5>
+                                                <p class="text-sm text-gray-500">{{ item.category }}</p>
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if results.students %}
+                                <div class="mb-6">
+                                    <h4 class="mb-3 text-teal-800 font-semibold">Students ({{ results.students|length }})</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Username</th>
+                                                    <th>Class</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for student in results.students %}
+                                                    <tr>
+                                                        <td>{{ student.admin.first_name }} {{ student.admin.last_name }}</td>
+                                                        <td>{{ student.admin.username }}</td>
+                                                        <td>{{ student.course_id.course_name }}</td>
+                                                        <td>
+                                                            <a href="{% url 'student_detail_view' pk=student.id %}" class="btn btn-sm btn-primary">View Profile</a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if results.staff %}
+                                <div class="mb-6">
+                                    <h4 class="mb-3 text-teal-800 font-semibold">Staff ({{ results.staff|length }})</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Username</th>
+                                                    <th>Role</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for staff in results.staff %}
+                                                    <tr>
+                                                        <td>{{ staff.admin.first_name }} {{ staff.admin.last_name }}</td>
+                                                        <td>{{ staff.admin.username }}</td>
+                                                        <td>{{ staff.role.type }}</td>
+                                                        <td>
+                                                            <a href="{% url 'edit_staff' staff.admin.id %}" class="btn btn-sm btn-primary">View Profile</a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if results.subjects %}
+                                <div class="mb-6">
+                                    <h4 class="mb-3 text-teal-800 font-semibold">Subjects ({{ results.subjects|length }})</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Subject Name</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for subject in results.subjects %}
+                                                    <tr>
+                                                        <td>{{ subject.subject_name }}</td>
+                                                        <td>
+                                                            <a href="{% url 'edit_subject' subject.id %}" class="btn btn-sm btn-primary">View</a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if results.courses %}
+                                <div class="mb-6">
+                                    <h4 class="mb-3 text-teal-800 font-semibold">Classes ({{ results.courses|length }})</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Class Name</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for course in results.courses %}
+                                                    <tr>
+                                                        <td>{{ course.course_name }}</td>
+                                                        <td>
+                                                            <a href="{% url 'edit_course' course.id %}" class="btn btn-sm btn-primary">View</a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if results.bookstore_books %}
+                                <div class="mb-6">
+                                    <h4 class="mb-3 text-teal-800 font-semibold">Bookstore Books ({{ results.bookstore_books|length }})</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Title</th>
+                                                    <th>Author</th>
+                                                    <th>Category</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for book in results.bookstore_books %}
+                                                    <tr>
+                                                        <td>{{ book.title }}</td>
+                                                        <td>{{ book.author }}</td>
+                                                        <td>{{ book.category.name }}</td>
+                                                        <td>
+                                                            <a href="#" class="btn btn-sm btn-primary">View</a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if not results.menu_items and not results.students and not results.staff and not results.subjects and not results.courses and not results.bookstore_books %}
+                                <p class="text-center text-muted mt-4">No results found for "{{ search_query }}".</p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}

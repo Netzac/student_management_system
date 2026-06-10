@@ -78,7 +78,10 @@
                         </div>
 
                         <div class="card-footer" style="background: #fafaf9; border-top: 1px solid #e5e7eb; padding: 1.5rem 2rem; border-radius: 0 0 12px 12px;">
-                            <div class="d-flex justify-end gap-3">
+                            <div class="d-flex justify-between gap-3">
+                                <a href="{% url 'student_id_card' %}" class="btn" style="background: white; border: 2px solid #008a9e; color: #008a9e; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem;">
+                                    <i class="fas fa-id-card mr-2"></i>View My ID Card
+                                </a>
                                 <button type="submit" class="btn" style="background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%); border: none; color: white; padding: 0.75rem 2rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; transition: transform 0.2s ease, box-shadow 0.2s ease;">
                                     <i class="fas fa-save mr-2"></i>Update Profile
                                 </button>

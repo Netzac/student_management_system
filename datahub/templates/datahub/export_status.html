@@ -1,0 +1,41 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    <i class="fas fa-download"></i> Export Status
+{% endblock page_title %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+{% block main_content %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                {{ job.entity_display }} - {{ job.get_status_display }}
+                            </h3>
+                        </div>
+                        <div class="card-body text-center">
+                            {% if job.status == 'Completed' and job.output_file %}
+                                <i class="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
+                                <h2 class="text-2xl font-bold mb-4">Export Complete!</h2>
+                                <a href="{{ job.output_file.url }}" download class="btn btn-primary btn-lg">
+                                    <i class="fas fa-download mr-2"></i> Download File
+                                </a>
+                            {% elif job.status == 'Failed' %}
+                                <i class="fas fa-times-circle text-6xl text-red-500 mb-4"></i>
+                                <h2 class="text-2xl font-bold mb-4">Export Failed</h2>
+                            {% else %}
+                                <i class="fas fa-spinner fa-spin text-6xl text-yellow-500 mb-4"></i>
+                                <h2 class="text-2xl font-bold mb-4">Processing...</h2>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock main_content %}

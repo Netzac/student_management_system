@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ID Card - {{ student.admin.first_name }} {{ student.admin.last_name }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            padding: 40px;
+        }
+        .print-btn-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .print-btn {
+            background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 138, 158, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 138, 158, 0.4);
+        }
+        .id-card-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .id-card {
+            width: 85.60mm;
+            height: 53.98mm;
+            background: white;
+            border-radius: 3.18mm;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            display: flex;
+        }
+        .id-card-header {
+            background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%);
+            padding: 6mm;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 35%;
+        }
+        .id-card-header .school-logo {
+            width: 15mm;
+            height: 15mm;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2mm;
+            overflow: hidden;
+        }
+        .id-card-header .school-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .id-card-header .school-name {
+            font-size: 10pt;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            margin: 0;
+            text-align: center;
+        }
+        .id-card-header .school-motto {
+            font-size: 6pt;
+            opacity: 0.95;
+            margin-top: 1mm;
+            font-style: italic;
+            text-align: center;
+        }
+        .id-card-header .card-type {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1mm 4mm;
+            border-radius: 10mm;
+            margin-top: 2mm;
+            font-size: 6pt;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-align: center;
+            align-self: center;
+        }
+        .id-card-body {
+            padding: 4mm 5mm;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .student-photo {
+            width: 18mm;
+            height: 22mm;
+            border: 0.6mm solid #008a9e;
+            border-radius: 2mm;
+            overflow: hidden;
+            margin: 0 auto 2mm;
+            background: #f0f2f5;
+        }
+        .student-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .student-name {
+            font-size: 10pt;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 0.5mm;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+        }
+        .student-roll {
+            font-size: 7pt;
+            color: #008a9e;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 3mm;
+            background: #e6f7f9;
+            display: inline-block;
+            padding: 1mm 4mm;
+            border-radius: 10mm;
+            align-self: center;
+        }
+        .details-grid {
+            display: grid;
+            gap: 1.5mm;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1mm 2mm;
+            background: #f8f9fa;
+            border-radius: 1mm;
+            border-left: 0.6mm solid #008a9e;
+        }
+        .detail-label {
+            font-size: 6pt;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .detail-value {
+            font-size: 7pt;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+        .id-card-footer {
+            background: #f8f9fa;
+            padding: 2mm 5mm;
+            border-top: 0.3mm solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            position: absolute;
+            bottom: 0;
+            left: 35%;
+            right: 0;
+        }
+        .signature-section {
+            text-align: center;
+        }
+        .signature-label {
+            font-size: 5pt;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 0.5mm;
+            border-top: 0.3mm solid #ccc;
+            padding-top: 0.5mm;
+            display: inline-block;
+            min-width: 15mm;
+        }
+        .signature-img {
+            max-height: 6mm;
+            margin-bottom: 0.5mm;
+        }
+
+        /* Back Side */
+        .id-card-back {
+            background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+        .id-card-back .id-card-header {
+            background: white;
+            color: #008a9e;
+            width: 100%;
+            padding: 3mm 5mm;
+        }
+        .id-card-back .id-card-header h2 {
+            font-size: 9pt;
+            margin: 0;
+            font-weight: 700;
+            text-align: center;
+        }
+        .id-card-back .id-card-body {
+            flex: 1;
+            padding: 4mm 5mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .id-card-back .detail-row {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: white;
+        }
+        .id-card-back .detail-label,
+        .id-card-back .detail-value {
+            color: white;
+        }
+        .terms-section {
+            margin-top: 3mm;
+            padding-top: 2mm;
+            border-top: 0.3mm solid rgba(255, 255, 255, 0.2);
+        }
+        .terms-title {
+            font-size: 6pt;
+            font-weight: 700;
+            margin-bottom: 1mm;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .terms-text {
+            font-size: 5pt;
+            line-height: 1.5;
+            opacity: 0.95;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .print-btn-container {
+                display: none;
+            }
+            .id-card-container {
+                gap: 10mm;
+            }
+            .id-card {
+                box-shadow: none;
+                page-break-inside: avoid;
+                margin: 0 auto;
+            }
+            @page {
+                size: auto;
+                margin: 5mm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-btn-container">
+        <button class="print-btn" onclick="window.print()">
+            <i class="fas fa-print"></i> Print ID Card
+        </button>
+    </div>
+
+    <div class="id-card-container">
+        <!-- Front Side -->
+        <div class="id-card">
+            <div class="id-card-header">
+                <div class="school-logo">
+                    {% if school and school.logo %}
+                        <img src="{{ school.logo.url }}" alt="{{ school.name }}">
+                    {% else %}
+                        <span style="color: #008a9e; font-size: 16pt; font-weight: 700;">S</span>
+                    {% endif %}
+                </div>
+                <h1 class="school-name">{{ school.name|default:"School Name" }}</h1>
+                {% if school and school.motto %}
+                    <p class="school-motto">{{ school.motto }}</p>
+                {% endif %}
+                <div class="card-type">Student ID</div>
+            </div>
+
+            <div class="id-card-body">
+                <div class="student-photo">
+                    {% if student.profile_pic %}
+                        <img src="{{ student.profile_pic.url }}" alt="{{ student.admin.first_name }}">
+                    {% else %}
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #008a9e; font-size: 20pt;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="student-name">{{ student.admin.first_name }} {{ student.admin.last_name }}</div>
+                <div class="student-roll">ID: {{ student.id|stringformat:"04d" }}</div>
+
+                <div class="details-grid">
+                    <div class="detail-row">
+                        <span class="detail-label">Class</span>
+                        <span class="detail-value">{{ student.course_id }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">DOB</span>
+                        <span class="detail-value">{{ student.dob|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Gender</span>
+                        <span class="detail-value">{{ student.gender }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Session</span>
+                        <span class="detail-value">{{ student.session_year_id }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="id-card-footer">
+                <div class="signature-section">
+                    {% if school and school.adminSignature %}
+                        <img src="{{ school.adminSignature.url }}" alt="Principal Signature" class="signature-img">
+                    {% endif %}
+                    <div class="signature-label">Principal</div>
+                </div>
+                <div class="signature-section">
+                    <div class="signature-label">Issued: {{ now|date:"d/m/Y" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Side -->
+        <div class="id-card id-card-back">
+            <div class="id-card-header">
+                <h2>STUDENT INFORMATION</h2>
+            </div>
+
+            <div class="id-card-body">
+                <div class="details-grid">
+                    <div class="detail-row">
+                        <span class="detail-label">Address</span>
+                        <span class="detail-value" style="text-align: right; max-width: 40mm; word-wrap: break-word;">{{ student.address }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Parent/Guardian</span>
+                        <span class="detail-value">{{ student.parent_first_name }} {{ student.parent_last_name }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Contact</span>
+                        <span class="detail-value">{{ student.parent_contact_number|default:"-" }}</span>
+                    </div>
+                </div>
+
+                <div class="terms-section">
+                    <div class="terms-title">Terms & Conditions</div>
+                    <div class="terms-text">
+                        • This card is the property of {{ school.name|default:"the school" }}.<br>
+                        • Must be carried at all times and presented on request.<br>
+                        • If found, please return to the school office.<br>
+                        • This card is non-transferable.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Font Awesome for icons (only if needed) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</body>
+</html>

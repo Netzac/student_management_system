@@ -23,6 +23,7 @@ urlpatterns = [
     path('cart/', include('cart.urls')),
     path('school/', include('school.urls')),
     path('dashboard/sms/', include('sms.urls')),
+    path('datahub/', include('datahub.urls')),
 
     path('comments/', include('django_comments_xtd.urls')),
     path(r'jsi18n/',JavaScriptCatalog.as_view(),name='javascript-catalog')

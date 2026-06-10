@@ -25,9 +25,13 @@ from student_core.models import (ClassTeacher, CustomUser, Staffs, Courses, Subj
 Students, SessionYearModel, FeedBackStudent, FeedBackStaffs, 
 LeaveReportStudent, LeaveReportStaff, Attendance,
  AttendanceReport, AcademicTerm,Bank,Role,
+Event, RSVP, ClassRoom, TimeSlot, TimetableEntry
 )
+from school.models import School
 from .forms import (AddStudentForm, ClassTeacherFormSet, ClassTeacherFormSet, EditStudentForm,
- AcademicTermForm, CurrentSessionForm, ExerciseForm)
+ AcademicTermForm, CurrentSessionForm, ExerciseForm, EventForm, RSVPForm,
+ ClassRoomForm, TimeSlotForm, TimetableEntryForm
+)
 from student_account.forms import FeeTypeForm
 from student_account.models import FeeType
 
@@ -1335,3 +1339,202 @@ class StudentDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(StudentDetailView, self).get_context_data(**kwargs)
         return context
+
+import datetime
+
+@login_required
+def student_id_card(request, student_id):
+    student = get_object_or_404(Students, id=student_id)
+    school = School.objects.first()
+    context = {
+        'student': student,
+        'school': school,
+        'now': datetime.datetime.now()
+    }
+    return render(request, 'hod_template/student_id_card.html', context)
+
+
+# Event Management Views
+class EventListView(LoginRequiredMixin, ListView):
+    model = Event
+    template_name = 'hod_template/event_list.html'
+    context_object_name = 'events'
+    ordering = ['-start_date']
+
+
+class EventCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Event
+    form_class = EventForm
+    template_name = 'hod_template/event_form.html'
+    success_url = reverse_lazy('event_list')
+    success_message = 'Event successfully created!'
+    
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+
+class EventUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Event
+    form_class = EventForm
+    template_name = 'hod_template/event_form.html'
+    success_url = reverse_lazy('event_list')
+    success_message = 'Event successfully updated!'
+
+
+class EventDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Event
+    success_url = reverse_lazy('event_list')
+    template_name = 'hod_template/core_confirm_delete.html'
+    success_message = 'Event successfully deleted!'
+
+
+class EventDetailView(LoginRequiredMixin, DetailView):
+    model = Event
+    template_name = 'hod_template/event_detail.html'
+    context_object_name = 'event'
+
+
+# ------------------------------
+# Class Room Views
+# ------------------------------
+class ClassRoomListView(LoginRequiredMixin, ListView):
+    model = ClassRoom
+    template_name = 'hod_template/classroom_list.html'
+    context_object_name = 'classrooms'
+    ordering = ['name']
+
+
+class ClassRoomCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = ClassRoom
+    form_class = ClassRoomForm
+    template_name = 'hod_template/classroom_form.html'
+    success_url = reverse_lazy('classroom_list')
+    success_message = 'Class Room successfully created!'
+
+
+class ClassRoomUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = ClassRoom
+    form_class = ClassRoomForm
+    template_name = 'hod_template/classroom_form.html'
+    success_url = reverse_lazy('classroom_list')
+    success_message = 'Class Room successfully updated!'
+
+
+class ClassRoomDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = ClassRoom
+    success_url = reverse_lazy('classroom_list')
+    template_name = 'hod_template/core_confirm_delete.html'
+    success_message = 'Class Room successfully deleted!'
+
+
+# ------------------------------
+# Time Slot Views
+# ------------------------------
+class TimeSlotListView(LoginRequiredMixin, ListView):
+    model = TimeSlot
+    template_name = 'hod_template/timeslot_list.html'
+    context_object_name = 'timeslots'
+
+
+class TimeSlotCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = TimeSlot
+    form_class = TimeSlotForm
+    template_name = 'hod_template/timeslot_form.html'
+    success_url = reverse_lazy('timeslot_list')
+    success_message = 'Time Slot successfully created!'
+
+
+class TimeSlotUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = TimeSlot
+    form_class = TimeSlotForm
+    template_name = 'hod_template/timeslot_form.html'
+    success_url = reverse_lazy('timeslot_list')
+    success_message = 'Time Slot successfully updated!'
+
+
+class TimeSlotDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = TimeSlot
+    success_url = reverse_lazy('timeslot_list')
+    template_name = 'hod_template/core_confirm_delete.html'
+    success_message = 'Time Slot successfully deleted!'
+
+
+# ------------------------------
+# Timetable Entry Views
+# ------------------------------
+class TimetableEntryListView(LoginRequiredMixin, ListView):
+    model = TimetableEntry
+    template_name = 'hod_template/timetableentry_list.html'
+    context_object_name = 'timetableentries'
+    ordering = ['-created_at']
+
+
+class TimetableEntryCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = TimetableEntry
+    form_class = TimetableEntryForm
+    template_name = 'hod_template/timetableentry_form.html'
+    success_url = reverse_lazy('timetableentry_list')
+    success_message = 'Timetable Entry successfully created!'
+    
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+
+class TimetableEntryUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = TimetableEntry
+    form_class = TimetableEntryForm
+    template_name = 'hod_template/timetableentry_form.html'
+    success_url = reverse_lazy('timetableentry_list')
+    success_message = 'Timetable Entry successfully updated!'
+
+
+class TimetableEntryDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = TimetableEntry
+    success_url = reverse_lazy('timetableentry_list')
+    template_name = 'hod_template/core_confirm_delete.html'
+    success_message = 'Timetable Entry successfully deleted!'
+
+
+@login_required
+def timetable_view(request):
+    """View to display the timetable in a grid format"""
+    session_years = SessionYearModel.objects.all()
+    terms = AcademicTerm.objects.all()
+    courses = Courses.objects.all()
+    
+    selected_session = request.GET.get('session_year')
+    selected_term = request.GET.get('term')
+    selected_course = request.GET.get('course')
+    
+    timetable_entries = TimetableEntry.objects.all()
+    if selected_session:
+        timetable_entries = timetable_entries.filter(session_year_id=selected_session)
+    if selected_term:
+        timetable_entries = timetable_entries.filter(term_id=selected_term)
+    if selected_course:
+        timetable_entries = timetable_entries.filter(course_id=selected_course)
+    
+    # Organize entries by day
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    timetable_data = {day: [] for day in days}
+    for entry in timetable_entries:
+        timetable_data[entry.time_slot.day].append(entry)
+    
+    # Organize time slots
+    time_slots = TimeSlot.objects.all().order_by('day', 'start_time')
+    
+    context = {
+        'session_years': session_years,
+        'terms': terms,
+        'courses': courses,
+        'selected_session': selected_session,
+        'selected_term': selected_term,
+        'selected_course': selected_course,
+        'timetable_data': timetable_data,
+        'time_slots': time_slots,
+    }
+    
+    return render(request, 'hod_template/timetable_view.html', context)
+

@@ -10,80 +10,150 @@
 {% load static %}
 
 <section class="content">
-        <div class="container-fluid">
-            <div class="row justify-content-center col-sm-12">
-                <div class="col-sm-2 bg-info">
-                    <div class="card w-75 h-45 mt-2 ml-3">
-                        <img src={{object.profile_pic}} class=" rounded-circle img-fluid img-thumbnail" >
-                    </div>
-                    <div class="row mt-3 bg-secondary rounded-lg mx-1"><h5 class="mx-auto text-center">{{object|title}}</h5></div>
-                    <div class="row mt-0 bg-secondary rounded-lg mx-1"><p class="mx-auto">Student</p></div>
-                </div>
-                <div class="col col-sm-8">
-                    <div class="row">
-                        <div class="col col-sm-6 bg-info">
-                            <ul class="list-group list-unstyled">
-                                <li class="list-item-group mt-3 justify-content-left bg-info" >
-                                    <h6>Student ID</h6>
-                                </li>
-                                <li class="list-item-group">
-                                    <h2>{{object.id|idify}}</h2> 
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col col-sm-6 bg-secondary">
-                            <ul class="list-group list-unstyled">
-                                <li class="list-item-group mt-3 justify-content-left bg-secondary" >
-                                    <h6>Class</h6>
-                                </li>
-                                <li class="list-item-group">
-                                    <h2>{{object.course_id}}</h2> 
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li class="nav-item ">
-                            <a class="nav-link active" data-toggle="tab" href="#sinfo"> Student's Information</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#ginfo">Guardian's Information</a>
-                        </li>
-                    </ul>
-                     <!-- Tab panes -->
-                    <div class="tab-content">
-                        
-                        <div id="sinfo" class="container tab-pane active"><br>
-                            <ul class="list-group">
-          
-                                <li class="list-group-item d-flex justify-content-between align-items-center"><h4>Details</h4></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Status:<span>{% if object.status == '1' %} Active {% else %} Inactive {% endif %}</span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Date of Birth:<span>{{ object.dob }} </span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center"> Gender: <span> {{ object.gender }} </span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Address:<span> {{ object.address }} </span></li>
-                               
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Class:<span> {{object.course_id }}</span></li>
-                              </ul>	
-                        </div>
-                        <div id="ginfo" class="container tab-pane fade"><br>
-                            <ul class="list-group">
-          
-                                <li class="list-group-item d-flex justify-content-between align-items-center"><h4>Guardian Details</h4></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Full Name:<span>{{object.parent_first_name}} {{object.parent_last_name}}</span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Email :<span>{{ object.parent_email }} </span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center"> Contact Number: <span> {{ object.parent_contact_number }} </span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Occupation:<span> {{ object.parent_occupation }} </span></li>
-                               
-                                
-                              </ul>	
-                        </div>
-                    </div>
-                    </div>
-
-                </div>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Profile Sidebar -->
+      <div class="col-md-3">
+        <div class="card card-primary card-outline">
+          <div class="card-body box-profile">
+            <div class="text-center">
+              <img class="profile-user-img img-fluid img-circle"
+                   src="{{object.profile_pic}}"
+                   alt="User profile picture"
+                   style="width: 150px; height: 150px; object-fit: cover;">
             </div>
+            <h3 class="profile-username text-center">{{object|title}}</h3>
+            <p class="text-muted text-center">Student</p>
+            <ul class="list-group list-group-unbordered mb-3">
+              <li class="list-group-item">
+                <b>Student ID</b> <a class="float-right" style="color: #008a9e;">{{object.id|idify}}</a>
+              </li>
+              <li class="list-group-item">
+                <b>Class</b> <a class="float-right" style="color: #008a9e;">{{object.course_id}}</a>
+              </li>
+              <li class="list-group-item">
+                <b>Status</b> <span class="float-right {% if object.status == '1' %}text-success{% else %}text-danger{% endif %}">
+                  {% if object.status == '1' %} Active {% else %} Inactive {% endif %}
+                </span>
+              </li>
+            </ul>
+            <a href="{% url 'student_id_card_hod' object.id %}" class="btn btn-block" style="background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%); color: white; border-radius: 8px; font-weight: 600;">
+              <i class="fas fa-id-card mr-2"></i> Generate ID Card
+            </a>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
 
-        </div><!-- /.container-fluid -->
-      </section>
+      <!-- Main Content -->
+      <div class="col-md-9">
+        <div class="card">
+          <div class="card-header p-2" style="background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%);">
+            <ul class="nav nav-pills">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#sinfo"
+                   style="background-color: rgba(255, 255, 255, 0.1); color: white; border-radius: 8px;">
+                  <i class="fas fa-user mr-1"></i> Student Information
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link ml-1" data-toggle="tab" href="#ginfo"
+                   style="background-color: transparent; color: white; border-radius: 8px;">
+                  <i class="fas fa-user-shield mr-1"></i> Guardian Information
+                </a>
+              </li>
+            </ul>
+          </div><!-- /.card-header -->
+          <div class="card-body">
+            <div class="tab-content">
+              <div class="active tab-pane" id="sinfo">
+                <!-- Student Info -->
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card">
+                      <div class="card-header" style="background-color: #f8f9fa;">
+                        <h5 class="card-title mb-0" style="color: #006e7f;">
+                          <i class="fas fa-id-card mr-2"></i> Personal Details
+                        </h5>
+                      </div>
+                      <div class="card-body">
+                        <table class="table table-borderless">
+                          <tbody>
+                            <tr>
+                              <td style="width: 150px; color: #555;">Date of Birth</td>
+                              <td><strong>{{ object.dob }}</strong></td>
+                            </tr>
+                            <tr>
+                              <td style="color: #555;">Gender</td>
+                              <td><strong>{{ object.gender }}</strong></td>
+                            </tr>
+                            <tr>
+                              <td style="color: #555;">Address</td>
+                              <td><strong>{{ object.address }}</strong></td>
+                            </tr>
+                            <tr>
+                              <td style="color: #555;">Class</td>
+                              <td><strong>{{ object.course_id }}</strong></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.tab-pane -->
 
-  {% endblock main_content %}
+              <div class="tab-pane" id="ginfo">
+                <!-- Guardian Info -->
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card">
+                      <div class="card-header" style="background-color: #f8f9fa;">
+                        <h5 class="card-title mb-0" style="color: #006e7f;">
+                          <i class="fas fa-user-tie mr-2"></i> Guardian Details
+                        </h5>
+                      </div>
+                      <div class="card-body">
+                        <table class="table table-borderless">
+                          <tbody>
+                            <tr>
+                              <td style="width: 150px; color: #555;">Full Name</td>
+                              <td><strong>{{object.parent_first_name}} {{object.parent_last_name}}</strong></td>
+                            </tr>
+                            <tr>
+                              <td style="color: #555;">Email</td>
+                              <td><strong>{{ object.parent_email }}</strong></td>
+                            </tr>
+                            <tr>
+                              <td style="color: #555;">Contact Number</td>
+                              <td><strong>{{ object.parent_contact_number }}</strong></td>
+                            </tr>
+                            <tr>
+                              <td style="color: #555;">Occupation</td>
+                              <td><strong>{{ object.parent_occupation }}</strong></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div><!-- /.card-body -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+  </div><!-- /.container-fluid -->
+</section>
+
+{% endblock main_content %}

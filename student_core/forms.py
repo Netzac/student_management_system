@@ -9,7 +9,9 @@ from pytz import timezone
 from django.utils import timezone as timeZ
 from student_core.models import (
     ClassTeacher, Courses, SessionYearModel, 
-    AcademicTerm,Gender, ConductInterestRemarks,)
+    AcademicTerm,Gender, ConductInterestRemarks,
+    Event, RSVP, ClassRoom, TimeSlot, TimetableEntry
+)
 
 from student_exam.models import Exercise
 
@@ -179,3 +181,75 @@ ClassTeacherFormSet = modelformset_factory(
 ConductInterestRemarksFormset = modelformset_factory(
     ConductInterestRemarks,fields=('conduct','interest','remarks'),can_delete=True,extra=0
 )
+
+
+class DateTimeInput(forms.DateTimeInput):
+    input_type = 'datetime-local'
+
+
+class EventForm(ModelForm):
+    prefix = "Event"
+    
+    class Meta:
+        model = Event
+        fields = ["title", "description", "start_date", "end_date", "location"]
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "form-control", "placeholder": "Event Title"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "placeholder": "Event Description", "rows": 3}),
+            "start_date": DateTimeInput(attrs={"class": "form-control"}),
+            "end_date": DateTimeInput(attrs={"class": "form-control"}),
+            "location": forms.TextInput(attrs={"class": "form-control", "placeholder": "Event Location"}),
+        }
+
+
+class RSVPForm(ModelForm):
+    prefix = "RSVP"
+    
+    class Meta:
+        model = RSVP
+        fields = ["status", "message"]
+        widgets = {
+            "status": forms.Select(attrs={"class": "form-control"}),
+            "message": forms.Textarea(attrs={"class": "form-control", "placeholder": "Optional message", "rows": 2}),
+        }
+
+
+class TimeInput(forms.TimeInput):
+    input_type = "time"
+
+
+class ClassRoomForm(ModelForm):
+    prefix = "ClassRoom"
+    
+    class Meta:
+        model = ClassRoom
+        fields = ["name", "capacity", "location"]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Room Name"}),
+            "capacity": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Capacity"}),
+            "location": forms.TextInput(attrs={"class": "form-control", "placeholder": "Location"}),
+        }
+
+
+class TimeSlotForm(ModelForm):
+    prefix = "TimeSlot"
+    
+    class Meta:
+        model = TimeSlot
+        fields = ["day", "start_time", "end_time"]
+        widgets = {
+            "day": forms.Select(attrs={"class": "form-control"}),
+            "start_time": TimeInput(attrs={"class": "form-control"}),
+            "end_time": TimeInput(attrs={"class": "form-control"}),
+        }
+
+
+class TimetableEntryForm(ModelForm):
+    prefix = "TimetableEntry"
+    
+    class Meta:
+        model = TimetableEntry
+        fields = ["session_year", "term", "course", "subject", "staff", "room", "time_slot", "status"]
+        widgets = {
+            "status": forms.Select(attrs={"class": "form-control"}),
+        }

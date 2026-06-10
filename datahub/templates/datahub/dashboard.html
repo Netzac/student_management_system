@@ -1,0 +1,126 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    <i class="fas fa-database"></i> Data Hub
+{% endblock page_title %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+{% block main_content %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary">
+                        <div class="card-header" style="background: linear-gradient(135deg, #008a9e 0%, #006e7f 100%);">
+                            <h3 class="card-title"><i class="fas fa-database mr-2"></i> Data Overview</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Modules -->
+                            <div class="mb-6">
+                                {% for module in modules %}
+                                    <div class="mb-5">
+                                        <h4 class="mb-3 text-gray-700 font-bold">{{ module.name }}</h4>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            {% for entity in module.entities %}
+                                                <a href="{% url 'datahub:entity_detail' entity.slug %}" class="block p-4 border border-gray-200 rounded-lg hover:shadow-md hover:border-indigo-300 transition">
+                                                    <div class="flex items-center justify-between">
+                                                        <div>
+                                                            <h5 class="text-lg font-semibold text-gray-900">{{ entity.display_name }}</h5>
+                                                            <p class="text-sm text-gray-500">{{ entity.description }}</p>
+                                                        </div>
+                                                        <i class="fas fa-chevron-right text-gray-400"></i>
+                                                    </div>
+                                                    <div class="mt-3 flex gap-2 flex-wrap">
+                                                        {% if entity.supports_import %}
+                                                            <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">Import</span>
+                                                        {% endif %}
+                                                        {% if entity.supports_export %}
+                                                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Export</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Recent Activity -->
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title"><i class="fas fa-download mr-1"></i> Recent Imports</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if recent_imports %}
+                                            <div class="timeline">
+                                                {% for job in recent_imports %}
+                                                    <div class="flex items-start gap-3 mb-3">
+                                                        <div class="mt-1">
+                                                            {% if job.status == 'Completed' %}
+                                                                <i class="fas fa-check-circle text-green-500"></i>
+                                                            {% elif job.status == 'Failed' %}
+                                                                <i class="fas fa-times-circle text-red-500"></i>
+                                                            {% else %}
+                                                                <i class="fas fa-spinner fa-spin text-yellow-500"></i>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="flex-1">
+                                                            <p class="font-medium">{{ job.entity_display }}</p>
+                                                            <p class="text-sm text-gray-500">
+                                                                {{ job.imported_by }} • {{ job.created_at|date:"M d, Y" }}
+                                                            </p>
+                                                            <a href="{% url 'datahub:import_status' job.id %}" class="text-sm text-indigo-600 hover:underline">View details</a>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <p class="text-gray-500">No recent imports</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title"><i class="fas fa-upload mr-1"></i> Recent Exports</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if recent_exports %}
+                                            <div class="timeline">
+                                                {% for job in recent_exports %}
+                                                    <div class="flex items-start gap-3 mb-3">
+                                                        <div class="mt-1">
+                                                            {% if job.status == 'Completed' %}
+                                                                <i class="fas fa-check-circle text-green-500"></i>
+                                                            {% elif job.status == 'Failed' %}
+                                                                <i class="fas fa-times-circle text-red-500"></i>
+                                                            {% else %}
+                                                                <i class="fas fa-spinner fa-spin text-yellow-500"></i>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="flex-1">
+                                                            <p class="font-medium">{{ job.entity_display }}</p>
+                                                            <p class="text-sm text-gray-500">
+                                                                {{ job.exported_by }} • {{ job.created_at|date:"M d, Y" }}
+                                                            </p>
+                                                            <a href="{% url 'datahub:export_status' job.id %}" class="text-sm text-indigo-600 hover:underline">View details</a>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <p class="text-gray-500">No recent exports</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock main_content %}

@@ -1,0 +1,84 @@
+{% extends 'hod_template/base_template.html' %}
+{% load widget_tweaks %}
+
+{% block page_title %}
+    Timetable Entries
+{% endblock page_title %}
+
+{% block breadcrumb %}
+    <a href="{% url 'timetableentry_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add New Timetable Entry
+    </a>
+    <a href="{% url 'timetable_view' %}" class="btn btn-info">
+        <i class="fas fa-calendar-alt"></i> View Timetable
+    </a>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">All Timetable Entries</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if timetableentries %}
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Session Year</th>
+                                            <th>Term</th>
+                                            <th>Course</th>
+                                            <th>Subject</th>
+                                            <th>Staff</th>
+                                            <th>Room</th>
+                                            <th>Time Slot</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for entry in timetableentries %}
+                                            <tr>
+                                                <td>{{ entry.session_year.name }}</td>
+                                                <td>{{ entry.term.name|default:"-" }}</td>
+                                                <td>{{ entry.course.course_name }}</td>
+                                                <td>{{ entry.subject.subject_name }}</td>
+                                                <td>{{ entry.staff.admin.first_name }} {{ entry.staff.admin.last_name }}</td>
+                                                <td>{{ entry.room.name|default:"-" }}</td>
+                                                <td>{{ entry.time_slot }}</td>
+                                                <td>
+                                                    <span class="badge {% if entry.status == 'published' %}bg-success{% else %}bg-warning{% endif %}">
+                                                        {{ entry.get_status_display }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'timetableentry_update' entry.pk %}" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-edit"></i> Edit
+                                                    </a>
+                                                    <a href="{% url 'timetableentry_delete' entry.pk %}" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-calendar-week text-muted" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                                <h4 class="text-muted">No Timetable Entries Yet</h4>
+                                <p class="text-muted">Click "Add New Timetable Entry" to get started!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock main_content %}

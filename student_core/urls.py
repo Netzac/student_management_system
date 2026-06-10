@@ -64,6 +64,9 @@ urlpatterns = [
     path('student_leave_view/', HodViews.student_leave_view, name="student_leave_view"),
 
     path('student/<int:pk>/detail/', HodViews.StudentDetailView.as_view(), name="student_detail_view"),
+    path('student/<int:student_id>/id-card/', HodViews.student_id_card, name="student_id_card_hod"),
+    
+    path('student-id-card/', StudentViews.student_id_card, name="student_id_card"),
     
     path('student_leave_approve/<leave_id>/', HodViews.student_leave_approve, name="student_leave_approve"),
     path('student_leave_reject/<leave_id>/', HodViews.student_leave_reject, name="student_leave_reject"),
@@ -144,5 +147,41 @@ urlpatterns = [
 
     #URLs for miscellaneous
     path('birthdays/', HodViews.get_birthdays, name="birthdays"),
+    
+    # URLs for Events
+    path('events/', HodViews.EventListView.as_view(), name='event_list'),
+    path('events/create/', HodViews.EventCreateView.as_view(), name='event_create'),
+    path('events/<int:pk>/', HodViews.EventDetailView.as_view(), name='event_detail'),
+    path('events/<int:pk>/edit/', HodViews.EventUpdateView.as_view(), name='event_update'),
+    path('events/<int:pk>/delete/', HodViews.EventDeleteView.as_view(), name='event_delete'),
+    
+    # URLs for Student Events
+    path('student/events/', StudentViews.student_event_list, name='student_event_list'),
+    path('student/events/<int:pk>/', StudentViews.student_event_detail, name='student_event_detail'),
+    # URLs for Student Timetable
+    path('student/timetable/', StudentViews.student_timetable_view, name='student_timetable_view'),
+    # URLs for Staff Timetable
+    path('staff/timetable/', StaffViews.staff_timetable_view, name='staff_timetable_view'),
+    
+    # URLs for Class Rooms
+    path('classrooms/', HodViews.ClassRoomListView.as_view(), name='classroom_list'),
+    path('classrooms/create/', HodViews.ClassRoomCreateView.as_view(), name='classroom_create'),
+    path('classrooms/<int:pk>/edit/', HodViews.ClassRoomUpdateView.as_view(), name='classroom_update'),
+    path('classrooms/<int:pk>/delete/', HodViews.ClassRoomDeleteView.as_view(), name='classroom_delete'),
+    
+    # URLs for Time Slots
+    path('timeslots/', HodViews.TimeSlotListView.as_view(), name='timeslot_list'),
+    path('timeslots/create/', HodViews.TimeSlotCreateView.as_view(), name='timeslot_create'),
+    path('timeslots/<int:pk>/edit/', HodViews.TimeSlotUpdateView.as_view(), name='timeslot_update'),
+    path('timeslots/<int:pk>/delete/', HodViews.TimeSlotDeleteView.as_view(), name='timeslot_delete'),
+    
+    # URLs for Timetable Entries
+    path('timetableentries/', HodViews.TimetableEntryListView.as_view(), name='timetableentry_list'),
+    path('timetableentries/create/', HodViews.TimetableEntryCreateView.as_view(), name='timetableentry_create'),
+    path('timetableentries/<int:pk>/edit/', HodViews.TimetableEntryUpdateView.as_view(), name='timetableentry_update'),
+    path('timetableentries/<int:pk>/delete/', HodViews.TimetableEntryDeleteView.as_view(), name='timetableentry_delete'),
+    
+    # URL for Timetable View
+    path('timetable/', HodViews.timetable_view, name='timetable_view'),
     
 ]
